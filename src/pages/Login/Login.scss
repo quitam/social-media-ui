@@ -1,0 +1,116 @@
+.login {
+    height: 100vh;
+    background-image: url(./loginbg.svg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .card {
+        overflow: hidden;
+        width: 60%;
+        border-radius: 10px;
+        display: flex;
+        background-color: #fff;
+        min-height: 550px;
+        .left {
+            flex: 1;
+            padding: 80px;
+            background-image: url(../../img/login/leaf.jpeg);
+            background-size: cover;
+        }
+        .right {
+            flex: 1;
+            padding: 20px 80px;
+            text-align: center;
+            img {
+                display: block;
+                width: 200px;
+                margin-inline: auto;
+            }
+            .slowgan {
+                font-style: italic;
+                font-size: 14px;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                input {
+                    border: none;
+                    outline: none;
+                    font-size: 16px;
+                    padding: 10px 10px 5px;
+                    border-bottom: 1px solid lightgrey;
+                }
+                button {
+                    display: block;
+                    border: none;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    width: 145px;
+                    margin-left: auto;
+                    background-color: var(--primary);
+                    color: #fff;
+                    transition: 0.3s;
+                    font-size: 16px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    &:hover {
+                        box-shadow: inset 145px 0 0 0 #2196f3;
+                    }
+                }
+            }
+            .align-left {
+                text-align: start;
+                margin-top: 5px;
+                margin-right: auto;
+                margin-left: 0;
+                color: var(--primary);
+                font-size: 14px;
+                font-weight: 700;
+                .register-now {
+                    text-decoration: none;
+                    color: var(--primary);
+                    &:hover {
+                        padding: 5px;
+                        background-color: #a0d2eb;
+                        color: #fff;
+                    }
+                }
+            }
+            hr {
+                background-color: red;
+                border: 1px solid red;
+                margin: 20px;
+            }
+            .others {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 14px;
+                .icon {
+                    font-size: 20px;
+                    border-radius: 50%;
+                    border: 1px solid #000;
+                    box-sizing: content-box;
+                    padding: 5px;
+                    transition: 0.2s;
+                }
+                .google {
+                    margin-left: 20px;
+                    &:hover {
+                        border: 1px solid red;
+                        color: #fff;
+                        background-color: red;
+                    }
+                }
+                .github {
+                    margin-left: 10px;
+                    &:hover {
+                        background-color: #000;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
