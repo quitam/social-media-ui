@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import './Login.scss';
 
 import { Link } from 'react-router-dom';
@@ -5,6 +6,9 @@ import Leaf from '../../img/login/leaf-logo1.png';
 import { Google, GitHub } from '@mui/icons-material/';
 
 const Login = () => {
+    useEffect(() => {
+        document.title = 'Leaf | Login';
+    });
     return (
         <div className="login">
             <div className="card">

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Register.scss';
 
 import { Link } from 'react-router-dom';
 import Leaf from '../../img/login/leaf-logo2.png';
 
 const Register = () => {
+    useEffect(() => {
+        document.title = 'Leaf | Register';
+    });
     return (
         <div className="register">
             <div className="card">
