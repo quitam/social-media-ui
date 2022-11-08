@@ -1,6 +1,6 @@
 .login {
     height: 100vh;
-    background-image: url(./loginbg.svg);
+    background-image: url(../../img/login/loginbg.svg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,6 +94,7 @@
                     box-sizing: content-box;
                     padding: 5px;
                     transition: 0.2s;
+                    cursor: pointer;
                 }
                 .google {
                     margin-left: 20px;
