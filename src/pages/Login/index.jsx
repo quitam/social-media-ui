@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import './Login.scss';
 
 import { Link } from 'react-router-dom';
@@ -6,9 +7,27 @@ import Leaf from '../../img/login/leaf-logo1.png';
 import { Google, GitHub } from '@mui/icons-material/';
 
 const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     useEffect(() => {
         document.title = 'Leaf | Login';
     });
+    const handleLogin = (e) => {
+        email === 'abc' && password === '123'
+            ? Swal.fire({
+                  icon: 'success',
+                  title: 'Login success',
+                  showConfirmButton: false,
+                  timer: 1500,
+              })
+            : Swal.fire({
+                  icon: 'error',
+                  title: 'Login fail',
+                  text: 'Wrong email or password, try again!!!',
+              });
+        e.preventDefault();
+    };
     return (
         <div className="login">
             <div className="card">
@@ -17,9 +36,19 @@ const Login = () => {
                     <img src={Leaf} alt="" />
                     <h1 className="title">Leaf</h1>
                     <p className="slowgan">Gone with the wind</p>
-                    <form action="">
-                        <input type="text" placeholder="Email" />
-                        <input type="password" placeholder="Password" />
+                    <form onSubmit={handleLogin}>
+                        <input
+                            type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                        />
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                        />
                         <button>Login</button>
                     </form>
                     <p className="align-left">Forgot password?</p>

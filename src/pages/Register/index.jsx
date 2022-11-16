@@ -21,7 +21,7 @@ const Register = () => {
                         <input type="password" placeholder="Password" />
                         <input type="password" placeholder="Confirm Password" />
 
-                        <button>Login</button>
+                        <button disabled>Signup</button>
                     </form>
 
                     <p className="align-left">
