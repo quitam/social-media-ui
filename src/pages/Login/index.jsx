@@ -14,7 +14,7 @@ const Login = () => {
         document.title = 'Leaf | Login';
     });
     const handleLogin = (e) => {
-        email === 'abc' && password === '123'
+        email === 'a@b.c' && password === '123'
             ? Swal.fire({
                   icon: 'success',
                   title: 'Login success',
@@ -38,12 +38,14 @@ const Login = () => {
                     <p className="slowgan">Gone with the wind</p>
                     <form onSubmit={handleLogin}>
                         <input
-                            type="text"
+                            required
+                            type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email"
                         />
                         <input
+                            required
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

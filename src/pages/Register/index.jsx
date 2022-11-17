@@ -16,10 +16,10 @@ const Register = () => {
                     <h1 className="title">Leaf</h1>
                     <p className="slowgan">Gone with the wind</p>
                     <form action="">
-                        <input type="email" placeholder="Email" />
+                        <input type="email" placeholder="Email" required />
                         <input type="text" placeholder="Fullname" />
-                        <input type="password" placeholder="Password" />
-                        <input type="password" placeholder="Confirm Password" />
+                        <input type="password" placeholder="Password" required />
+                        <input type="password" placeholder="Confirm Password" required />
 
                         <button disabled>Signup</button>
                     </form>
