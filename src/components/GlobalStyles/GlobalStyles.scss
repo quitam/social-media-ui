@@ -24,3 +24,17 @@ body {
     text-rendering: optimizeSpeed;
     //color: var(--primary);
 }
+
+.theme-dark {
+    background-color: black !important;
+    color: #fff;
+}
+
+.theme-light {
+    background-color: #fff !important;
+    color: black;
+}
+
+.bg-content-light {
+    background-color: #fafafa;
+}

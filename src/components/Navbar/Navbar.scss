@@ -1,0 +1,19 @@
+.navbar__barContent {
+    height: 60px;
+    border-bottom: 1px solid #ccc;
+    -webkit-box-shadow: 0 3px 5px rgba(57, 63, 72, 0.3);
+    -moz-box-shadow: 0 3px 5px rgba(57, 63, 72, 0.3);
+    box-shadow: 0 3px 5px rgba(57, 63, 72, 0.3);
+    z-index: 100;
+    position: fixed;
+    left: 0;
+    right: 0;
+}
+
+.navbar__icon {
+    margin-right: 15px;
+    cursor: pointer;
+    &:first-child {
+        margin-left: 15px;
+    }
+}
