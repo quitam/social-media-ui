@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;500;700&family=Merriweather:wght@900&display=swap');
 :root {
     --primary: #008037;
+    --text-color: #333;
     //Default layout
     --default-layout-header-height: 50px;
     --default-layout-width: 1150px;
@@ -25,11 +26,60 @@ body {
     //color: var(--primary);
 }
 
+input,
+button,
+[tabindex] {
+    border: none;
+    outline: none;
+}
+
+a[href] {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+// for dark mode
 .theme-dark {
-    background-color: black !important;
+    background-color: #181818 !important;
     color: #fff;
 }
 
+.theme-search-dark {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    input {
+        color: #fff;
+    }
+    input:not(:placeholder-shown)~.search-btn {
+        color: rgba(255, 255, 255, 1);
+    }
+    span {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    .clear,
+    .loading {
+        color: rgba(255, 255, 255, 0.34);
+        background-color: transparent;
+    }
+    .search-btn {
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.34);
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        &:active {
+            background-color: rgba(22, 24, 35, 0.06);
+        }
+    }
+    &:focus-within {
+        border-color: var(--primary) !important;
+    }
+}
+
+//for light mode
 .theme-light {
     background-color: #fff !important;
     color: black;

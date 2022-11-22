@@ -13,7 +13,55 @@
 .navbar__icon {
     margin-right: 15px;
     cursor: pointer;
-    &:first-child {
-        margin-left: 15px;
+}
+
+.search {
+    position: relative;
+    overflow: hidden;
+    width: 361px;
+    height: 46px;
+    display: flex;
+    background-color: rgba(22, 24, 35, 0.06);
+    border-radius: 92px;
+    padding-left: 16px;
+    border: 1.5px solid transparent;
+    input {
+        flex: 1;
+        height: 100%;
+        font-size: 1.5rem;
+        caret-color: red;
+        background-color: transparent;
+    }
+    input:not(:placeholder-shown)~.search-btn {
+        color: rgba(22, 24, 35, 0.75);
+    }
+    .clear,
+    .loading {
+        color: rgba(22, 24, 35, 0.34);
+        position: absolute;
+        right: 65px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    span {
+        width: 1px;
+        height: 28px;
+        margin: 9px 0;
+        background-color: rgba(22, 24, 35, 0.12);
+    }
+    .search-btn {
+        width: 50px;
+        height: 100%;
+        font-size: 1.8rem;
+        color: rgba(22, 24, 35, 0.34);
+        &:hover {
+            background-color: rgba(22, 24, 35, 0.03);
+        }
+        &:active {
+            background-color: rgba(22, 24, 35, 0.06);
+        }
+    }
+    &:focus-within {
+        border-color: rgba(22, 24, 35, 0.2);
     }
 }
