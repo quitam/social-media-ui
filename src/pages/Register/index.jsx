@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './Register.scss';
 
 import { Link } from 'react-router-dom';
-import Leaf from '../../img/login/leaf-logo2.png';
+import Leaf from '../../assets/images/login/leaf-logo2.png';
 
 const Register = () => {
     useEffect(() => {

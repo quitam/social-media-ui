@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './Navbar.scss';
 
-import logo from '../../img/login/leaf-logo1.png';
+import logo from '../../assets/images/login/leaf-logo1.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';

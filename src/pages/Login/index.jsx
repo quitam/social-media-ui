@@ -3,7 +3,8 @@ import Swal from 'sweetalert2';
 import './Login.scss';
 
 import { Link } from 'react-router-dom';
-import Leaf from '../../img/login/leaf-logo1.png';
+import Leaf from '../../assets/images/login/leaf-logo1.png';
+
 import { Google, GitHub } from '@mui/icons-material/';
 
 const Login = () => {

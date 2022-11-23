@@ -1,6 +1,6 @@
 .login {
     height: 100vh;
-    background-image: url(../../img/login/loginbg.svg);
+    background-image: url(../../assets/images/login/loginbg.svg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,7 +14,7 @@
         .left {
             flex: 1;
             padding: 80px;
-            background-image: url(../../img/login/leaf.jpeg);
+            background-image: url(../../assets/images/login/leaf.jpeg);
             background-size: cover;
         }
         .right {

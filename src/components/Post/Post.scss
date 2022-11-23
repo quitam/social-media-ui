@@ -1,0 +1,37 @@
+.post__container {
+    width: 615px;
+    min-height: 700px;
+    border: 1px solid #dbdddb;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-top: 20px;
+    overflow: hidden;
+    .post__header {
+        height: 60px;
+        border: 1px solid #dbdddb;
+        display: flex;
+        .post__avatar {
+            min-width: 30px;
+            min-height: 30px;
+            margin: 10px;
+        }
+        .post__username {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    }
+    .post__reactIcon {
+        margin-left: 10px;
+        cursor: pointer;
+    }
+    .post__comment {
+        margin: 10px;
+    }
+    .post__commentInput {
+        height: 55px;
+        width: 100%;
+        padding: 4px 16px;
+        font-size: 16px;
+        border: 1px solid #dbdddb;
+    }
+}
