@@ -1,0 +1,24 @@
+.friends__container {
+    width: 300px;
+    min-height: 300px;
+    margin-top: 20px;
+    .friends__header {
+        font-weight: bold;
+        color: #8e8e8e;
+        padding: 8px 16px;
+    }
+    .friends__body {
+        .friend {
+            padding: 4px 16px;
+            display: flex;
+            align-items: center;
+            .friend__image {
+                min-width: 40px;
+                min-height: 40px;
+            }
+            .friend__username {
+                margin-left: 8px;
+            }
+        }
+    }
+}

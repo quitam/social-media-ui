@@ -18,7 +18,7 @@ const Post = () => {
 
             {/* Image */}
             <div>
-                <img src={imgPost} alt="Post" width="600px" height="700px" style={{ objectFit: 'contain' }} />
+                <img src={imgPost} alt="Post" width="700px" height="600px" style={{ objectFit: 'contain' }} />
             </div>
 
             {/* React */}
