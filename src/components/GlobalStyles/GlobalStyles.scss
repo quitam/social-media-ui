@@ -54,10 +54,13 @@ button {
         color: #fff;
     }
     input:not(:placeholder-shown)~.search-btn {
-        color: rgba(255, 255, 255, 1);
+        color: rgba(255, 255, 255, 1) !important;
+    }
+    input:not(:placeholder-shown)~.clear {
+        color: rgba(255, 255, 255, 0.5) !important;
     }
     span {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.5) !important;
     }
     .clear,
     .loading {
@@ -66,7 +69,7 @@ button {
     }
     .search-btn {
         background-color: transparent;
-        color: rgba(255, 255, 255, 0.34);
+        color: rgba(255, 255, 255, 0.5) !important;
         &:hover {
             background-color: rgba(255, 255, 255, 0.3);
         }

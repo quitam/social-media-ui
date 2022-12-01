@@ -2,11 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import './Navbar.scss';
 
 import logo from '../../assets/images/login/leaf-logo1.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
+import Search from '../Search';
 
 const Navbar = () => {
     const { theme, setThemeMode } = useContext(ThemeContext);
@@ -29,18 +28,8 @@ const Navbar = () => {
                         <img src={logo} alt="logo" width="50px" />
                     </Grid>
                     <Grid item xs={3}>
-                        <div className={`${darkMode ? 'theme-search-dark' : ''} search`}>
-                            <input type="text" placeholder="Search accounts" spellCheck={false} />
-                            <button className="clear">
-                                <FontAwesomeIcon icon={faCircleXmark} />
-                            </button>
-                            <FontAwesomeIcon className="loading" icon={faSpinner} />
-
-                            <span></span>
-                            <button className="search-btn">
-                                <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </button>
-                        </div>
+                        {/* Search */}
+                        <Search darkMode={darkMode} />
                     </Grid>
                     <Grid item xs={3} style={{ display: 'flex', justifyContent: 'end' }}>
                         <FiHome title="Home" size="30px" className="navbar__icon" />
