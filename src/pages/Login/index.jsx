@@ -11,10 +11,13 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    console.log(email);
+
     useEffect(() => {
         document.title = 'Leaf | Login';
     });
     const handleLogin = (e) => {
+        e.preventDefault();
         email === 'a@b.c' && password === '123'
             ? Swal.fire({
                   icon: 'success',
@@ -27,7 +30,6 @@ const Login = () => {
                   title: 'Login fail',
                   text: 'Wrong email or password, try again!!!',
               });
-        e.preventDefault();
     };
     return (
         <div className="login">
@@ -41,6 +43,7 @@ const Login = () => {
                         <input
                             required
                             type="email"
+                            spellCheck={false}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email"

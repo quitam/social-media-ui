@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Avatar } from '@mui/material';
 import imgUser from '../../assets/images/avatar/user.jpg';
+
 import './StatusBar.scss';
 
 const StatusBar = ({ theme }) => {
@@ -31,10 +32,6 @@ const StatusBar = ({ theme }) => {
             onMouseOver={mouseOver}
             onMouseLeave={mouseLeave}
         >
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">1</div>
-            </div>
             <div className="status">
                 <Avatar className="statusBar__status" src={imgUser} />
                 <div className="statusBar__text">2</div>

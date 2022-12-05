@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './Navbar.scss';
 
-import logo from '../../assets/images/login/leaf-logo1.png';
+import { Link } from 'react-router-dom';
+import logoLight from '../../assets/images/logo/logo-light.png';
+import logoDark from '../../assets/images/logo/logo-dark.png';
 import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
@@ -25,7 +27,14 @@ const Navbar = () => {
                 <Grid container alignItems="center" justify="center">
                     <Grid item xs={2}></Grid>
                     <Grid item xs={2}>
-                        <img src={logo} alt="logo" width="50px" />
+                        <Link to="/">
+                            <img
+                                src={darkMode ? logoDark : logoLight}
+                                alt="logo"
+                                height="54px"
+                                style={{ paddingTop: '4px' }}
+                            />
+                        </Link>
                     </Grid>
                     <Grid item xs={3}>
                         {/* Search */}

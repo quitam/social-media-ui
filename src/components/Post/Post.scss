@@ -4,11 +4,11 @@
     border: 1px solid #dbdddb;
     border-radius: 8px;
     background-color: #fff;
-    margin-top: 20px;
+    margin: 20px 0;
     overflow: hidden;
     .post__header {
         height: 60px;
-        border: 1px solid #dbdddb;
+        border-bottom: 1px solid #dbdddb;
         display: flex;
         .post__avatar {
             min-width: 30px;
@@ -32,7 +32,7 @@
         width: 100%;
         padding: 4px 16px;
         font-size: 16px;
-        border: 1px solid #dbdddb;
+        border-top: 1px solid #dbdddb;
         caret-color: red;
     }
 }
