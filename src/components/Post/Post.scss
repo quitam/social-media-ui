@@ -23,6 +23,9 @@
     .post__reactIcon {
         margin-left: 15px;
         cursor: pointer;
+        &:hover {
+            opacity: 0.3;
+        }
     }
     .post__comment {
         margin: 10px;

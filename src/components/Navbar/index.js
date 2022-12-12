@@ -80,7 +80,7 @@ const Navbar = () => {
                                 </Col>
                                 <Col>
                                     <div className="d-flex align-items-center ms-3">
-                                        <Avatar />
+                                        <Avatar src="https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZHJhZ29uJTIwYmFsbHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" />
                                         <div className="ms-3">tampham_2929</div>
                                     </div>
                                     <div>

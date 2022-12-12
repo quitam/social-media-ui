@@ -18,25 +18,40 @@ const Post = () => {
 
             {/* Image */}
             <div>
-                <img src={imgPost} alt="Post" width="700px" height="600px" style={{ objectFit: 'contain' }} />
+                <img src={imgPost} alt="Post" style={{ width: '700px', height: '600px', objectFit: 'contain' }} />
             </div>
 
             {/* React */}
             <div>
-                <div>
+                <div style={{ marginBottom: '15px' }}>
                     <FiHeart size="25px" className="post__reactIcon" />
                     <FiMessageSquare size="25px" className="post__reactIcon" />
                     <FiSend size="25px" className="post__reactIcon" />
                 </div>
-                <div style={{ fontSize: '14px', marginLeft: '10px' }}>9999 likes</div>
+                <div style={{ fontSize: '14px', marginLeft: '10px', fontWeight: '700' }}>9999 likes</div>
             </div>
 
             {/* Comment */}
             <div>
-                <div className="post__comment">beautifull</div>
-                <div className="post__comment">comment 2</div>
-                <div className="post__comment">hello world</div>
-                <div className="post__comment">ok</div>
+                <div className="post__comment">
+                    username 1:{' '}
+                    <span style={{ fontWeight: '300' }}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</span>
+                </div>
+                <div className="post__comment">
+                    username 2:{' '}
+                    <span style={{ fontWeight: '300' }}>
+                        Fugiat possimus mollitia cumque! Dolor fugiat repellat possimus aperiam nemo debitis,
+                    </span>
+                </div>
+                <div className="post__comment">
+                    username 3:{' '}
+                    <span style={{ fontWeight: '300' }}>
+                        voluptatem amet laborum, facere exercitationem, suscipit rem molestiae quidem maxime quas.
+                    </span>
+                </div>
+                <div className="post__comment">
+                    username 4: <span style={{ fontWeight: '300' }}>ok</span>
+                </div>
                 <input
                     type="text"
                     className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
