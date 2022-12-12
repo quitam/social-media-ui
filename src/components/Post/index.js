@@ -52,11 +52,15 @@ const Post = () => {
                 <div className="post__comment">
                     username 4: <span style={{ fontWeight: '300' }}>ok</span>
                 </div>
-                <input
-                    type="text"
-                    className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
-                    placeholder="Add a comment..."
-                />
+                <div style={{ display: 'flex' }}>
+                    <button>Icon</button>
+                    <input
+                        type="text"
+                        className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
+                        placeholder="Add a comment..."
+                    />
+                    <button>Post</button>
+                </div>
             </div>
         </div>
     );
