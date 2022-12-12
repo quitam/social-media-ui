@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import './Navbar.scss';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Navbar.scss';
 
-import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import logoLight from '../../assets/images/logo/logo-light.png';
 import logoDark from '../../assets/images/logo/logo-dark.png';
 import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';
@@ -13,12 +15,15 @@ import { FcAddImage } from 'react-icons/fc';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
+import { logoutUser, updateUser } from '../../action/UserAction';
 
 const Navbar = () => {
     const { theme, setThemeMode } = useContext(ThemeContext);
     const [darkMode, setDarkMode] = useState(theme);
     const [modal, setModal] = useState(false);
     const [picture, setPicture] = useState();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setThemeMode(darkMode);
@@ -30,14 +35,27 @@ const Navbar = () => {
             picture && URL.revokeObjectURL(picture.preview);
         };
     }, [picture]);
+    // useEffect(() => {
+    //     const user = localStorage.getItem('user');
+    //     if (user !== null) {
+    //         dispatch(updateUser(user));
+    //     }
+    // }, []);
     const handlePreview = (e) => {
         const file = e.target.files[0];
         file.preview = URL.createObjectURL(file);
         setPicture(file);
     };
-    console.log(picture);
+    const handleLogout = () => {
+        toast.dark('Waiting a minute!');
+        setTimeout(() => {
+            dispatch(logoutUser());
+            navigate('/login');
+        }, 1500);
+    };
     return (
         <div>
+            <ToastContainer />
             <Modal size="lg" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Create a new Post</ModalHeader>
                 <ModalBody>
@@ -122,7 +140,7 @@ const Navbar = () => {
                         {/* Search */}
                         <Search darkMode={darkMode} />
                     </Grid>
-                    <Grid item xs={3} style={{ display: 'flex', justifyContent: 'end' }}>
+                    <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end' }}>
                         <FiHome title="Home" size="30px" className="navbar__icon" />
                         <FiSend title="Messages" size="30px" className="navbar__icon" />
                         <FiHeart title="Notifications" size="30px" className="navbar__icon" />
@@ -133,22 +151,28 @@ const Navbar = () => {
                             onClick={() => setModal(!modal)}
                         />
 
-                        <div
-                            title="Dark/Light mode"
-                            style={{ height: '30px', marginLeft: '20px' }}
-                            onClick={() => setDarkMode(!darkMode)}
-                        >
-                            {darkMode ? (
-                                <FiMoon size="30px" className="navbar__icon" />
-                            ) : (
-                                <FiSun size="30px" className="navbar__icon" />
-                            )}
+                        <div className="dropdown d-flex">
+                            <span className="d-flex">
+                                <Link to="/profile">
+                                    <Avatar sx={{ bgcolor: 'red', width: '30px', height: '30px' }}>TY</Avatar>
+                                </Link>
+                            </span>
+                            <div className={`${darkMode ? 'theme-light' : ''} dropdown-content`}>
+                                <div className="dropdown-item">
+                                    <Link to="/profile">Profile</Link>
+                                </div>
+                                <div className="dropdown-item" onClick={() => setDarkMode(!darkMode)}>
+                                    <span>Dark/Light</span>
+                                    <div title="Dark/Light mode" style={{ height: '30px' }}>
+                                        {darkMode ? <FiMoon size="30px" /> : <FiSun size="30px" />}
+                                    </div>
+                                </div>
+                                <div className="dropdown-item" onClick={handleLogout}>
+                                    <span>Logout</span>
+                                </div>
+                            </div>
                         </div>
-                        <Link to="/profile">
-                            <Avatar sx={{ bgcolor: 'red', width: '30px', height: '30px' }}>TY</Avatar>
-                        </Link>
                     </Grid>
-                    <Grid item xs={1}></Grid>
                 </Grid>
             </div>
         </div>

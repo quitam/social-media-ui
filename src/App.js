@@ -1,19 +1,32 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import Register from './pages/Register';
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { publicRoutes, privateRoutes } from './routes';
 
 function App() {
+    const token = useSelector((state) => state.user.token);
+    console.log(token);
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/profile" element={<Profile />} />
-            </Routes>
+            <div className="App">
+                <Routes>
+                    {publicRoutes.map((route, index) => {
+                        const Page = route.component;
+                        return <Route key={index} path={route.path} element={<Page />}></Route>;
+                    })}
+                    {privateRoutes.map((route, index) => {
+                        const Page = route.component;
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={token ? <Page /> : <Navigate to="/login" />}
+                            ></Route>
+                        );
+                    })}
+                </Routes>
+            </div>
         </Router>
     );
 }

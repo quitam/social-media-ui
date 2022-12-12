@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../action/UserAction';
+import { toast, ToastContainer } from 'react-toastify';
+
 import { Grid } from '@mui/material';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { useSelector } from 'react-redux';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import Navbar from '../../components/Navbar';
 import { FiSettings } from 'react-icons/fi';
@@ -10,62 +15,149 @@ import { FiSettings } from 'react-icons/fi';
 import './Profile.scss';
 
 const Profile = () => {
+    const userInfo = useSelector((state) => state.user.user);
+    const [name, setName] = useState(userInfo.name);
+    const [username, setUsername] = useState(userInfo.username);
+    const [bio, setBio] = useState(userInfo.bio);
+    const [email, setEmail] = useState(userInfo.email);
+    const [phone, setPhone] = useState(userInfo.phone);
+    const [birthday, setBirthday] = useState(userInfo.birthday);
+    const [gender, setGender] = useState(userInfo.gender);
+
     const [theme] = useThemeHook();
     const [modal, setModal] = useState(false);
+    console.log(userInfo);
 
     useEffect(() => {
         document.title = 'Leaf | Profile';
     });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    };
+    console.log(userInfo + 'profile');
+
     return (
         <div>
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
                 <ModalBody>
-                    <form action="">
+                    <form onSubmit={handleSubmit}>
                         <Row>
                             <div className="d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Name</label>
                                 </Col>
-                                <input type="text" className="form-control" placeholder="Enter Name" />
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Enter Name"
+                                />
                             </div>
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Username</label>
                                 </Col>
-                                <input type="text" className="form-control" placeholder="Enter Username" />
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    disabled
+                                    className="form-control"
+                                    placeholder="Enter Username"
+                                />
                             </div>
 
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Bio</label>
                                 </Col>
-                                <textarea className="form-control" />
+                                <textarea
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Enter bio"
+                                />
                             </div>
 
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Email</label>
                                 </Col>
-                                <input type="email" className="form-control" placeholder="Enter Email" />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    disabled
+                                    className="form-control"
+                                    placeholder="Enter Email"
+                                />
                             </div>
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Phone Number</label>
                                 </Col>
-                                <input type="text" className="form-control" placeholder="Enter Phone" />
+                                <input
+                                    type="text"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Enter Phone"
+                                />
                             </div>
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Birthday</label>
                                 </Col>
-                                <input type="text" className="form-control" placeholder="Enter Birthday" />
+                                <input
+                                    type="date"
+                                    value={birthday.split(' ')[0]}
+                                    onChange={(e) => setBirthday(e.target.value)}
+                                    className="form-control"
+                                />
                             </div>
                             <div className="mt-5 d-flex align-items-center">
                                 <Col lg={3}>
                                     <label>Gender</label>
                                 </Col>
-                                <input type="text" className="form-control" placeholder="Enter Gender" />
+                                <label style={{ marginRight: '20px' }}>
+                                    <input
+                                        style={{ marginRight: '5px' }}
+                                        type="radio"
+                                        id="male"
+                                        name="gender"
+                                        checked={gender === 'MALE'}
+                                        onChange={(e) => setGender(e.target.value)}
+                                        value="MALE"
+                                    />
+                                    Male
+                                </label>
+                                <label style={{ marginRight: '20px' }}>
+                                    <input
+                                        style={{ marginRight: '5px' }}
+                                        type="radio"
+                                        id="female"
+                                        name="gender"
+                                        checked={gender === 'FEMALE'}
+                                        onChange={(e) => setGender(e.target.value)}
+                                        value="FEMALE"
+                                    />
+                                    Female
+                                </label>
+                                <label>
+                                    <input
+                                        style={{ marginRight: '5px' }}
+                                        type="radio"
+                                        id="other"
+                                        name="gender"
+                                        checked={gender === 'OTHER'}
+                                        onChange={(e) => setGender(e.target.value)}
+                                        value="OTHER"
+                                    />
+                                    Other
+                                </label>
                             </div>
                         </Row>
                         <div className="d-flex justify-content-end">

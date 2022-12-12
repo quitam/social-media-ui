@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import * as UserService from '../../services/UserService';
+import * as constant from '../../constant/index';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../action/UserAction';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Login.scss';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,26 +23,72 @@ const Login = () => {
 
     const [modal, setModal] = useState(false);
     const [modal2, setModal2] = useState(false);
-
-    console.log(emailReset);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.title = 'Leaf | Login';
     });
+    ///////
+    const checkLogin = (result) => {
+        console.log(result.data);
+        if (result.data) {
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'You login successfully',
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+                setTimeout(() => {
+                    dispatch(loginUser(result.data.userInfo, result.data.token));
+                    navigate('/');
+                }, 1000);
+            }, constant.TIME_WAITING);
+        } else {
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: result.message,
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+            }, constant.TIME_WAITING);
+        }
+
+        setTimeout(() => {
+            toast.dismiss();
+        }, constant.TIME_WAITING);
+    };
+
+    // const loginAdmin = async () => {
+    //     const result = await UserService.loginAdmin({
+    //         loginKey: username.trim(),
+    //         password: password.trim(),
+    //     });
+    //     checkLogin(result);
+    // };
+
+    /////
+    const login = async () => {
+        const result = await UserService.loginCustomer({
+            loginKey: email.trim(),
+            password: password.trim(),
+        });
+        checkLogin(result);
+    };
     const handleLogin = (e) => {
         e.preventDefault();
-        email === 'a@b.c' && password === '123'
-            ? Swal.fire({
-                  icon: 'success',
-                  title: 'Login success',
-                  showConfirmButton: false,
-                  timer: 1500,
-              })
-            : Swal.fire({
-                  icon: 'error',
-                  title: 'Login fail',
-                  text: 'Wrong email or password, try again!!!',
-              });
+        if (!constant.FORMAT_EMAIL.test(email.trim())) {
+            toast.dark('Waiting a minute!');
+            login();
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Username not allow space or special characters! Please try again.',
+                showConfirmButton: true,
+            });
+        }
     };
     const handleSubmitEmail = (e) => {
         e.preventDefault();
@@ -66,6 +119,7 @@ const Login = () => {
     };
     return (
         <div className="login">
+            <ToastContainer />
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Reset password</ModalHeader>
                 <ModalBody>
@@ -155,7 +209,7 @@ const Login = () => {
                             <form onSubmit={handleLogin}>
                                 <input
                                     required
-                                    type="email"
+                                    type="text"
                                     spellCheck={false}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}

@@ -14,3 +14,36 @@
     margin-right: 15px;
     cursor: pointer;
 }
+
+.dropdown {
+    position: relative;
+    &:hover .dropdown-content {
+        display: flex;
+    }
+    .dropdown-content {
+        overflow: hidden;
+        flex-direction: column;
+        display: none;
+        position: absolute;
+        border-radius: 8px;
+        margin-top: 28px;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        .dropdown-item {
+            padding: 8px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: start;
+            align-items: center;
+            cursor: pointer;
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.073);
+            }
+            p {
+                align-items: center;
+            }
+        }
+    }
+}
