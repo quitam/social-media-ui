@@ -4,6 +4,8 @@ import { Avatar } from '@mui/material';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import imgPost from '../../assets/images/post/post1.jpeg';
 import { FiSend, FiHeart, FiMessageSquare } from 'react-icons/fi';
+import { BsEmojiSmile } from 'react-icons/bs';
+
 import angryIcon from '../../assets/images/reactIcon/angry.svg';
 import hahaIcon from '../../assets/images/reactIcon/haha.svg';
 import likeIcon from '../../assets/images/reactIcon/like.svg';
@@ -31,16 +33,20 @@ const Post = () => {
 
             {/* React */}
             <div>
-                <div style={{ marginBottom: '15px' }}>
-                    <FiHeart size="25px" className="post__reactIcon" />
+                <div style={{ marginBottom: '15px', marginTop: '15px', display: 'flex' }}>
+                    <div className="dropdown-icons">
+                        <FiHeart size="25px" className="post__reactIcon" />
+                        <div className="dropdown-wrap">
+                            <img src={likeIcon} alt="love" className="dropdown-icon" />
+                            <img src={loveIcon} alt="love" className="dropdown-icon" />
+                            <img src={hahaIcon} alt="love" className="dropdown-icon" />
+                            <img src={wowIcon} alt="love" className="dropdown-icon" />
+                            <img src={sadIcon} alt="love" className="dropdown-icon" />
+                            <img src={angryIcon} alt="love" className="dropdown-icon" />
+                        </div>
+                    </div>
                     <FiMessageSquare size="25px" className="post__reactIcon" onClick={() => cmtRef.current.focus()} />
                     <FiSend size="25px" className="post__reactIcon" />
-                    <img src={likeIcon} alt="love" style={{ width: '30px' }} />
-                    <img src={loveIcon} alt="love" style={{ width: '30px' }} />
-                    <img src={hahaIcon} alt="love" style={{ width: '30px' }} />
-                    <img src={wowIcon} alt="love" style={{ width: '30px' }} />
-                    <img src={sadIcon} alt="love" style={{ width: '30px' }} />
-                    <img src={angryIcon} alt="love" style={{ width: '30px' }} />
                 </div>
                 <div style={{ fontSize: '14px', marginLeft: '10px', fontWeight: '700' }}>9999 likes</div>
             </div>
@@ -66,15 +72,17 @@ const Post = () => {
                 <div className="post__comment">
                     username 4: <span style={{ fontWeight: '300' }}>ok</span>
                 </div>
-                <div style={{ display: 'flex' }}>
-                    <button>Icon</button>
+                <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>
+                    <div className="icon-emoji">
+                        <BsEmojiSmile size={25} />
+                    </div>
                     <input
                         ref={cmtRef}
                         type="text"
                         className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
                         placeholder="Add a comment..."
                     />
-                    <button>Post</button>
+                    <button className="post-btn">Post</button>
                 </div>
             </div>
         </div>

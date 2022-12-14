@@ -202,7 +202,7 @@ const Login = () => {
                                     spellCheck={false}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Email"
+                                    placeholder="Email, username or phone"
                                 />
                                 <input
                                     required

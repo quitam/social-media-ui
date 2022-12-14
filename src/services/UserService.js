@@ -39,3 +39,15 @@ export const changeAvatar = async (data) => {
         return res;
     } catch (e) {}
 };
+export const searchByName = async (data) => {
+    try {
+        const res = await request.getRQ(endpoints['searchByName'] + '/' + data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};
