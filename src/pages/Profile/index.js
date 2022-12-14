@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../action/UserAction';
-import { toast, ToastContainer } from 'react-toastify';
-
-import { Grid } from '@mui/material';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import * as UserService from '../../services/UserService';
+import { Avatar, Grid } from '@mui/material';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useSelector } from 'react-redux';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import Navbar from '../../components/Navbar';
 import { FiSettings } from 'react-icons/fi';
-
+import { useSelector } from 'react-redux';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 import './Profile.scss';
 
 const Profile = () => {
     const userInfo = useSelector((state) => state.user.user);
+    //JSON.parse(localStorage.getItem('user'));
+
+    console.log(userInfo);
     const [name, setName] = useState(userInfo.name);
     const [username, setUsername] = useState(userInfo.username);
     const [bio, setBio] = useState(userInfo.bio);
@@ -23,22 +28,119 @@ const Profile = () => {
     const [phone, setPhone] = useState(userInfo.phone);
     const [birthday, setBirthday] = useState(userInfo.birthday);
     const [gender, setGender] = useState(userInfo.gender);
+    const [toggler, setToggler] = useState(false);
 
+    const [avatar, setAvatar] = useState(userInfo.avatar);
+    const inputRef = useRef();
+    const changeImage = () => {
+        inputRef.current.click();
+    };
+    useEffect(() => {
+        return () => {
+            avatar && URL.revokeObjectURL(avatar);
+        };
+    }, [avatar]);
+
+    useEffect(() => {
+        setName(userInfo.name);
+        setPhone(userInfo.phone);
+        setGender(userInfo.gender);
+        setBirthday(userInfo.birthday);
+        setBio(userInfo.bio);
+    }, [userInfo]);
+
+    const dispatch = useDispatch();
     const [theme] = useThemeHook();
     const [modal, setModal] = useState(false);
-    console.log(userInfo);
+    const [modal2, setModal2] = useState(false);
 
     useEffect(() => {
         document.title = 'Leaf | Profile';
     });
 
+    const checkResult = (result) => {
+        console.log(result);
+        if (result.data) {
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Edit profile successfully',
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+                localStorage.removeItem('token');
+                localStorage.setItem('token', result.data.token);
+                dispatch(updateUser(result.data.userInfo));
+            }, 1500);
+        } else {
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: result.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }, 1000);
+        }
+    };
+
+    const update = async () => {
+        const result = await UserService.updateCustomer({
+            name: name.trim(),
+            phone: phone.trim(),
+            birthday: birthday.trim(),
+            gender: gender,
+            bio: bio,
+        });
+        checkResult(result);
+    };
+    const checkChange = (change) => {
+        console.log(change.data);
+        if (change.data) {
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Change avatar successfully',
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+                dispatch(updateUser(change.data));
+            }, 1500);
+        }
+    };
+    const changeAvatar = async () => {
+        const change = await UserService.changeAvatar({
+            avatar: avatar,
+        });
+        //console.log(change);
+        checkChange(change);
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
+        toast.dark('Waiting a minute!', { autoClose: 2000 });
+        update();
+        setModal(!modal);
     };
-    console.log(userInfo + 'profile');
+    const handleChange = () => {
+        toast.dark('Waiting a minute!', { autoClose: 2000 });
+        changeAvatar();
+        setModal2(!modal2);
+    };
 
     return (
         <div>
+            <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+            <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
+                <ModalHeader closeButton={true}>Confirm change</ModalHeader>
+                <ModalBody>
+                    {avatar && <img src={avatar.preview} alt="avatar" width="100%" />}
+                    <div className="d-flex justify-content-end">
+                        <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }} onClick={handleChange}>
+                            Change
+                        </button>
+                    </div>
+                </ModalBody>
+            </Modal>
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
                 <ModalBody>
@@ -113,7 +215,7 @@ const Profile = () => {
                                 </Col>
                                 <input
                                     type="date"
-                                    value={birthday.split(' ')[0]}
+                                    value={birthday.split('T')[0]}
                                     onChange={(e) => setBirthday(e.target.value)}
                                     className="form-control"
                                 />
@@ -176,17 +278,32 @@ const Profile = () => {
                 <Grid container>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={2}>
-                        <div style={{ display: 'flex' }}>
-                            <img
-                                className="profile-image"
-                                src="https://images.unsplash.com/photo-1608889175123-8ee362201f81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8YXZhdGFyfGVufDB8MnwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-                                alt="Avatar"
-                            />
+                        <div className="dropdown">
+                            <Avatar src={userInfo.avatar} className="profile-image" />
+                            <div className={`${theme ? 'theme-light' : ''} avatar_action`}>
+                                <div className="action_item" onClick={() => setToggler(!toggler)}>
+                                    View avatar
+                                </div>
+                                <div className="action_item" onClick={() => changeImage()}>
+                                    Change avatar
+                                </div>
+                                <input
+                                    type="file"
+                                    hidden={true}
+                                    ref={inputRef}
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        file.preview = URL.createObjectURL(file);
+                                        setAvatar(file);
+                                        setModal2(!modal2);
+                                    }}
+                                />
+                            </div>
                         </div>
                     </Grid>
                     <Grid item xs={4}>
                         <div className="profile">
-                            <h4 className="profile-username">quitam_2929</h4>
+                            <h4 className="profile-username">{userInfo.username}</h4>
                             <button
                                 className={`${theme ? 'theme-dark' : ''} edit-profile`}
                                 onClick={() => setModal(!modal)}
@@ -203,11 +320,8 @@ const Profile = () => {
                             <h5 className="profile-stat-item">60 following</h5>
                         </div>
                         <div className="profile-bio">
-                            <div className="profile-real-name">Qui Tâm</div>
-                            <p>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque reiciendis maiores sunt
-                                accusamus dicta asperiores dolores quo nobis
-                            </p>
+                            <div className="profile-real-name">{userInfo.name}</div>
+                            <p>{userInfo.bio}</p>
                         </div>
                     </Grid>
                     <Grid item xs={1}></Grid>

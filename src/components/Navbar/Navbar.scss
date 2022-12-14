@@ -13,6 +13,9 @@
 .navbar__icon {
     margin-right: 15px;
     cursor: pointer;
+    &:hover {
+        opacity: 0.3;
+    }
 }
 
 .dropdown {
@@ -35,7 +38,7 @@
             padding: 8px 16px;
             display: flex;
             gap: 12px;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             cursor: pointer;
             &:hover {

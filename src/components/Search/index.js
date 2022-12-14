@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import Tippy from '@tippyjs/react/headless';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+//faSpinner
 import { Wrapper as PopperWrapper } from '../Popper';
 
 import './Search.scss';

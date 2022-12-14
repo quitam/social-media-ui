@@ -1,7 +1,10 @@
 import axios from 'axios';
+
 export let endpoints = {
     customerLogin: '/login/customer',
     customerRegister: '/user/create',
+    customerUpdate: `/user/update-profile`,
+    changeAvatar: '/user/change-avatar',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

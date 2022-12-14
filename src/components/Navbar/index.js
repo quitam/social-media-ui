@@ -15,9 +15,11 @@ import { FcAddImage } from 'react-icons/fc';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
-import { logoutUser, updateUser } from '../../action/UserAction';
+import { logoutUser } from '../../action/UserAction';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const userInfo = useSelector((state) => state.user.user);
     const { theme, setThemeMode } = useContext(ThemeContext);
     const [darkMode, setDarkMode] = useState(theme);
     const [modal, setModal] = useState(false);
@@ -27,7 +29,6 @@ const Navbar = () => {
 
     useEffect(() => {
         setThemeMode(darkMode);
-        console.log(darkMode);
     }, [darkMode, setThemeMode]);
 
     useEffect(() => {
@@ -35,12 +36,7 @@ const Navbar = () => {
             picture && URL.revokeObjectURL(picture.preview);
         };
     }, [picture]);
-    // useEffect(() => {
-    //     const user = localStorage.getItem('user');
-    //     if (user !== null) {
-    //         dispatch(updateUser(user));
-    //     }
-    // }, []);
+
     const handlePreview = (e) => {
         const file = e.target.files[0];
         file.preview = URL.createObjectURL(file);
@@ -98,8 +94,8 @@ const Navbar = () => {
                                 </Col>
                                 <Col>
                                     <div className="d-flex align-items-center ms-3">
-                                        <Avatar src="https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZHJhZ29uJTIwYmFsbHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" />
-                                        <div className="ms-3">tampham_2929</div>
+                                        <Avatar src={userInfo.avatar} />
+                                        <div className="ms-3">{userInfo.username}</div>
                                     </div>
                                     <div>
                                         <textarea
@@ -119,11 +115,7 @@ const Navbar = () => {
                     </form>
                 </ModalBody>
             </Modal>
-            <div
-                className={`${darkMode ? 'theme-dark' : 'theme-light'} navbar__barContent`}
-                justifyContent="center"
-                alignItems="center"
-            >
+            <div className={`${darkMode ? 'theme-dark' : 'theme-light'} navbar__barContent`}>
                 <Grid container alignItems="center" justify="center">
                     <Grid item xs={2}></Grid>
                     <Grid item xs={2}>
@@ -154,7 +146,10 @@ const Navbar = () => {
                         <div className="dropdown d-flex">
                             <span className="d-flex">
                                 <Link to="/profile">
-                                    <Avatar sx={{ bgcolor: 'red', width: '30px', height: '30px' }}>TY</Avatar>
+                                    <Avatar
+                                        sx={{ bgcolor: 'green', width: '32px', height: '32px' }}
+                                        src={userInfo.avatar}
+                                    />
                                 </Link>
                             </span>
                             <div className={`${darkMode ? 'theme-light' : ''} dropdown-content`}>
@@ -162,9 +157,13 @@ const Navbar = () => {
                                     <Link to="/profile">Profile</Link>
                                 </div>
                                 <div className="dropdown-item" onClick={() => setDarkMode(!darkMode)}>
-                                    <span>Dark/Light</span>
+                                    <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
                                     <div title="Dark/Light mode" style={{ height: '30px' }}>
-                                        {darkMode ? <FiMoon size="30px" /> : <FiSun size="30px" />}
+                                        {darkMode ? (
+                                            <FiMoon size="30px" fill="grey" />
+                                        ) : (
+                                            <FiSun size="30px" fill="yellow" color="orange" />
+                                        )}
                                     </div>
                                 </div>
                                 <div className="dropdown-item" onClick={handleLogout}>

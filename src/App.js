@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { publicRoutes, privateRoutes } from './routes';
+//import { updateUser } from './action/UserAction';
 
 function App() {
     const token = useSelector((state) => state.user.token);
@@ -13,7 +14,13 @@ function App() {
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         const Page = route.component;
-                        return <Route key={index} path={route.path} element={<Page />}></Route>;
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={token ? <Navigate to="/" /> : <Page />}
+                            ></Route>
+                        );
                     })}
                     {privateRoutes.map((route, index) => {
                         const Page = route.component;

@@ -31,7 +31,6 @@ const Login = () => {
     });
     ///////
     const checkLogin = (result) => {
-        console.log(result.data);
         if (result.data) {
             setTimeout(() => {
                 Swal.fire({
@@ -55,21 +54,11 @@ const Login = () => {
                 });
             }, constant.TIME_WAITING);
         }
-
         setTimeout(() => {
             toast.dismiss();
         }, constant.TIME_WAITING);
     };
 
-    // const loginAdmin = async () => {
-    //     const result = await UserService.loginAdmin({
-    //         loginKey: username.trim(),
-    //         password: password.trim(),
-    //     });
-    //     checkLogin(result);
-    // };
-
-    /////
     const login = async () => {
         const result = await UserService.loginCustomer({
             loginKey: email.trim(),
