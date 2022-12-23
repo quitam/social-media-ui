@@ -39,6 +39,16 @@
     }
 }
 
+.post__commentInput:not(:placeholder-shown)~.post-btn {
+    opacity: 1;
+}
+
+.post-caption {
+    font-weight: 100;
+    margin: 10px;
+    padding-left: 20px;
+}
+
 .dropdown-icons {
     position: relative;
     &:hover .dropdown-wrap {

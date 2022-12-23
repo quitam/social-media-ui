@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 
 const Home = () => {
     useEffect(() => {
-        document.title = 'Leaf | Homepage';
+        document.title = 'Leaf';
     });
     return (
         <div>

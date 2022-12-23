@@ -1,135 +1,34 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useDispatch } from 'react-redux';
-import { updateUser } from '../../action/UserAction';
-import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
 import * as UserService from '../../services/UserService';
 import { Avatar, Grid } from '@mui/material';
-import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import Navbar from '../../components/Navbar';
 import { FiSettings } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import './UserProfile.scss';
 
 const Profile = () => {
-    const userInfo = useSelector((state) => state.user.user);
-    //JSON.parse(localStorage.getItem('user'));
-
-    console.log(userInfo);
-    const [name, setName] = useState(userInfo.name);
-    const [username, setUsername] = useState(userInfo.username);
-    const [bio, setBio] = useState(userInfo.bio);
-    const [email, setEmail] = useState(userInfo.email);
-    const [phone, setPhone] = useState(userInfo.phone);
-    const [birthday, setBirthday] = useState(userInfo.birthday);
-    const [gender, setGender] = useState(userInfo.gender);
+    const params = useParams();
+    const [userProfile, setUserProfile] = useState({});
     const [toggler, setToggler] = useState(false);
-
-    const [avatar, setAvatar] = useState(userInfo.avatar);
-    const inputRef = useRef();
-    const changeImage = () => {
-        inputRef.current.click();
-    };
-    useEffect(() => {
-        return () => {
-            avatar && URL.revokeObjectURL(avatar);
-        };
-    }, [avatar]);
-
-    useEffect(() => {
-        setName(userInfo.name);
-        setPhone(userInfo.phone);
-        setGender(userInfo.gender);
-        setBirthday(userInfo.birthday);
-        setBio(userInfo.bio);
-    }, [userInfo]);
-
-    const dispatch = useDispatch();
-    const [theme] = useThemeHook();
     const [modal, setModal] = useState(false);
-    const [modal2, setModal2] = useState(false);
+    const [theme] = useThemeHook();
 
     useEffect(() => {
-        document.title = 'Leaf | Profile';
-    });
-
-    const checkResult = (result) => {
-        console.log(result);
-        if (result.data) {
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Edit profile successfully',
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-                localStorage.removeItem('token');
-                localStorage.setItem('token', result.data.token);
-                dispatch(updateUser(result.data.userInfo));
-            }, 1500);
-        } else {
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'error',
-                    title: result.message,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }, 1000);
-        }
-    };
-
-    const update = async () => {
-        const result = await UserService.updateCustomer({
-            name: name.trim(),
-            phone: phone.trim(),
-            birthday: birthday.trim(),
-            gender: gender,
-            bio: bio,
-        });
-        checkResult(result);
-    };
-    const checkChange = (change) => {
-        console.log(change.data);
-        if (change.data) {
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Change avatar successfully',
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-                dispatch(updateUser(change.data));
-            }, 1500);
-        }
-    };
-    const changeAvatar = async () => {
-        const change = await UserService.changeAvatar({
-            avatar: avatar,
-        });
-        //console.log(change);
-        checkChange(change);
-    };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        toast.dark('Waiting a minute!', { autoClose: 2000 });
-        update();
-        setModal(!modal);
-    };
-    const handleChange = () => {
-        toast.dark('Waiting a minute!', { autoClose: 2000 });
-        changeAvatar();
-        setModal2(!modal2);
-    };
+        document.title = 'Leaf | ' + params.username;
+        const fetchApi = async () => {
+            const result = await UserService.userProfile(params.username);
+            return result.data;
+        };
+        fetchApi().then((data) => setUserProfile(data));
+    }, [params.username]);
 
     return (
         <div>
-            <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+            <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userProfile.avatar }]} />
             <Navbar />
             <div
                 className={`${theme ? 'theme-dark' : 'bg-content-light'} container-profile`}
@@ -139,31 +38,17 @@ const Profile = () => {
                     <Grid item xs={3}></Grid>
                     <Grid item xs={2}>
                         <div className="dropdown">
-                            <Avatar src={userInfo.avatar} className="profile-image" />
+                            <Avatar src={userProfile.avatar} className="profile-image" />
                             <div className={`${theme ? 'theme-light' : ''} avatar_action`}>
                                 <div className="action_item" onClick={() => setToggler(!toggler)}>
                                     View avatar
                                 </div>
-                                <div className="action_item" onClick={() => changeImage()}>
-                                    Change avatar
-                                </div>
-                                <input
-                                    type="file"
-                                    hidden={true}
-                                    ref={inputRef}
-                                    onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        file.preview = URL.createObjectURL(file);
-                                        setAvatar(file);
-                                        setModal2(!modal2);
-                                    }}
-                                />
                             </div>
                         </div>
                     </Grid>
                     <Grid item xs={4}>
                         <div className="profile">
-                            <h4 className="profile-username">{userInfo.username}</h4>
+                            <h4 className="profile-username">{userProfile.username}</h4>
                             <button
                                 className={`${theme ? 'theme-dark' : ''} edit-profile`}
                                 onClick={() => setModal(!modal)}
@@ -180,8 +65,8 @@ const Profile = () => {
                             <h5 className="profile-stat-item">60 following</h5>
                         </div>
                         <div className="profile-bio">
-                            <div className="profile-real-name">{userInfo.name}</div>
-                            <p>{userInfo.bio}</p>
+                            <div className="profile-real-name">{userProfile.name}</div>
+                            <p>{userProfile.bio}</p>
                         </div>
                     </Grid>
                     <Grid item xs={1}></Grid>

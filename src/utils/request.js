@@ -5,7 +5,10 @@ export let endpoints = {
     customerRegister: '/user/create',
     customerUpdate: '/user/update-profile',
     changeAvatar: '/user/change-avatar',
-    searchByName: 'user/search',
+    searchByName: '/user/search',
+    userProfile: '/user',
+    createPost: '/post',
+    getListPost: '/post/user',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { Avatar } from '@mui/material';
 
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
-import imgPost from '../../assets/images/post/post1.jpeg';
 import { FiSend, FiHeart, FiMessageSquare } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
 
@@ -15,20 +14,25 @@ import wowIcon from '../../assets/images/reactIcon/wow.svg';
 
 import './Post.scss';
 
-const Post = () => {
+const Post = ({ data }) => {
+    //console.log(data);
     const [theme] = useThemeHook();
     const cmtRef = useRef();
     return (
         <div className={`${theme ? 'post-theme-dark' : ''} post__container`}>
             {/* Header Post */}
             <div className="post__header">
-                <Avatar className="post__avatar" src="" />
-                <div className="post__username">_mabel_2003</div>
+                <Avatar className="post__avatar" src={data.user.avatar} />
+                <div className="post__username">{data.user.username}</div>
             </div>
-
             {/* Image */}
             <div>
-                <img src={imgPost} alt="Post" style={{ width: '700px', height: '600px', objectFit: 'contain' }} />
+                <h4 className="post-caption">{data.value}</h4>
+                <img
+                    src={data.files[0].value}
+                    alt="Post"
+                    style={{ width: '700px', height: '600px', objectFit: 'contain' }}
+                />
             </div>
 
             {/* React */}

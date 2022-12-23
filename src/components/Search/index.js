@@ -9,6 +9,7 @@ import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-ic
 import { Wrapper as PopperWrapper } from '../Popper';
 
 import './Search.scss';
+import { Link } from 'react-router-dom';
 
 const Search = ({ darkMode }) => {
     const [searchValue, setSearchValue] = useState('');
@@ -25,7 +26,7 @@ const Search = ({ darkMode }) => {
         const fetchApi = async () => {
             const result = await UserService.searchByName(searchValue);
             setSearchResult(result.data);
-            console.log(result);
+            //console.log(result);
         };
         fetchApi();
     }, [searchValue]);
@@ -56,7 +57,9 @@ const Search = ({ darkMode }) => {
                             Accounts
                         </h4>
                         {searchResult.map((result) => (
-                            <AccountItem key={result.username} data={result} />
+                            <Link to={`/${result.username}`}>
+                                <AccountItem key={result.username} data={result} />
+                            </Link>
                         ))}
                     </PopperWrapper>
                 </div>

@@ -35,13 +35,25 @@ export const changeAvatar = async (data) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token'),
             },
         });
-        //console.log(res);
+
         return res;
     } catch (e) {}
 };
 export const searchByName = async (data) => {
     try {
         const res = await request.getRQ(endpoints['searchByName'] + '/' + data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};
+export const userProfile = async (data) => {
+    try {
+        const res = await request.getRQ(endpoints['userProfile'] + '/' + data, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + localStorage.getItem('token'),

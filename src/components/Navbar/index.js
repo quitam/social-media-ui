@@ -15,15 +15,19 @@ import { FcAddImage } from 'react-icons/fc';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
+import { updateListPost } from '../../action/PostAction';
 import { logoutUser } from '../../action/UserAction';
 import { useSelector } from 'react-redux';
+import * as PostService from '../../services/PostService';
 
 const Navbar = () => {
+    const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
     const { theme, setThemeMode } = useContext(ThemeContext);
     const [darkMode, setDarkMode] = useState(theme);
     const [modal, setModal] = useState(false);
     const [picture, setPicture] = useState();
+    const [caption, setCaption] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -49,13 +53,56 @@ const Navbar = () => {
             navigate('/login');
         }, 1500);
     };
+    const handlePost = (e) => {
+        e.preventDefault();
+        const createPost = async () => {
+            const json = JSON.stringify(caption);
+            const blob = new Blob([json], {
+                type: 'application/json',
+            });
+            const data = new FormData();
+            data.append('info', blob);
+            if (picture) {
+                data.append('files', picture);
+            }
+            const post = await PostService.createPost(data);
+
+            return post;
+        };
+        createPost().then((data) => {
+            if (data.success) {
+                //console.log(data);
+                dispatch(updateListPost([data.data, ...listPost]));
+                setModal(!modal);
+                setCaption('');
+                setPicture();
+                toast.success('Post success', {
+                    position: 'bottom-right',
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    theme: 'dark',
+                });
+            }
+        });
+    };
     return (
         <div>
             <ToastContainer />
-            <Modal size="lg" centered show={modal} onHide={() => setModal(!modal)}>
+            <Modal
+                size="lg"
+                centered
+                show={modal}
+                onHide={() => {
+                    setModal(!modal);
+                    setCaption('');
+                    setPicture();
+                }}
+            >
                 <ModalHeader closeButton={true}>Create a new Post</ModalHeader>
                 <ModalBody>
-                    <form action="">
+                    <form>
                         <Row>
                             <div className="d-flex">
                                 <Col>
@@ -99,6 +146,8 @@ const Navbar = () => {
                                     </div>
                                     <div>
                                         <textarea
+                                            value={caption}
+                                            onChange={(e) => setCaption(e.target.value)}
                                             rows="10"
                                             placeholder="Write a caption..."
                                             className="form-control mt-3 ms-1 ps-3 pt-3"
@@ -108,7 +157,11 @@ const Navbar = () => {
                             </div>
                         </Row>
                         <div className="d-flex justify-content-end">
-                            <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }}>
+                            <button
+                                className="btn btn-primary mt-3"
+                                style={{ fontSize: '1.5rem' }}
+                                onClick={handlePost}
+                            >
                                 Post
                             </button>
                         </div>
