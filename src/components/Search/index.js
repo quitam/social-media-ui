@@ -26,7 +26,7 @@ const Search = ({ darkMode }) => {
         const fetchApi = async () => {
             const result = await UserService.searchByName(searchValue);
             setSearchResult(result.data);
-            //console.log(result);
+            //console.log(searchResult);
         };
         fetchApi();
     }, [searchValue]);
@@ -49,18 +49,24 @@ const Search = ({ darkMode }) => {
     return (
         <Tippy
             interactive
-            visible={showResult && searchResult.length > 0}
+            visible={showResult && searchValue}
             render={(attrs) => (
                 <div className="search-result" tabIndex="-1" {...attrs}>
                     <PopperWrapper>
                         <h4 style={{ marginLeft: '10px' }} className="search-title">
                             Accounts
                         </h4>
-                        {searchResult.map((result) => (
-                            <Link to={`/${result.username}`}>
-                                <AccountItem key={result.username} data={result} />
-                            </Link>
-                        ))}
+                        {searchResult.length > 0 ? (
+                            searchResult.map((result) => (
+                                <Link to={`/${result.username}`}>
+                                    <AccountItem key={result.username} data={result} />
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="result-notify">
+                                <span>No result</span>
+                            </div>
+                        )}
                     </PopperWrapper>
                 </div>
             )}

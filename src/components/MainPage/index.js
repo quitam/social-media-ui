@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Post from '../Post';
 import * as PostService from '../../services/PostService';
 
@@ -8,19 +8,18 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const MainPage = () => {
     const dispatch = useDispatch();
-    //const [postResult, setPostResult] = useState([]);
     const listPost = useSelector((state) => state.post.listPost);
-    console.log('abc', listPost);
+
     useEffect(() => {
         fetchApi();
+        // eslint-disable-next-line
     }, []);
     const fetchApi = async () => {
         const result = await PostService.getListPost();
+        //console.log(result);
         if (result) {
             dispatch(updateListPost(result.data));
         }
-        //setPostResult(result.data);
-        //console.log(result.data);
     };
 
     return <div>{listPost && listPost.map((result) => <Post key={result.id} data={result} />)}</div>;

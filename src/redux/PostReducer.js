@@ -9,7 +9,6 @@ const postReducer = (state = initialState, action) => {
                 ...state,
                 listPost: action.listPost,
             };
-
         default:
             return state;
     }
