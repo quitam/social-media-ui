@@ -44,7 +44,8 @@ const Post = ({ data }) => {
     //     };
     // }, [toggleClass]);
 
-    const postComment = () => {
+    const postComment = (e) => {
+        e.preventDefault();
         const fetchApi = async () => {
             const result = await PostService.createComment({
                 postId: data.id,
@@ -190,6 +191,7 @@ const Post = ({ data }) => {
                                                 setCommentId(comment.id);
                                             }}
                                         />
+
                                         <div
                                             className={`${theme ? 'theme-light' : ''} comment-action ${
                                                 toggleClass && commentId === comment.id ? 'active' : ''
@@ -205,22 +207,24 @@ const Post = ({ data }) => {
                             ),
                     )}
 
-                <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>
-                    <div className="icon-emoji">
-                        <BsEmojiSmile size={25} />
+                <form onSubmit={postComment}>
+                    <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>
+                        <div className="icon-emoji">
+                            <BsEmojiSmile size={25} />
+                        </div>
+                        <input
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            ref={cmtRef}
+                            type="text"
+                            className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
+                            placeholder="Add a comment..."
+                        />
+                        <button className="post-btn" disabled={comment === '' ? true : false}>
+                            Post
+                        </button>
                     </div>
-                    <input
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        ref={cmtRef}
-                        type="text"
-                        className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
-                        placeholder="Add a comment..."
-                    />
-                    <button className="post-btn" onClick={postComment} disabled={comment === '' ? true : false}>
-                        Post
-                    </button>
-                </div>
+                </form>
             </div>
         </div>
     );

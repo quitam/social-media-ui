@@ -7,7 +7,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import logoLight from '../../assets/images/logo/logo-light.png';
-import logoDark from '../../assets/images/logo/logo-dark.png';
 import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
@@ -173,12 +172,7 @@ const Navbar = () => {
                     <Grid item xs={2}></Grid>
                     <Grid item xs={2}>
                         <Link to="/">
-                            <img
-                                src={darkMode ? logoDark : logoLight}
-                                alt="logo"
-                                height="58px"
-                                style={{ paddingTop: '4px' }}
-                            />
+                            <img src={logoLight} alt="logo" height="58px" style={{ paddingTop: '4px' }} />
                         </Link>
                     </Grid>
                     <Grid item xs={3}>
