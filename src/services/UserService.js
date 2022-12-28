@@ -63,3 +63,16 @@ export const userProfile = async (data) => {
         return res;
     } catch (e) {}
 };
+
+export const getUserListPost = async () => {
+    try {
+        const res = await request.getRQ(endpoints['getUserListPost'], {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};

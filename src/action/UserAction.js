@@ -24,3 +24,9 @@ export function logoutUser() {
         type: 'LOGOUT_USER',
     };
 }
+export function updateUserListPost(userListPost) {
+    return {
+        type: 'UPDATE_USERLISTPOST',
+        userListPost: userListPost,
+    };
+}

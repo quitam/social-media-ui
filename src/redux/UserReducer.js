@@ -1,6 +1,7 @@
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')),
     token: localStorage.getItem('token'),
+    userListPost: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -22,6 +23,11 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 user: null,
                 token: null,
+            };
+        case 'UPDATE_USERLISTPOST':
+            return {
+                ...state,
+                userListPost: action.userListPost,
             };
         default:
             return state;

@@ -1,4 +1,6 @@
 .container-profile {
+    min-height: 100vh;
+    overflow: auto;
     .profile-image {
         width: 160px;
         height: 160px;
@@ -87,7 +89,13 @@
     flex-wrap: wrap;
     justify-content: space-around;
     .gallery-item {
-        width: 30%;
+        background-color: black;
+        object-fit: contain;
+        max-width: 30%;
         margin-bottom: 20px;
+        cursor: pointer;
+        &:hover {
+            opacity: 0.5;
+        }
     }
 }

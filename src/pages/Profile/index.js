@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 import { useDispatch } from 'react-redux';
-import { updateUser } from '../../action/UserAction';
+import { updateUser, updateUserListPost } from '../../action/UserAction';
+
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import * as UserService from '../../services/UserService';
@@ -10,6 +11,7 @@ import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import Navbar from '../../components/Navbar';
+import PostItem from '../../components/PostItem';
 import { FiSettings } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import Lightbox from 'yet-another-react-lightbox';
@@ -17,10 +19,14 @@ import 'yet-another-react-lightbox/styles.css';
 import './Profile.scss';
 
 const Profile = () => {
-    const userInfo = useSelector((state) => state.user.user);
-    //JSON.parse(localStorage.getItem('user'));
+    const dispatch = useDispatch();
+    const [theme] = useThemeHook();
+    const inputRef = useRef();
 
-    console.log(userInfo);
+    const userInfo = useSelector((state) => state.user.user);
+    const listPost = useSelector((state) => state.user.userListPost);
+    console.log('listpost', listPost);
+
     const [name, setName] = useState(userInfo.name);
     const [username, setUsername] = useState(userInfo.username);
     const [bio, setBio] = useState(userInfo.bio);
@@ -29,9 +35,12 @@ const Profile = () => {
     const [birthday, setBirthday] = useState(userInfo.birthday);
     const [gender, setGender] = useState(userInfo.gender);
     const [toggler, setToggler] = useState(false);
-
+    const [modal, setModal] = useState(false);
+    const [modal2, setModal2] = useState(false);
+    const [showPost, setShowPost] = useState(false);
+    const [postData, setPostData] = useState();
     const [avatar, setAvatar] = useState(userInfo.avatar);
-    const inputRef = useRef();
+
     const changeImage = () => {
         inputRef.current.click();
     };
@@ -49,14 +58,18 @@ const Profile = () => {
         setBio(userInfo.bio);
     }, [userInfo]);
 
-    const dispatch = useDispatch();
-    const [theme] = useThemeHook();
-    const [modal, setModal] = useState(false);
-    const [modal2, setModal2] = useState(false);
-
     useEffect(() => {
         document.title = 'Leaf | Profile';
-    });
+        listPostApi();
+        // eslint-disable-next-line
+    }, []);
+
+    const listPostApi = async () => {
+        const result = await UserService.getUserListPost();
+        if (result.success) {
+            dispatch(updateUserListPost(result.data));
+        }
+    };
 
     const checkResult = (result) => {
         console.log(result);
@@ -126,10 +139,19 @@ const Profile = () => {
         changeAvatar();
         setModal2(!modal2);
     };
+    const postDetail = (post) => {
+        setPostData(post);
+        setShowPost(true);
+    };
+    const handleClose = (status) => {
+        setShowPost(status);
+    };
 
     return (
         <div>
+            {showPost && <PostItem data={postData} handleClose={handleClose} />}
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+            {/* Change avatar modal */}
             <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
                 <ModalHeader closeButton={true}>Confirm change</ModalHeader>
                 <ModalBody>
@@ -141,6 +163,7 @@ const Profile = () => {
                     </div>
                 </ModalBody>
             </Modal>
+            {/* Edit profile modal */}
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
                 <ModalBody>
@@ -316,6 +339,7 @@ const Profile = () => {
                         </div>
                         <div className="profile-stats">
                             <h5 className="profile-stat-item">40 posts</h5>
+                            {/* <h5 className="profile-stat-item">{listPost && listPost.map((result) => result.id)}</h5> */}
                             <h5 className="profile-stat-item">50 followers</h5>
                             <h5 className="profile-stat-item">60 following</h5>
                         </div>
@@ -334,36 +358,15 @@ const Profile = () => {
                         style={{ borderTop: theme ? '1px solid white' : '1px solid black', padding: '20px 0' }}
                     >
                         <div className="gallery">
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1601288855733-568a84692378?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1565475668349-0130bea1059b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1472213984618-c79aaec7fef0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1610171363518-e71ef955d896?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1590227521023-e362889a3adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1564661392417-bb629e9c6519?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
+                            {listPost &&
+                                listPost.map((result) => (
+                                    <img
+                                        className="gallery-item"
+                                        src={result.files[0].value}
+                                        alt={result.value}
+                                        onClick={() => postDetail(result)}
+                                    />
+                                ))}
                         </div>
                     </Grid>
                     <Grid item xs={2}></Grid>

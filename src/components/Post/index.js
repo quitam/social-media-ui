@@ -21,7 +21,7 @@ import './Post.scss';
 const Post = ({ data }) => {
     const dispatch = useDispatch();
     const listPost = useSelector((state) => state.post.listPost);
-    console.log(listPost);
+    //console.log('data', data);
 
     const [modal, setModal] = useState(false);
     const [toggleClass, setToggleClass] = useState(false);

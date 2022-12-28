@@ -22,7 +22,6 @@ const StatusBar = ({ theme }) => {
 
     const handleWheel = (e) => {
         const scrollContainer = document.getElementsByClassName('statusBar__container');
-        console.log('onwheel...');
         scrollContainer[0].scrollLeft += e.deltaY;
     };
     return (

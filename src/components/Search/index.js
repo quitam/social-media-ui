@@ -5,7 +5,6 @@ import AccountItem from '../AccountItem';
 import Tippy from '@tippyjs/react/headless';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-//faSpinner
 import { Wrapper as PopperWrapper } from '../Popper';
 
 import './Search.scss';
@@ -31,6 +30,7 @@ const Search = ({ darkMode }) => {
         fetchApi();
     }, [searchValue]);
 
+    //xử lý khi clear input search
     const handleClear = () => {
         setSearchValue('');
         setSearchResult([]);
@@ -42,6 +42,7 @@ const Search = ({ darkMode }) => {
 
     const handleChange = (e) => {
         const searchValue = e.target.value;
+        //không cho phép nhập khoảng trắng ở đầu
         if (!searchValue.startsWith(' ')) {
             setSearchValue(searchValue);
         }

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
+
 import * as UserService from '../../services/UserService';
 import * as constant from '../../constant/index';
+import Swal from 'sweetalert2';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../action/UserAction';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Login.scss';
+
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
+import './Login.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Link } from 'react-router-dom';
 import Leaf from '../../assets/images/login/leaf-logo1.png';
-
 import { Google, GitHub } from '@mui/icons-material/';
 
 const Login = () => {
@@ -107,7 +109,7 @@ const Login = () => {
         setEmail(emailReset);
     };
     return (
-        <div className="login">
+        <div className={'login'}>
             <ToastContainer />
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Reset password</ModalHeader>
@@ -185,16 +187,16 @@ const Login = () => {
                     </form>
                 </ModalBody>
             </Modal>
-            <div className="card">
+            <div className={'card'}>
                 <Row>
                     <Col style={{ padding: '0' }}>
                         <div className="left"></div>
                     </Col>
                     <Col style={{ padding: '0' }}>
-                        <div className="right">
-                            <img src={Leaf} alt="" />
-                            <h1 className="title">Leaf</h1>
-                            <p className="slowgan">Gone with the wind</p>
+                        <div className={'right'}>
+                            <img src={Leaf} alt="Logo" />
+                            <h1 className={'title'}>Leaf</h1>
+                            <p className={'slowgan'}>Gone with the wind</p>
                             <form onSubmit={handleLogin}>
                                 <input
                                     required
@@ -213,11 +215,11 @@ const Login = () => {
                                 />
                                 <button>Login</button>
                             </form>
-                            <p className="align-left" style={{ cursor: 'pointer' }} onClick={() => setModal(!modal)}>
+                            <p className={'align-left'} style={{ cursor: 'pointer' }} onClick={() => setModal(!modal)}>
                                 Forgot password?
                             </p>
 
-                            <p className="align-left">
+                            <p className={'align-left'}>
                                 Don't have account?{' '}
                                 <span>
                                     <Link to="/register" className="register-now">
@@ -226,10 +228,10 @@ const Login = () => {
                                 </span>
                             </p>
                             <hr />
-                            <p className="others">
+                            <p className={'others'}>
                                 Login with:
-                                <Google titleAccess="Login with Google" className="icon google" />
-                                <GitHub titleAccess="Login with Github" className="icon github" />
+                                <Google titleAccess="Login with Google" className={'icon google'} />
+                                <GitHub titleAccess="Login with Github" className={'icon github'} />
                             </p>
                         </div>
                     </Col>

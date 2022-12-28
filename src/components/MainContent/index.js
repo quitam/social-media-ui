@@ -4,9 +4,9 @@ import { Grid } from '@mui/material';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import StatusBar from '../StatusBar';
 import MainPage from '../MainPage';
-import './MainContent.scss';
 import InfoSection from '../InfoSection';
 import Friends from '../Friends';
+import './MainContent.scss';
 
 const MainContent = () => {
     const [theme] = useThemeHook();

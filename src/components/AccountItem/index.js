@@ -1,17 +1,20 @@
 import { Avatar } from '@mui/material';
 import React from 'react';
 
-import './AccountItem.scss';
+import classNames from 'classnames/bind';
+import styles from './AccountItem.module.scss';
+
+const cx = classNames.bind(styles);
 
 const AccountItem = ({ data }) => {
     return (
-        <div className="wrapper-result">
+        <div className={cx('wrapper-result')}>
             <Avatar className="avatar-account" src={data.avatar} />
-            <div className="info-account">
-                <h4 className="name-account">
+            <div className={cx('info-account')}>
+                <h4 className={cx('name-account')}>
                     <span>{data.name}</span>
                 </h4>
-                <span className="username-account">{data.username}</span>
+                <span className={cx('username-account')}>{data.username}</span>
             </div>
         </div>
     );

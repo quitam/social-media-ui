@@ -81,35 +81,35 @@
                 border: 1px solid red;
                 margin: 20px;
             }
-            .others {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 14px;
-                .icon {
-                    font-size: 20px;
-                    border-radius: 50%;
-                    border: 1px solid #000;
-                    box-sizing: content-box;
-                    padding: 5px;
-                    transition: 0.2s;
-                    cursor: pointer;
-                }
-                .google {
-                    margin-left: 20px;
-                    &:hover {
-                        border: 1px solid red;
-                        color: #fff;
-                        background-color: red;
-                    }
-                }
-                .github {
-                    margin-left: 10px;
-                    &:hover {
-                        background-color: #000;
-                        color: #fff;
-                    }
-                }
+        }
+    }
+    .others {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        .icon {
+            font-size: 20px;
+            border-radius: 50%;
+            border: 1px solid #000;
+            box-sizing: content-box;
+            padding: 5px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .google {
+            margin-left: 20px;
+            &:hover {
+                border: 1px solid red;
+                color: #fff;
+                background-color: red;
+            }
+        }
+        .github {
+            margin-left: 10px;
+            &:hover {
+                background-color: #000;
+                color: #fff;
             }
         }
     }

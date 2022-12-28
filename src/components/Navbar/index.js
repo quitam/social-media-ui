@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar.scss';
+import classNames from 'classnames/bind';
+import styles from './Navbar.module.scss';
 
 import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
@@ -15,10 +16,12 @@ import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
 import { updateListPost } from '../../action/PostAction';
-import { logoutUser } from '../../action/UserAction';
+import { logoutUser, updateUserListPost } from '../../action/UserAction';
 import { useSelector } from 'react-redux';
 import * as PostService from '../../services/PostService';
+import * as UserService from '../../services/UserService';
 
+const cx = classNames.bind(styles);
 const Navbar = () => {
     const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
@@ -30,21 +33,37 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    //set Dark-Light mode
     useEffect(() => {
         setThemeMode(darkMode);
     }, [darkMode, setThemeMode]);
 
+    //gọi Api trang Profile User
+    const toProfile = () => {
+        listUserPostApi();
+    };
+    const listUserPostApi = async () => {
+        const result = await UserService.getUserListPost();
+        if (result.success) {
+            dispatch(updateUserListPost(result.data));
+            navigate('/profile');
+        }
+    };
+    // hàm Clear
     useEffect(() => {
         return () => {
             picture && URL.revokeObjectURL(picture.preview);
         };
     }, [picture]);
 
+    //xem trước ảnh được load lên
     const handlePreview = (e) => {
         const file = e.target.files[0];
         file.preview = URL.createObjectURL(file);
         setPicture(file);
     };
+
+    //xử lý khi Logout
     const handleLogout = () => {
         toast.dark('Waiting a minute!');
         setTimeout(() => {
@@ -52,6 +71,8 @@ const Navbar = () => {
             navigate('/login');
         }, 1500);
     };
+
+    //xử lý khi thêm một bài Post
     const handlePost = (e) => {
         e.preventDefault();
         const createPost = async () => {
@@ -70,7 +91,6 @@ const Navbar = () => {
         };
         createPost().then((data) => {
             if (data.success) {
-                //console.log(data);
                 dispatch(updateListPost([data.data, ...listPost]));
                 setModal(!modal);
                 setCaption('');
@@ -89,6 +109,7 @@ const Navbar = () => {
     return (
         <div>
             <ToastContainer />
+            {/* Modal thêm bài Post mới */}
             <Modal
                 size="lg"
                 centered
@@ -106,6 +127,7 @@ const Navbar = () => {
                             <div className="d-flex">
                                 <Col>
                                     <div
+                                        // nếu không có ảnh thì hiện input ở giữa
                                         className={`d-flex ${
                                             picture
                                                 ? 'justify-content-between'
@@ -132,11 +154,6 @@ const Navbar = () => {
                                         )}
                                     </div>
                                     {picture && <img src={picture.preview} alt="error" width="100%" />}
-                                    {/* <img
-                                            src="https://images.unsplash.com/photo-1611262588024-d12430b98920?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aW5zdGFncmFtfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                            alt=""
-                                            style={{ width: '100%' }}
-                                        /> */}
                                 </Col>
                                 <Col>
                                     <div className="d-flex align-items-center ms-3">
@@ -167,8 +184,8 @@ const Navbar = () => {
                     </form>
                 </ModalBody>
             </Modal>
-            <div className={`${darkMode ? 'theme-dark' : 'theme-light'} navbar__barContent`}>
-                <Grid container alignItems="center" justify="center">
+            <div className={cx(`${darkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
+                <Grid container style={{ alignItems: 'center' }}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={2}>
                         <Link to="/">
@@ -180,18 +197,18 @@ const Navbar = () => {
                         <Search darkMode={darkMode} />
                     </Grid>
                     <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end' }}>
-                        <FiHome title="Home" size="30px" className="navbar__icon" />
-                        <FiSend title="Messages" size="30px" className="navbar__icon" />
-                        <FiHeart title="Notifications" size="30px" className="navbar__icon" />
+                        <FiHome title="Home" size="30px" className={cx('navbar__icon')} />
+                        <FiSend title="Messages" size="30px" className={cx('navbar__icon')} />
+                        <FiHeart title="Notifications" size="30px" className={cx('navbar__icon')} />
                         <FiPlusSquare
                             title="Create"
                             size="30px"
-                            className="navbar__icon"
+                            className={cx('navbar__icon')}
                             onClick={() => setModal(!modal)}
                         />
 
-                        <div className="dropdown d-flex">
-                            <span className="d-flex">
+                        <div style={{ display: 'flex' }} className={cx('dropdown')}>
+                            <span style={{ display: 'flex' }}>
                                 <Link to="/profile">
                                     <Avatar
                                         sx={{ bgcolor: 'green', width: '32px', height: '32px' }}
@@ -199,11 +216,11 @@ const Navbar = () => {
                                     />
                                 </Link>
                             </span>
-                            <div className={`${darkMode ? 'theme-light' : ''} dropdown-content`}>
-                                <div className="dropdown-item">
-                                    <Link to="/profile">Profile</Link>
+                            <div className={cx(`${darkMode ? 'theme-light' : ''}`, 'dropdown-content')}>
+                                <div className={cx('dropdown-item')} onClick={toProfile}>
+                                    Profile
                                 </div>
-                                <div className="dropdown-item" onClick={() => setDarkMode(!darkMode)}>
+                                <div className={cx('dropdown-item')} onClick={() => setDarkMode(!darkMode)}>
                                     <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
                                     <div title="Dark/Light mode" style={{ height: '30px' }}>
                                         {darkMode ? (
@@ -213,7 +230,7 @@ const Navbar = () => {
                                         )}
                                     </div>
                                 </div>
-                                <div className="dropdown-item" onClick={handleLogout}>
+                                <div className={cx('dropdown-item')} onClick={handleLogout}>
                                     <span>Logout</span>
                                 </div>
                             </div>
