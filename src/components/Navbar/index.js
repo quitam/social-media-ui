@@ -76,7 +76,10 @@ const Navbar = () => {
     const handlePost = (e) => {
         e.preventDefault();
         const createPost = async () => {
-            const json = JSON.stringify(caption);
+            const obj = {
+                value: caption,
+            };
+            const json = JSON.stringify(obj);
             const blob = new Blob([json], {
                 type: 'application/json',
             });

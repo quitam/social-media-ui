@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { Avatar } from '@mui/material';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import { FiSend, FiHeart, FiMessageSquare, FiMoreHorizontal } from 'react-icons/fi';
-import { BsEmojiSmile } from 'react-icons/bs';
+import { BsEmojiSmile, BsArrowReturnRight } from 'react-icons/bs';
 
 import { toast, ToastContainer } from 'react-toastify';
 import { Modal, ModalBody } from 'react-bootstrap';
@@ -18,19 +20,37 @@ import wowIcon from '../../assets/images/reactIcon/wow.svg';
 
 import './Post.scss';
 
+TimeAgo.addLocale(en);
+// Create formatter (English).
+const timeAgo = new TimeAgo('en-US');
+
 const Post = ({ data }) => {
     const dispatch = useDispatch();
     const listPost = useSelector((state) => state.post.listPost);
-    //console.log('data', data);
+    console.log('data', data);
+
+    //console.log(timeAgo.format(date1));
 
     const [modal, setModal] = useState(false);
     const [toggleClass, setToggleClass] = useState(false);
     const [commentId, setCommentId] = useState();
-
+    const [repId, setRepId] = useState('');
+    const [repUser, setRepUser] = useState('');
     const [comment, setComment] = useState('');
     const [theme] = useThemeHook();
     const cmtRef = useRef();
     const moreRef = useRef();
+    const format = (list) => {
+        // eslint-disable-next-line
+        let listComment = list.filter((item) => {
+            if (!item.comment) {
+                let tmp = item;
+                tmp.children = list.filter((item) => item.comment && item.comment.id === tmp.id);
+                return tmp;
+            }
+        });
+        return listComment;
+    };
 
     // useEffect(() => {
     //     const handleClickOutside = (e) => {
@@ -47,11 +67,18 @@ const Post = ({ data }) => {
     const postComment = (e) => {
         e.preventDefault();
         const fetchApi = async () => {
-            const result = await PostService.createComment({
-                postId: data.id,
-                content: comment,
-            });
-            return result;
+            if (repId) {
+                const result = await PostService.repComment(repId, {
+                    content: comment,
+                });
+                return result;
+            } else {
+                const result = await PostService.createComment({
+                    postId: data.id,
+                    content: comment,
+                });
+                return result;
+            }
         };
         fetchApi().then((data) => {
             if (data.success) {
@@ -68,6 +95,7 @@ const Post = ({ data }) => {
                 );
             }
         });
+        setRepId('');
     };
     const hiddenPost = () => {
         const hiddenApi = async () => {
@@ -111,9 +139,11 @@ const Post = ({ data }) => {
             }
         });
     };
+
     return (
         <div className={`${theme ? 'post-theme-dark' : ''} post__container`}>
             <ToastContainer />
+            {/* Modal action post */}
             <Modal size="sm" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalBody bsPrefix="modal-custom">
                     <div className="more-action">Delete post</div>
@@ -129,22 +159,30 @@ const Post = ({ data }) => {
             {/* Header Post */}
             <div className="post__header">
                 <Avatar className="post__avatar" src={data.user.avatar} />
-                <div className="post__username">{data.user.username}</div>
+                <div className="post__username">
+                    <span>{data.user.username}</span>
+                    <span className="post-time">{timeAgo.format(new Date(data.createDate))}</span>
+                </div>
                 <FiMoreHorizontal size="25px" className="icon-more" onClick={() => setModal(!modal)} />
             </div>
-            {/* Image */}
-            <p className="post-caption">{data.value}</p>
+            {/* Image Post*/}
+
             <div>
                 <img
                     src={data.files[0].value}
                     alt="Post"
                     style={{ width: '700px', height: '600px', objectFit: 'contain', background: 'black' }}
                 />
+                <div className="post-caption">
+                    <div style={{ position: 'relative' }}>
+                        <span style={{ fontWeight: '300', fontSize: '14px', margin: '10px' }}>{data.value}</span>
+                    </div>
+                </div>
             </div>
 
-            {/* React */}
+            {/* Reaction, Comment, Share */}
             <div>
-                <div style={{ marginBottom: '15px', marginTop: '15px', display: 'flex' }}>
+                <div style={{ marginBottom: '15px', display: 'flex' }}>
                     <div className="dropdown-icons">
                         <FiHeart size="25px" className="post__reactIcon" />
                         <div className="dropdown-wrap">
@@ -164,9 +202,9 @@ const Post = ({ data }) => {
                 </div>
             </div>
 
-            {/* Comment */}
+            {/* List Comment */}
             <div>
-                {data.comments
+                {format(data.comments)
                     .sort((a, b) => {
                         let da = new Date(a.createDate);
                         let db = new Date(b.createDate);
@@ -176,11 +214,47 @@ const Post = ({ data }) => {
                         (comment) =>
                             comment.status === 'ENABLE' && (
                                 <div key={comment.id} className="post__comment">
-                                    <div>
-                                        {comment.user.username}:
-                                        <span style={{ fontWeight: '300', fontSize: '14px', marginLeft: '5px' }}>
-                                            {comment.value}
-                                        </span>
+                                    <div style={{ position: 'relative' }}>
+                                        <div>
+                                            {comment.user.username}:
+                                            <span style={{ fontWeight: '300', fontSize: '14px', marginLeft: '5px' }}>
+                                                {comment.value}
+                                            </span>
+                                            <div className="like-comment">
+                                                <div role="button">Like</div>
+                                                <div
+                                                    role="button"
+                                                    onClick={() => {
+                                                        setRepId(comment.id);
+                                                        setRepUser(comment.user.username);
+                                                        cmtRef.current.focus();
+                                                    }}
+                                                >
+                                                    Reply
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {comment.children
+                                            .sort((a, b) => {
+                                                let da = new Date(a.createDate);
+                                                let db = new Date(b.createDate);
+                                                return da - db;
+                                            })
+                                            .map((item, index) => (
+                                                <div style={{ marginLeft: '20px' }} key={index}>
+                                                    <BsArrowReturnRight style={{ marginRight: '5px' }} />
+                                                    {item.user.username}:
+                                                    <span
+                                                        style={{
+                                                            fontWeight: '300',
+                                                            fontSize: '14px',
+                                                            marginLeft: '5px',
+                                                        }}
+                                                    >
+                                                        {item.value}
+                                                    </span>
+                                                </div>
+                                            ))}
                                     </div>
                                     <div className="comment-dropdown" ref={moreRef}>
                                         <FiMoreHorizontal
@@ -203,10 +277,11 @@ const Post = ({ data }) => {
                                             <div className="action-item">Report comment</div>
                                         </div>
                                     </div>
+                                    <div className="cmt-time">{timeAgo.format(new Date(comment.createDate))}</div>
                                 </div>
                             ),
                     )}
-
+                {/* Input Comment */}
                 <form onSubmit={postComment}>
                     <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>
                         <div className="icon-emoji">
@@ -220,6 +295,17 @@ const Post = ({ data }) => {
                             className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
                             placeholder="Add a comment..."
                         />
+                        {repId && (
+                            <div
+                                className="reply-user"
+                                onClick={() => {
+                                    setRepId('');
+                                    setComment('');
+                                }}
+                            >
+                                <span>Replying @{repUser}</span>
+                            </div>
+                        )}
                         <button className="post-btn" disabled={comment === '' ? true : false}>
                             Post
                         </button>

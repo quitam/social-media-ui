@@ -25,7 +25,7 @@ const Profile = () => {
 
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.user.userListPost);
-    console.log('listpost', listPost);
+    //console.log('listpost', listPost);
 
     const [name, setName] = useState(userInfo.name);
     const [username, setUsername] = useState(userInfo.username);
@@ -361,6 +361,7 @@ const Profile = () => {
                             {listPost &&
                                 listPost.map((result) => (
                                     <img
+                                        key={result.id}
                                         className="gallery-item"
                                         src={result.files[0].value}
                                         alt={result.value}

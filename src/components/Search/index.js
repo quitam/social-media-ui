@@ -8,9 +8,12 @@ import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-ic
 import { Wrapper as PopperWrapper } from '../Popper';
 
 import './Search.scss';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Search = ({ darkMode }) => {
+    const navigate = useNavigate();
+    const userInfo = useSelector((state) => state.user.user);
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
@@ -59,9 +62,19 @@ const Search = ({ darkMode }) => {
                         </h4>
                         {searchResult.length > 0 ? (
                             searchResult.map((result) => (
-                                <Link to={`/${result.username}`}>
+                                <div
+                                    key={result.username}
+                                    // vào trang my profile nếu vào kết quả search của chính user
+                                    onClick={() => {
+                                        if (result.username === userInfo.username) {
+                                            navigate('/profile');
+                                        } else {
+                                            navigate(`/${result.username}`);
+                                        }
+                                    }}
+                                >
                                     <AccountItem key={result.username} data={result} />
-                                </Link>
+                                </div>
                             ))
                         ) : (
                             <div className="result-notify">

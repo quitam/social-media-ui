@@ -16,7 +16,6 @@ const MainPage = () => {
     }, []);
     const fetchApi = async () => {
         const result = await PostService.getListPost();
-        //console.log('mainpage', result.data);
         if (result) {
             dispatch(updateListPost(result.data));
         }
