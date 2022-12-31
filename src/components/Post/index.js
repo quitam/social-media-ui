@@ -32,14 +32,21 @@ const Post = ({ data }) => {
     //console.log(timeAgo.format(date1));
 
     const [modal, setModal] = useState(false);
+    //State ẩn/hiện Comment action
     const [toggleClass, setToggleClass] = useState(false);
     const [commentId, setCommentId] = useState();
+    //State để Rep Comment
     const [repId, setRepId] = useState('');
     const [repUser, setRepUser] = useState('');
+
     const [comment, setComment] = useState('');
+
+    //get Dark/Light theme
     const [theme] = useThemeHook();
     const cmtRef = useRef();
     const moreRef = useRef();
+
+    //Format list post, Add prop children to comment if have rep comment
     const format = (list) => {
         // eslint-disable-next-line
         let listComment = list.filter((item) => {
@@ -64,15 +71,19 @@ const Post = ({ data }) => {
     //     };
     // }, [toggleClass]);
 
+    //Xử lý khi Comment
     const postComment = (e) => {
         e.preventDefault();
         const fetchApi = async () => {
+            //Khi rep một Comment
             if (repId) {
                 const result = await PostService.repComment(repId, {
                     content: comment,
                 });
                 return result;
-            } else {
+            }
+            //Khi Comment bình thường
+            else {
                 const result = await PostService.createComment({
                     postId: data.id,
                     content: comment,
@@ -97,6 +108,7 @@ const Post = ({ data }) => {
         });
         setRepId('');
     };
+    //Ẩn bài Post
     const hiddenPost = () => {
         const hiddenApi = async () => {
             const result = await PostService.hiddenPost(data.id);
@@ -117,6 +129,7 @@ const Post = ({ data }) => {
             }
         });
     };
+    //Ẩn Comment
     const hiddenComment = (id) => {
         const hiddenCmtApi = async () => {
             const result = await PostService.hiddenComment(id);
@@ -143,6 +156,7 @@ const Post = ({ data }) => {
     return (
         <div className={`${theme ? 'post-theme-dark' : ''} post__container`}>
             <ToastContainer />
+
             {/* Modal action post */}
             <Modal size="sm" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalBody bsPrefix="modal-custom">
@@ -156,6 +170,7 @@ const Post = ({ data }) => {
                     </div>
                 </ModalBody>
             </Modal>
+
             {/* Header Post */}
             <div className="post__header">
                 <Avatar className="post__avatar" src={data.user.avatar} />
@@ -165,8 +180,8 @@ const Post = ({ data }) => {
                 </div>
                 <FiMoreHorizontal size="25px" className="icon-more" onClick={() => setModal(!modal)} />
             </div>
-            {/* Image Post*/}
 
+            {/* Image Post*/}
             <div>
                 <img
                     src={data.files[0].value}
@@ -206,12 +221,14 @@ const Post = ({ data }) => {
             <div>
                 {format(data.comments)
                     .sort((a, b) => {
+                        //Sắp xếp Comment theo thời gian
                         let da = new Date(a.createDate);
                         let db = new Date(b.createDate);
                         return da - db;
                     })
                     .map(
                         (comment) =>
+                            //Chỉ hiện những Comment có status là Enable
                             comment.status === 'ENABLE' && (
                                 <div key={comment.id} className="post__comment">
                                     <div style={{ position: 'relative' }}>
@@ -235,7 +252,9 @@ const Post = ({ data }) => {
                                             </div>
                                         </div>
                                         {comment.children
+                                            //render những Comment có Rep Comment
                                             .sort((a, b) => {
+                                                //Sắp xếp theo thời gian
                                                 let da = new Date(a.createDate);
                                                 let db = new Date(b.createDate);
                                                 return da - db;
@@ -268,7 +287,7 @@ const Post = ({ data }) => {
 
                                         <div
                                             className={`${theme ? 'theme-light' : ''} comment-action ${
-                                                toggleClass && commentId === comment.id ? 'active' : ''
+                                                toggleClass && commentId === comment.id ? 'activeAct' : ''
                                             }`}
                                         >
                                             <div className="action-item" onClick={() => hiddenComment(comment.id)}>
@@ -281,6 +300,7 @@ const Post = ({ data }) => {
                                 </div>
                             ),
                     )}
+
                 {/* Input Comment */}
                 <form onSubmit={postComment}>
                     <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>

@@ -31,7 +31,7 @@ const Login = () => {
     useEffect(() => {
         document.title = 'Leaf | Login';
     });
-    ///////
+    //Hàm kiểm tra login
     const checkLogin = (result) => {
         if (result.data) {
             setTimeout(() => {
@@ -60,7 +60,7 @@ const Login = () => {
             toast.dismiss();
         }, constant.TIME_WAITING);
     };
-
+    //Api kiểm tra username, password
     const login = async () => {
         const result = await UserService.loginCustomer({
             loginKey: email.trim(),
@@ -68,6 +68,7 @@ const Login = () => {
         });
         checkLogin(result);
     };
+    //Xử lý khi login
     const handleLogin = (e) => {
         e.preventDefault();
         if (!constant.FORMAT_EMAIL.test(email.trim())) {

@@ -38,10 +38,10 @@ const Navbar = () => {
         setThemeMode(darkMode);
     }, [darkMode, setThemeMode]);
 
-    //gọi Api trang Profile User
     const toProfile = () => {
         listUserPostApi();
     };
+    //gọi Api trang Profile User
     const listUserPostApi = async () => {
         const result = await UserService.getUserListPost();
         if (result.success) {
@@ -201,7 +201,12 @@ const Navbar = () => {
                     </Grid>
                     <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end' }}>
                         <FiHome title="Home" size="30px" className={cx('navbar__icon')} />
-                        <FiSend title="Messages" size="30px" className={cx('navbar__icon')} />
+                        <FiSend
+                            title="Messages"
+                            size="30px"
+                            className={cx('navbar__icon')}
+                            onClick={() => navigate('/messages')}
+                        />
                         <FiHeart title="Notifications" size="30px" className={cx('navbar__icon')} />
                         <FiPlusSquare
                             title="Create"
@@ -210,6 +215,7 @@ const Navbar = () => {
                             onClick={() => setModal(!modal)}
                         />
 
+                        {/* profile action */}
                         <div style={{ display: 'flex' }} className={cx('dropdown')}>
                             <span style={{ display: 'flex' }}>
                                 <Link to="/profile">
@@ -225,6 +231,8 @@ const Navbar = () => {
                                 </div>
                                 <div className={cx('dropdown-item')} onClick={() => setDarkMode(!darkMode)}>
                                     <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
+
+                                    {/* set dark light */}
                                     <div title="Dark/Light mode" style={{ height: '30px' }}>
                                         {darkMode ? (
                                             <FiMoon size="30px" fill="grey" />

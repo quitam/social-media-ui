@@ -8,7 +8,10 @@ const Home = () => {
     });
     return (
         <div>
+            {/* Header */}
             <Navbar />
+
+            {/* Content page */}
             <MainContent />
         </div>
     );

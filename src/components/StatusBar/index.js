@@ -19,7 +19,7 @@ const StatusBar = ({ theme }) => {
     const mouseLeave = () => {
         document.removeEventListener('wheel', stopPropagate, false);
     };
-
+    //Xử lý khi scroll chuột trên Status bar
     const handleWheel = (e) => {
         const scrollContainer = document.getElementsByClassName('statusBar__container');
         scrollContainer[0].scrollLeft += e.deltaY;

@@ -23,6 +23,7 @@ const Profile = () => {
     const [theme] = useThemeHook();
     const inputRef = useRef();
 
+    //get user info from redux
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.user.userListPost);
     //console.log('listpost', listPost);
@@ -50,6 +51,7 @@ const Profile = () => {
         };
     }, [avatar]);
 
+    //set state khi thay update profile
     useEffect(() => {
         setName(userInfo.name);
         setPhone(userInfo.phone);
@@ -64,6 +66,7 @@ const Profile = () => {
         // eslint-disable-next-line
     }, []);
 
+    //Api get list post
     const listPostApi = async () => {
         const result = await UserService.getUserListPost();
         if (result.success) {
@@ -97,6 +100,7 @@ const Profile = () => {
         }
     };
 
+    //xử lý khi Update profile
     const update = async () => {
         const result = await UserService.updateCustomer({
             name: name.trim(),
@@ -121,6 +125,7 @@ const Profile = () => {
             }, 1500);
         }
     };
+    //xử lý khi đổi avatar
     const changeAvatar = async () => {
         const change = await UserService.changeAvatar({
             avatar: avatar,
@@ -139,10 +144,12 @@ const Profile = () => {
         changeAvatar();
         setModal2(!modal2);
     };
+    //Show post detail
     const postDetail = (post) => {
         setPostData(post);
         setShowPost(true);
     };
+    //Hide post detail
     const handleClose = (status) => {
         setShowPost(status);
     };
@@ -150,7 +157,10 @@ const Profile = () => {
     return (
         <div>
             {showPost && <PostItem data={postData} handleClose={handleClose} />}
+
+            {/* View avatar */}
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+
             {/* Change avatar modal */}
             <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
                 <ModalHeader closeButton={true}>Confirm change</ModalHeader>
@@ -164,6 +174,7 @@ const Profile = () => {
                 </ModalBody>
             </Modal>
             {/* Edit profile modal */}
+
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
                 <ModalBody>

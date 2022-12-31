@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
+import { updateUserListPost } from '../../action/UserAction';
+import { updateRelation } from '../../action/RelationAction';
+
 import * as UserService from '../../services/UserService';
+import * as PostService from '../../services/PostService';
+import * as RelaService from '../../services/RelaService';
+
+import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Grid } from '@mui/material';
 import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import Navbar from '../../components/Navbar';
@@ -9,25 +16,81 @@ import { useParams } from 'react-router-dom';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import './UserProfile.scss';
+import PostItem from '../../components/PostItem';
 
 const Profile = () => {
     const params = useParams();
+    const dispatch = useDispatch();
+    const listPost = useSelector((state) => state.user.userListPost);
+    const status = useSelector((state) => state.relation.status);
+    console.log(status);
     const [userProfile, setUserProfile] = useState({});
     const [toggler, setToggler] = useState(false);
-    const [modal, setModal] = useState(false);
+    const [showPost, setShowPost] = useState(false);
+    const [postData, setPostData] = useState();
+
     const [theme] = useThemeHook();
 
     useEffect(() => {
         document.title = 'Leaf | ' + params.username;
+        //Api load user info
         const fetchApi = async () => {
             const result = await UserService.userProfile(params.username);
             return result.data;
         };
         fetchApi().then((data) => setUserProfile(data));
+        //api load list post of user
+        const listPostApi = async () => {
+            const result = await PostService.getListPostUser(params.username);
+            if (result.success) {
+                dispatch(updateUserListPost(result.data));
+            }
+        };
+        listPostApi();
+        //api load status relation
+        const statusRelation = async () => {
+            const result = await RelaService.getRelation(params.username);
+            if (result.data) {
+                dispatch(updateRelation(result.data.status));
+            }
+        };
+        statusRelation();
+        // eslint-disable-next-line
     }, [params.username]);
 
+    //handle add friend
+    const hadleAddFriend = () => {
+        const addFriend = async () => {
+            const result = await RelaService.addFriend(params.username);
+            if (result.success) {
+                dispatch(updateRelation(result.data.status));
+            }
+        };
+        const unFollow = async () => {
+            const result = await RelaService.deleteRelation(params.username);
+            if (!result.data) {
+                dispatch(updateRelation('ADD FRIEND'));
+            }
+        };
+        if (status === 'ADD FRIEND') {
+            addFriend();
+        } else if (status === 'WAITING' || status === 'FRIEND') {
+            unFollow();
+        }
+    };
+
+    //show post detail
+    const postDetail = (post) => {
+        setPostData(post);
+        setShowPost(true);
+    };
+    //hide post detail
+    const handleClose = (status) => {
+        setShowPost(status);
+    };
     return (
         <div>
+            {showPost && <PostItem data={postData} handleClose={handleClose} />}
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userProfile.avatar }]} />
             <Navbar />
             <div
@@ -49,11 +112,8 @@ const Profile = () => {
                     <Grid item xs={4}>
                         <div className="profile">
                             <h4 className="profile-username">{userProfile.username}</h4>
-                            <button
-                                className={`${theme ? 'theme-dark' : ''} edit-profile`}
-                                onClick={() => setModal(!modal)}
-                            >
-                                Add friend
+                            <button className={`${theme ? 'theme-dark' : ''} edit-profile`} onClick={hadleAddFriend}>
+                                {status}
                             </button>
                             <button className={`${theme ? 'theme-dark' : ''} settings`}>
                                 <FiSettings size="25px" />
@@ -79,36 +139,16 @@ const Profile = () => {
                         style={{ borderTop: theme ? '1px solid white' : '1px solid black', padding: '20px 0' }}
                     >
                         <div className="gallery">
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1601288855733-568a84692378?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1565475668349-0130bea1059b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1472213984618-c79aaec7fef0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1610171363518-e71ef955d896?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8c2NlbmVyeXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1590227521023-e362889a3adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
-                            <img
-                                className="gallery-item"
-                                src="https://images.unsplash.com/photo-1564661392417-bb629e9c6519?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjZW5lcnl8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                alt=""
-                            />
+                            {listPost &&
+                                listPost.map((result) => (
+                                    <img
+                                        key={result.id}
+                                        className="gallery-item"
+                                        src={result.files[0].value}
+                                        alt={result.value}
+                                        onClick={() => postDetail(result)}
+                                    />
+                                ))}
                         </div>
                     </Grid>
                     <Grid item xs={2}></Grid>

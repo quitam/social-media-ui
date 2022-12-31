@@ -12,6 +12,7 @@ export let endpoints = {
     createComment: '/comment',
     getUserListPost: '/post/user',
     repComment: '/comment/rep',
+    addFriend: '/relationship',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

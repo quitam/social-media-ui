@@ -24,7 +24,7 @@ const Search = ({ darkMode }) => {
             setSearchResult([]);
             return;
         }
-
+        //Get data from search result
         const fetchApi = async () => {
             const result = await UserService.searchByName(searchValue);
             setSearchResult(result.data);
@@ -39,10 +39,12 @@ const Search = ({ darkMode }) => {
         setSearchResult([]);
         inputRef.current.focus();
     };
+    //Hide result when click outside
     const handleHideResult = () => {
         setShowResult(false);
     };
 
+    //Set State input search
     const handleChange = (e) => {
         const searchValue = e.target.value;
         //không cho phép nhập khoảng trắng ở đầu

@@ -21,18 +21,22 @@ import wowIcon from '../../assets/images/reactIcon/wow.svg';
 import styles from './PostItem.module.scss';
 
 const cx = classNames.bind(styles);
+
 TimeAgo.addLocale(en);
 // Create formatter (English).
 const timeAgo = new TimeAgo('en-US');
 
 const PostItem = ({ data, handleClose }) => {
-    const userInfo = useSelector((state) => state.user.user);
-    const listPost = useSelector((state) => state.post.listPost);
-
     const dispatch = useDispatch();
+
+    //get user info from redux
+    const userInfo = useSelector((state) => state.user.user);
+    //get list post from redux
+    const listPost = useSelector((state) => state.post.listPost);
     const [repId, setRepId] = useState('');
     const [comment, setComment] = useState('');
     const cmtRef = useRef();
+    //Format list post
     const format = (list) => {
         // eslint-disable-next-line
         let listComment = list.filter((item) => {
@@ -44,6 +48,7 @@ const PostItem = ({ data, handleClose }) => {
         });
         return listComment;
     };
+    //Comment
     const postComment = (e) => {
         e.preventDefault();
         const fetchApi = async () => {
@@ -96,8 +101,12 @@ const PostItem = ({ data, handleClose }) => {
                             {/* Header Post */}
                             <div className={cx('post-header')}>
                                 <Avatar className={cx('post-avatar')} src={userInfo.avatar} />
-                                <div className={cx('post-username')}>{userInfo.username}</div>
+                                <div className={cx('post-username')}>
+                                    <span>{userInfo.username}</span>
+                                    <span className={cx('time-post')}>{timeAgo.format(new Date(data.createDate))}</span>
+                                </div>
                             </div>
+
                             {/* List Comment */}
                             <div className="post__comment">
                                 <div style={{ marginLeft: '10px' }}>
@@ -164,6 +173,7 @@ const PostItem = ({ data, handleClose }) => {
                                             ),
                                     )}
                             </div>
+
                             {/* Reaction, Share */}
                             <div className={cx('reaction-section')}>
                                 <div style={{ marginBottom: '15px', marginTop: '15px', display: 'flex' }}>

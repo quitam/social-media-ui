@@ -56,7 +56,7 @@ const Register = () => {
         }, constant.TIME_WAITING);
     };
 
-    //
+    //Xử lý Register account
     const register = async () => {
         const result = await UserService.registerCustomer({
             name: name.trim(),
@@ -69,6 +69,8 @@ const Register = () => {
     };
     const handleRegister = (e) => {
         e.preventDefault();
+
+        //check format field
         if (username.trim().length < 8) {
             Swal.fire({
                 icon: 'error',

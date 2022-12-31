@@ -23,6 +23,17 @@ export const getListPost = async () => {
         return res;
     } catch (e) {}
 };
+export const getListPostUser = async (data) => {
+    try {
+        const res = await request.getRQ(endpoints['getListPost'] + '/' + data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
 
 export const createComment = async (data) => {
     try {
