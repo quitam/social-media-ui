@@ -2,7 +2,6 @@ import React from 'react';
 
 import ChatList from '../ChatList';
 import ChatContent from '../ChatContent';
-//import UserProfile from '../UserProfile';
 
 import classNames from 'classnames/bind';
 import styles from './ChatBody.module.scss';
@@ -14,7 +13,6 @@ const ChatBody = () => {
         <div className={cx('chat-body')}>
             <ChatList />
             <ChatContent />
-            {/* <UserProfile /> */}
         </div>
     );
 };
