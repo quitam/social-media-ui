@@ -4,3 +4,10 @@ export function updateRelation(status) {
         status: status,
     };
 }
+
+export function updateFriend(listFriend) {
+    return {
+        type: 'UPDATE_FRIEND',
+        listFriend: listFriend,
+    };
+}

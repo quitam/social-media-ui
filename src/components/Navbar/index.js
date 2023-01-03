@@ -8,7 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import logoLight from '../../assets/images/logo/logo-light.png';
-import { FiSun, FiMoon, FiHome, FiSend, FiHeart, FiPlusSquare } from 'react-icons/fi';
+import { FiSun, FiMoon, FiHome, FiSend, FiPlusSquare } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
 
@@ -20,6 +20,7 @@ import { logoutUser, updateUserListPost } from '../../action/UserAction';
 import { useSelector } from 'react-redux';
 import * as PostService from '../../services/PostService';
 import * as UserService from '../../services/UserService';
+import Notify from '../Notify';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
@@ -199,7 +200,7 @@ const Navbar = () => {
                         {/* Search */}
                         <Search darkMode={darkMode} />
                     </Grid>
-                    <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end' }}>
+                    <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end', position: 'relative' }}>
                         <FiHome title="Home" size="30px" className={cx('navbar__icon')} />
                         <FiSend
                             title="Messages"
@@ -207,7 +208,7 @@ const Navbar = () => {
                             className={cx('navbar__icon')}
                             onClick={() => navigate('/messages')}
                         />
-                        <FiHeart title="Notifications" size="30px" className={cx('navbar__icon')} />
+                        <Notify />
                         <FiPlusSquare
                             title="Create"
                             size="30px"

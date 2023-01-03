@@ -38,3 +38,37 @@ export const deleteRelation = async (data) => {
         return res;
     } catch (e) {}
 };
+export const getAllFriend = async () => {
+    try {
+        const res = await request.getRQ(endpoints['addFriend'] + '/friend', {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+
+export const getInvitation = async () => {
+    try {
+        const res = await request.getRQ(endpoints['addFriend'] + '/invitation', {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+export const acceptFriend = async (data) => {
+    try {
+        const res = await request.putRQ(endpoints['addFriend'], data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};

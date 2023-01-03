@@ -7,10 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Wrapper as PopperWrapper } from '../Popper';
 
-import './Search.scss';
+import styles from './Search.module.scss';
+import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+const cx = classNames.bind(styles);
 const Search = ({ darkMode }) => {
     const navigate = useNavigate();
     const userInfo = useSelector((state) => state.user.user);
@@ -54,12 +56,12 @@ const Search = ({ darkMode }) => {
     };
     return (
         <Tippy
-            interactive
+            interactive={true}
             visible={showResult && searchValue}
             render={(attrs) => (
-                <div className="search-result" tabIndex="-1" {...attrs}>
+                <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>
-                        <h4 style={{ marginLeft: '10px' }} className="search-title">
+                        <h4 style={{ marginLeft: '10px' }} className={cx('search-title')}>
                             Accounts
                         </h4>
                         {searchResult.length > 0 ? (
@@ -79,7 +81,7 @@ const Search = ({ darkMode }) => {
                                 </div>
                             ))
                         ) : (
-                            <div className="result-notify">
+                            <div className={cx('result-notify')}>
                                 <span>No result</span>
                             </div>
                         )}
@@ -88,7 +90,7 @@ const Search = ({ darkMode }) => {
             )}
             onClickOutside={handleHideResult}
         >
-            <div className={`${darkMode ? 'theme-search-dark' : ''} search`}>
+            <div className={cx('search', `${darkMode ? 'theme-search-dark' : ''}`)}>
                 <input
                     value={searchValue}
                     type="text"
@@ -99,7 +101,7 @@ const Search = ({ darkMode }) => {
                     onFocus={() => setShowResult(true)}
                 />
                 {!!searchValue && (
-                    <button className="clear" onClick={handleClear}>
+                    <button className={cx('clear')} onClick={handleClear}>
                         <FontAwesomeIcon icon={faCircleXmark} />
                     </button>
                 )}
@@ -107,7 +109,7 @@ const Search = ({ darkMode }) => {
 
                 <span></span>
 
-                <button className="search-btn">
+                <button className={cx('search-btn')}>
                     <FontAwesomeIcon icon={faMagnifyingGlass} onMouseDown={(e) => e.preventDefault()} />
                 </button>
             </div>

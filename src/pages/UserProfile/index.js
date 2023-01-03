@@ -52,6 +52,8 @@ const Profile = () => {
             const result = await RelaService.getRelation(params.username);
             if (result.data) {
                 dispatch(updateRelation(result.data.status));
+            } else {
+                dispatch(updateRelation('ADD FRIEND'));
             }
         };
         statusRelation();
@@ -74,7 +76,7 @@ const Profile = () => {
         };
         if (status === 'ADD FRIEND') {
             addFriend();
-        } else if (status === 'WAITING' || status === 'FRIEND') {
+        } else {
             unFollow();
         }
     };
