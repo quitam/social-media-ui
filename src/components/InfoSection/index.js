@@ -3,17 +3,19 @@ import React from 'react';
 
 import classNames from 'classnames/bind';
 import styles from './InfoSection.module.scss';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 const InfoSection = () => {
+    const userInfo = useSelector((state) => state.user.user);
     return (
         <div>
             <div className={cx('info__container')}>
-                <Avatar className={cx('info__image')} src={JSON.parse(localStorage.getItem('user')).avatar} />
+                <Avatar className={cx('info__image')} src={userInfo.avatar} />
                 <div className={cx('info__content')}>
-                    <div className={cx('info__username')}>{JSON.parse(localStorage.getItem('user')).username}</div>
-                    <div className={cx('info__description')}>Description</div>
+                    <div className={cx('info__username')}>{userInfo.name}</div>
+                    <div className={cx('info__description')}>{userInfo.username}</div>
                 </div>
             </div>
         </div>

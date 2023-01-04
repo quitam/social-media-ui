@@ -29,10 +29,9 @@ const timeAgo = new TimeAgo('en-US');
 const PostItem = ({ data, handleClose }) => {
     const dispatch = useDispatch();
 
-    //get user info from redux
-    const userInfo = useSelector((state) => state.user.user);
     //get list post from redux
     const listPost = useSelector((state) => state.post.listPost);
+
     const [repId, setRepId] = useState('');
     const [comment, setComment] = useState('');
     const cmtRef = useRef();
@@ -100,9 +99,9 @@ const PostItem = ({ data, handleClose }) => {
                         <div className={cx('content')}>
                             {/* Header Post */}
                             <div className={cx('post-header')}>
-                                <Avatar className={cx('post-avatar')} src={userInfo.avatar} />
+                                <Avatar className={cx('post-avatar')} src={data.user.avatar} />
                                 <div className={cx('post-username')}>
-                                    <span>{userInfo.username}</span>
+                                    <span>{data.user.username}</span>
                                     <span className={cx('time-post')}>{timeAgo.format(new Date(data.createDate))}</span>
                                 </div>
                             </div>
@@ -110,7 +109,7 @@ const PostItem = ({ data, handleClose }) => {
                             {/* List Comment */}
                             <div className="post__comment">
                                 <div style={{ marginLeft: '10px' }}>
-                                    {userInfo.username}:
+                                    {data.user.username}:
                                     <span
                                         style={{
                                             fontWeight: '300',

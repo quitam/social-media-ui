@@ -9,6 +9,9 @@ import { loginUser } from '../../action/UserAction';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -46,6 +49,9 @@ const Login = () => {
                     navigate('/');
                 }, 1000);
             }, constant.TIME_WAITING);
+            updateDoc(doc(db, 'user', email.trim()), {
+                isOnline: true,
+            });
         } else {
             setTimeout(() => {
                 Swal.fire({

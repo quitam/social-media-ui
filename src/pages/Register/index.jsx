@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Register.scss';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import * as constant from '../../constant/index';
@@ -7,10 +8,12 @@ import * as constant from '../../constant/index';
 import { useNavigate } from 'react-router-dom';
 import * as UserService from '../../services/UserService';
 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
+
 import { Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { Link } from 'react-router-dom';
 import Leaf from '../../assets/images/login/leaf-logo2.png';
 
 const Register = () => {
@@ -65,6 +68,20 @@ const Register = () => {
             email: email.trim(),
             phone: phone.trim(),
         });
+        try {
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, 'user', username.trim()), {
+                uid: res.user.uid,
+                name: name.trim(),
+                username: username.trim(),
+                password: password.trim(),
+                email: email.trim(),
+                isOnline: false,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
         checkResult(result);
     };
     const handleRegister = (e) => {
@@ -153,7 +170,7 @@ const Register = () => {
                             <img src={Leaf} alt="" />
                             <h1 className="title">Leaf</h1>
                             <p className="slowgan">Gone with the wind</p>
-                            <form action="">
+                            <form onSubmit={handleRegister}>
                                 <input
                                     type="text"
                                     value={name}
@@ -197,7 +214,7 @@ const Register = () => {
                                     onChange={(e) => setConfirm(e.target.value)}
                                     required
                                 />
-                                <button onClick={handleRegister}>Register</button>
+                                <button type="submit">Register</button>
                             </form>
 
                             <p className="align-left">

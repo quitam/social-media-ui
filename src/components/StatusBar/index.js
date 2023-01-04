@@ -1,11 +1,17 @@
 import React from 'react';
 
-import { Avatar } from '@mui/material';
-import imgUser from '../../assets/images/avatar/user.jpg';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 import './StatusBar.scss';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const StatusBar = ({ theme }) => {
+    const userInfo = useSelector((state) => state.user.user);
+    const listFriend = useSelector((state) => state.relation.listFriend);
+    const navigate = useNavigate();
+
     const stopPropagate = (e) => {
         e.preventDefault();
     };
@@ -30,55 +36,25 @@ const StatusBar = ({ theme }) => {
             onWheel={handleWheel}
             onMouseOver={mouseOver}
             onMouseLeave={mouseLeave}
+            onClick={mouseLeave}
         >
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">2</div>
+            <div className="status" onClick={() => navigate('/profile')}>
+                <div className="circle">
+                    <img className="statusBar__status" src={userInfo.avatar} alt="avatar" />
+                </div>
+                <div className="statusBar__text">Me</div>
             </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
-            <div className="status">
-                <Avatar className="statusBar__status" src={imgUser} />
-                <div className="statusBar__text">lalaschool_bigcat</div>
-            </div>
+            {listFriend &&
+                listFriend.map((item) => (
+                    <Tippy content={item.name} placement="bottom" delay={100} key={item.username}>
+                        <div className="status" onClick={() => navigate(`/${item.username}`)}>
+                            <div className="circle">
+                                <img className="statusBar__status" src={item.avatar} alt="avatar" />
+                            </div>
+                            <div className="statusBar__text">{item.username}</div>
+                        </div>
+                    </Tippy>
+                ))}
         </div>
     );
 };

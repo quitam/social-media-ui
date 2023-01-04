@@ -12,6 +12,8 @@ import { FiSun, FiMoon, FiHome, FiSend, FiPlusSquare } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
 
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
@@ -71,6 +73,10 @@ const Navbar = () => {
             dispatch(logoutUser());
             navigate('/login');
         }, 1500);
+        //set offline in firestore
+        updateDoc(doc(db, 'user', userInfo.username), {
+            isOnline: false,
+        });
     };
 
     //xử lý khi thêm một bài Post
@@ -157,7 +163,7 @@ const Navbar = () => {
                                             </button>
                                         )}
                                     </div>
-                                    {picture && <img src={picture.preview} alt="error" width="100%" />}
+                                    {picture && <img src={picture.preview} alt="error" className={cx('img-preview')} />}
                                 </Col>
                                 <Col>
                                     <div className="d-flex align-items-center ms-3">
