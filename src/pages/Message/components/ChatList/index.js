@@ -10,8 +10,7 @@ import * as UserService from '../../../../services/UserService';
 import { updateCurrentRoom } from '../../../../action/ChatAction';
 import Search from '../../../../components/Search';
 import { Avatar } from '@mui/material';
-// eslint-disable-next-line
-import { updateSelected, updateRooms } from '../../../../action/ChatAction';
+
 import { useSelector, useDispatch } from 'react-redux';
 import useFirestore from '../../../../hooks/useFirestore';
 
@@ -69,6 +68,7 @@ const ChatList = () => {
                 userApi();
             });
         }
+        // eslint-disable-next-line
     }, [rooms]);
     console.log('list', listUser);
     return (

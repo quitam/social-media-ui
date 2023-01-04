@@ -21,50 +21,7 @@ const ChatContent = () => {
     const currentRoom = useSelector((state) => state.chat.currentRoom);
     const [inputMsg, setinputMsg] = useState('');
     const [friend, setFriend] = useState({});
-    const chatItms = [
-        {
-            key: 1,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/b0fd7452-0a36-4dbb-bec0-efeaae5f2a5ejpg',
-            type: 'tampham4002',
-            msg: 'Chào Kiệt',
-        },
-        {
-            key: 2,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/1f8da547-71a5-466e-962e-0479296490cfjpg',
-            type: 'user',
-            msg: 'Xin chào',
-        },
-        {
-            key: 3,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/1f8da547-71a5-466e-962e-0479296490cfjpg',
-            type: 'user',
-            msg: 'Bạn khỏe không',
-        },
-        {
-            key: 4,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/b0fd7452-0a36-4dbb-bec0-efeaae5f2a5ejpg',
-            type: 'tampham4002',
-            msg: 'Tôi khỏe',
-        },
-        {
-            key: 5,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/1f8da547-71a5-466e-962e-0479296490cfjpg',
-            type: 'user',
-            msg: 'Xin chào',
-        },
-        {
-            key: 6,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/b0fd7452-0a36-4dbb-bec0-efeaae5f2a5ejpg',
-            type: 'tampham4002',
-            msg: 'Chào!!!!!!',
-        },
-        {
-            key: 7,
-            image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/1f8da547-71a5-466e-962e-0479296490cfjpg',
-            type: 'user',
-            msg: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        },
-    ];
+
     const scrollToBottom = () => {
         messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     };
@@ -81,6 +38,7 @@ const ChatContent = () => {
             };
             userApi();
         }
+        // eslint-disable-next-line
     }, [currentRoom]);
 
     const sendMsg = (e) => {

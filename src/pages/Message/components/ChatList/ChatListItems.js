@@ -7,6 +7,7 @@ import styles from './ChatList.module.scss';
 const cx = classNames.bind(styles);
 
 const ChatListItems = ({ data, active, isOnline, animationDelay }) => {
+    // eslint-disable-next-line
     const selectChat = (e) => {
         for (let index = 0; index < e.currentTarget.parentNode.children.length; index++) {
             e.currentTarget.parentNode.children[index].classList.remove('active');
