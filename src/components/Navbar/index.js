@@ -19,9 +19,12 @@ import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
 import { updateListPost } from '../../action/PostAction';
 import { logoutUser, updateUserListPost } from '../../action/UserAction';
+import { updateCurrentRoom } from '../../action/ChatAction';
+
 import { useSelector } from 'react-redux';
 import * as PostService from '../../services/PostService';
 import * as UserService from '../../services/UserService';
+
 import Notify from '../Notify';
 
 const cx = classNames.bind(styles);
@@ -70,6 +73,7 @@ const Navbar = () => {
     const handleLogout = () => {
         toast.dark('Waiting a minute!');
         setTimeout(() => {
+            dispatch(updateCurrentRoom({}));
             dispatch(logoutUser());
             navigate('/login');
         }, 1500);

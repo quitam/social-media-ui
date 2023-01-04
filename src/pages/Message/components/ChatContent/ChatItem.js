@@ -6,9 +6,9 @@ import styles from './ChatContent.module.scss';
 
 const cx = classNames.bind(styles);
 
-const ChatItem = ({ animationDelay, user, msg, image }) => {
+const ChatItem = ({ animationDelay, me, user, msg }) => {
     return (
-        <div style={{ animationDelay: `0.8s` }} className={cx('chat-item', `${user ? user : ''}`)}>
+        <div style={{ animationDelay: `0.8s` }} className={cx('chat-item', `${user.username === me ? 'me' : 'other'}`)}>
             <div className={cx('chat-item-content')}>
                 <div className={cx('chat-msg')}>{msg}</div>
                 <div className={cx('chat-meta')}>
@@ -16,7 +16,7 @@ const ChatItem = ({ animationDelay, user, msg, image }) => {
                     {/* <span>Seen 21:58</span> */}
                 </div>
             </div>
-            <Avatar isOnline="active" image={image} />
+            <Avatar isOnline="active" image={user.avatar} />
         </div>
     );
 };

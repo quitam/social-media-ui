@@ -13,6 +13,7 @@ export let endpoints = {
     getUserListPost: '/post/user',
     repComment: '/comment/rep',
     addFriend: '/relationship',
+    newFeed: 'post/new-feed/1',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

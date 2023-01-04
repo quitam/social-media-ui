@@ -23,6 +23,12 @@ export const getListPost = async () => {
         return res;
     } catch (e) {}
 };
+export const getNewFeed = async () => {
+    try {
+        const res = await request.getRQ(endpoints['newFeed']);
+        return res;
+    } catch (e) {}
+};
 export const getListPostUser = async (data) => {
     try {
         const res = await request.getRQ(endpoints['getListPost'] + '/' + data, {

@@ -17,7 +17,7 @@ const MainPage = () => {
     }, []);
     //api get list post
     const fetchApi = async () => {
-        const result = await PostService.getListPost();
+        const result = await PostService.getNewFeed();
         if (result) {
             dispatch(updateListPost(result.data));
         }

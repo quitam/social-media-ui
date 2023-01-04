@@ -7,14 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Wrapper as PopperWrapper } from '../Popper';
 
+import { onSnapshot, query, collection, where, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { v4 } from 'uuid';
 import styles from './Search.module.scss';
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCurrentRoom } from '../../action/ChatAction';
 
 const cx = classNames.bind(styles);
-const Search = ({ darkMode }) => {
+const Search = ({ darkMode, chat = false }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
@@ -54,6 +59,38 @@ const Search = ({ darkMode }) => {
             setSearchValue(searchValue);
         }
     };
+    const navigateProfile = (result) => {
+        if (result.username === userInfo.username) {
+            navigate('/profile');
+        } else {
+            navigate(`/${result.username}`);
+        }
+    };
+
+    const chatRoom = (result) => {
+        const q = query(collection(db, 'rooms'), where('members', 'array-contains', userInfo.username));
+
+        const unsubcribe = onSnapshot(q, (snapshot) => {
+            const document = snapshot.docs
+                .filter((doc) => doc.data().members.includes(result.username))
+                .map((doc) => ({ ...doc.data(), id: doc.id }));
+
+            if (document.length > 0) {
+                dispatch(updateCurrentRoom(document[0]));
+            } else {
+                try {
+                    setDoc(doc(db, 'rooms', v4()), {
+                        members: [result.username, userInfo.username],
+                    });
+                    console.log('test');
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+        return unsubcribe;
+    };
+
     return (
         <Tippy
             interactive={true}
@@ -70,10 +107,10 @@ const Search = ({ darkMode }) => {
                                     key={result.username}
                                     // vào trang my profile nếu vào kết quả search của chính user
                                     onClick={() => {
-                                        if (result.username === userInfo.username) {
-                                            navigate('/profile');
+                                        if (chat) {
+                                            chatRoom(result);
                                         } else {
-                                            navigate(`/${result.username}`);
+                                            navigateProfile(result);
                                         }
                                     }}
                                 >
@@ -90,7 +127,7 @@ const Search = ({ darkMode }) => {
             )}
             onClickOutside={handleHideResult}
         >
-            <div className={cx('search', `${darkMode ? 'theme-search-dark' : ''}`)}>
+            <div className={cx('search', `${darkMode ? 'theme-search-dark' : ''}`, chat && 'chat')}>
                 <input
                     value={searchValue}
                     type="text"

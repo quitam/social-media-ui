@@ -16,10 +16,9 @@ const ChatListItems = ({ data, active, isOnline, animationDelay }) => {
     return (
         <div
             style={{ animationDelay: `0.${animationDelay}s` }}
-            onClick={selectChat}
             className={cx('list-item') + ` ${active ? active : ''}`}
         >
-            <Avatar image={data.image} isOnline={isOnline} />
+            <Avatar image={data.avatar} isOnline={isOnline} />
             <div className={cx('userOnl')}>
                 <p>{data.name}</p>
                 <span className={cx('active-time')}>5 mins ago</span>
