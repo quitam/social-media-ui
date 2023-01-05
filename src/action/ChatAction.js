@@ -4,3 +4,9 @@ export function updateCurrentRoom(currentRoom) {
         currentRoom: currentRoom,
     };
 }
+export function updateCount(count) {
+    return {
+        type: 'UPDATE_COUNT',
+        count: count,
+    };
+}

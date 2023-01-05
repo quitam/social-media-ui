@@ -50,6 +50,7 @@ const ChatContent = () => {
                 user: userInfo.username,
                 room: currentRoom.id,
                 date: serverTimestamp(),
+                status: 'WAITING',
             });
             setinputMsg('');
         } catch (error) {

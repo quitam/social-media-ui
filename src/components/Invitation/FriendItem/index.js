@@ -5,7 +5,7 @@ import { updateFriend } from '../../../action/RelationAction';
 import * as RelaService from '../../../services/RelaService';
 
 import classNames from 'classnames/bind';
-import styles from './NotifyItem.module.scss';
+import styles from './FriendItem.module.scss';
 import { Avatar } from '@mui/material';
 
 const cx = classNames.bind(styles);

@@ -1,18 +1,20 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
+import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
+
+import Notification from '../Notification';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
-
+import useFirestore from '../../hooks/useFirestore';
 import { toast, ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import logoLight from '../../assets/images/logo/logo-light.png';
-import { FiSun, FiMoon, FiHome, FiSend, FiPlusSquare } from 'react-icons/fi';
+import { FiSun, FiMoon, FiSend, FiPlusSquare } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
 
-import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
 import { Grid, Avatar } from '@mui/material';
@@ -25,12 +27,14 @@ import { useSelector } from 'react-redux';
 import * as PostService from '../../services/PostService';
 import * as UserService from '../../services/UserService';
 
-import Notify from '../Notify';
+import Invitation from '../Invitation';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
     const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
+    //const count = useSelector((state) => state.chat.count);
+    const [count, setCount] = useState(0);
     const { theme, setThemeMode } = useContext(ThemeContext);
     const [darkMode, setDarkMode] = useState(theme);
     const [modal, setModal] = useState(false);
@@ -120,6 +124,35 @@ const Navbar = () => {
             }
         });
     };
+
+    const roomsCondition = useMemo(() => {
+        return {
+            fieldName: 'members',
+            operator: 'array-contains',
+            compareValue: userInfo.username,
+        };
+    }, [userInfo.username]);
+    const rooms = useFirestore('rooms', roomsCondition);
+    console.log('rooms', rooms);
+
+    useEffect(() => {
+        setCount(0);
+        const chatRoom = (room) => {
+            const q = query(collection(db, 'messages'), where('room', '==', room));
+
+            const unsubcribe = onSnapshot(q, (snapshot) => {
+                const document = snapshot.docs
+                    .filter((doc) => doc.data().user !== userInfo.username && doc.data().status === 'WAITING')
+                    .map((doc) => ({ ...doc.data(), id: doc.id }));
+                if (document.length > 0) {
+                    setCount((prev) => prev + 1);
+                }
+            });
+            return unsubcribe;
+        };
+        rooms.forEach((room) => chatRoom(room.id));
+        // eslint-disable-next-line
+    }, [rooms]);
     return (
         <div>
             <ToastContainer />
@@ -211,20 +244,27 @@ const Navbar = () => {
                         <Search darkMode={darkMode} />
                     </Grid>
                     <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end', position: 'relative' }}>
-                        <FiHome title="Home" size="30px" className={cx('navbar__icon')} />
-                        <FiSend
-                            title="Messages"
-                            size="30px"
-                            className={cx('navbar__icon')}
-                            onClick={() => navigate('/messages')}
-                        />
-                        <Notify />
                         <FiPlusSquare
                             title="Create"
                             size="30px"
                             className={cx('navbar__icon')}
                             onClick={() => setModal(!modal)}
                         />
+                        <div className={cx('messages')}>
+                            <FiSend
+                                title="Messages"
+                                size="30px"
+                                className={cx('navbar__icon')}
+                                onClick={() => navigate('/messages')}
+                            />
+                            {count > 0 && (
+                                <div className={cx('count')}>
+                                    <span>{count}</span>
+                                </div>
+                            )}
+                        </div>
+                        <Invitation />
+                        <Notification />
 
                         {/* profile action */}
                         <div style={{ display: 'flex' }} className={cx('dropdown')}>

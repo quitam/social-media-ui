@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import NotifyItem from './NotifyItem';
+import FriendItem from './FriendItem';
 import * as RelaService from '../../services/RelaService';
 
 import { FiHeart } from 'react-icons/fi';
 import classNames from 'classnames/bind';
-import styles from './Notify.module.scss';
+import styles from './Invitation.module.scss';
 
 const cx = classNames.bind(styles);
 const Notify = () => {
@@ -44,25 +44,25 @@ const Notify = () => {
     };
     return (
         <div className={cx('wrapper')} ref={notifyRef}>
-            <FiHeart title="Notifications" size="30px" className={cx('notify-icon')} />
+            <FiHeart title="Friends" size="30px" className={cx('notify-icon')} />
             {count > 0 && (
                 <div className={cx('count')}>
                     <span>{count}</span>
                 </div>
             )}
             <div className={cx('notify-result', !showResult && 'hidden')}>
-                <h4 className={cx('notify-title')}>Notifications</h4>
+                <h4 className={cx('notify-title')}>Friend Invitations</h4>
                 {searchResult.length > 0 ? (
                     <div className={cx('list-notify')}>
                         {searchResult.map((result) => (
                             <div className={cx('notify-item')} key={result.username}>
-                                <NotifyItem user={result} changeCount={changeCount} />
+                                <FriendItem user={result} changeCount={changeCount} />
                             </div>
                         ))}
                     </div>
                 ) : (
                     <div className={cx('result-notify')}>
-                        <span>No notify</span>
+                        <span>No Invitation</span>
                     </div>
                 )}
             </div>

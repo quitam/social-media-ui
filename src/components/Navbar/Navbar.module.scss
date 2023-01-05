@@ -57,3 +57,25 @@
         }
     }
 }
+
+.messages {
+    position: relative;
+    .count {
+        top: -5px;
+        right: 0;
+        transform: translateX(-30%);
+        font-size: 14px;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--primary);
+        border-radius: 50%;
+        color: #fff;
+        width: 20px;
+        height: 20px;
+    }
+    &:hover .count {
+        background-color: #00bd52;
+    }
+}

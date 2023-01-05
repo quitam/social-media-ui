@@ -6,7 +6,8 @@ import { FaEllipsisH, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames/bind';
 import styles from './ChatList.module.scss';
 import * as UserService from '../../../../services/UserService';
-
+import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../../firebase';
 import { updateCurrentRoom } from '../../../../action/ChatAction';
 import Search from '../../../../components/Search';
 import { Avatar } from '@mui/material';
@@ -70,7 +71,25 @@ const ChatList = () => {
         }
         // eslint-disable-next-line
     }, [rooms]);
-    console.log('list', listUser);
+
+    const chatRoom = (room) => {
+        const q = query(collection(db, 'messages'), where('room', '==', room));
+
+        const unsubcribe = onSnapshot(q, (snapshot) => {
+            const document = snapshot.docs
+                .filter((doc) => doc.data().user !== userInfo.username && doc.data().status === 'WAITING')
+                .map((doc) => ({ ...doc.data(), id: doc.id }));
+            if (document.length > 0) {
+                document.forEach((item) => {
+                    updateDoc(doc(db, 'messages', item.id), {
+                        status: 'SEEN',
+                    });
+                });
+            }
+        });
+        return unsubcribe;
+    };
+
     return (
         <div className={cx('chat-list')}>
             <div className={cx('heading')}>
@@ -90,7 +109,13 @@ const ChatList = () => {
             <div className={cx('list-items')}>
                 {rooms &&
                     listUser.map((item, index) => (
-                        <div key={index} onClick={() => dispatch(updateCurrentRoom(item.room))}>
+                        <div
+                            key={index}
+                            onClick={() => {
+                                chatRoom(item.room.id);
+                                dispatch(updateCurrentRoom(item.room));
+                            }}
+                        >
                             <ChatListItems
                                 data={item}
                                 active={item.active ? 'active' : ''}

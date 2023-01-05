@@ -9,6 +9,8 @@ import { BsEmojiSmile, BsArrowReturnRight } from 'react-icons/bs';
 import { toast, ToastContainer } from 'react-toastify';
 import { Modal, ModalBody } from 'react-bootstrap';
 import * as PostService from '../../services/PostService';
+import * as NotifyService from '../../services/NotifyService';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { updateListPost } from '../../action/PostAction';
 import angryIcon from '../../assets/images/reactIcon/angry.svg';
@@ -27,7 +29,7 @@ const timeAgo = new TimeAgo('en-US');
 const Post = ({ data }) => {
     const dispatch = useDispatch();
     const listPost = useSelector((state) => state.post.listPost);
-    console.log('data', data);
+    const userInfo = useSelector((state) => state.user.user);
 
     //console.log(timeAgo.format(date1));
 
@@ -91,19 +93,37 @@ const Post = ({ data }) => {
                 return result;
             }
         };
-        fetchApi().then((data) => {
-            if (data.success) {
+
+        fetchApi().then((result) => {
+            if (result.success) {
                 setComment('');
                 dispatch(
                     updateListPost(
                         listPost.map((item) => {
-                            if (item.id === data.data.post.id) {
-                                item.comments = [...item.comments, data.data];
+                            if (item.id === result.data.post.id) {
+                                item.comments = [...item.comments, result.data];
                             }
                             return item;
                         }),
                     ),
                 );
+
+                if (data.user.username !== userInfo.username) {
+                    if (repId) {
+                        if (data.user.username === repUser) {
+                            const content = `${userInfo.avatar}###${userInfo.name} replied your comment on your post.`;
+                            createNotify(content, data.user.username);
+                        } else {
+                            const content1 = `${userInfo.avatar}###${userInfo.name} replied ${repUser}'s comment on your post.`;
+                            const content2 = `${userInfo.avatar}###${userInfo.name} replied your comment on ${data.user.username}'s post.`;
+                            createNotify(content1, data.user.username);
+                            createNotify(content2, repUser);
+                        }
+                    } else {
+                        const content = `${userInfo.avatar}###${userInfo.name} commented on your post.`;
+                        createNotify(content, data.user.username);
+                    }
+                }
             }
         });
         setRepId('');
@@ -153,6 +173,14 @@ const Post = ({ data }) => {
         });
     };
 
+    const createNotify = async (content, user) => {
+        const result = await NotifyService.createNotify({
+            content: content,
+            username: user,
+        });
+        return result;
+    };
+
     return (
         <div className={`${theme ? 'post-theme-dark' : ''} post__container`}>
             <ToastContainer />
@@ -175,7 +203,7 @@ const Post = ({ data }) => {
             <div className="post__header">
                 <Avatar className="post__avatar" src={data.user.avatar} />
                 <div className="post__username">
-                    <span>{data.user.username}</span>
+                    <span>{data.user.name}</span>
                     <span className="post-time">{timeAgo.format(new Date(data.createDate))}</span>
                 </div>
                 <FiMoreHorizontal size="25px" className="icon-more" onClick={() => setModal(!modal)} />
