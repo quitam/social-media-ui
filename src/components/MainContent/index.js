@@ -20,7 +20,7 @@ const MainContent = () => {
                     <MainPage />
                 </Grid>
                 <Grid item xs={3}>
-                    <div>
+                    <div style={{ position: 'fixed' }}>
                         <InfoSection />
                         <Friends />
                     </div>

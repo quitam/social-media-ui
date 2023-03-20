@@ -37,7 +37,7 @@ const Friends = () => {
         <div>
             <div className={cx('friends__container')}>
                 <div className={cx('friends__header')}>
-                    <div>All friends</div>
+                    <div>{listFriend.length > 0 ? 'All friends' : 'No friend'}</div>
                 </div>
                 <div className={cx('friends__body')}>
                     {listFriend &&
