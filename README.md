@@ -1,7 +1,9 @@
 Techlogies:
-- Frontend: ReactJS
+- Frontend: ReactJS, React Redux
 
-Pages:
+Main function:
 - Auth page (login, regiser)
-- Home page (profile section, posts, trend section)
-- Profile page
+- Home page (comment post, reply comment, like post, share, create post)
+- Search user
+- Profile page, edit profile
+- Forgot password
