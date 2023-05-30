@@ -1,11 +1,23 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Profile from '../pages/Profile';
 import UserProfile from '../pages/UserProfile';
 import Message from '../pages/Message';
-
 import Register from '../pages/Register';
 
+const ScrollToTop = () => {
+    const { pathname } = useLocation();
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            behavior: 'instant',
+        });
+    }, [pathname]);
+    return null;
+};
 //
 const publicRoutes = [
     { path: '/login', component: Login },
@@ -21,4 +33,4 @@ const privateRoutes = [
     { path: '/:username', component: UserProfile },
 ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes, privateRoutes, ScrollToTop };
