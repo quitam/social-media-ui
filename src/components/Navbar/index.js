@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
 
@@ -16,12 +16,13 @@ import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
 
 import { db } from '../../firebase';
-import { ThemeContext } from '../../GlobalComponents/ThemeProvider';
+
 import { Grid, Avatar } from '@mui/material';
 import Search from '../Search';
 import { updateListPost } from '../../action/PostAction';
 import { logoutUser, updateUserListPost } from '../../action/UserAction';
 import { updateCurrentRoom } from '../../action/ChatAction';
+import { enableDarkMode, disableDarkMode } from '../../action/ThemeAction';
 
 import { useSelector } from 'react-redux';
 import * as PostService from '../../services/PostService';
@@ -33,20 +34,14 @@ const cx = classNames.bind(styles);
 const Navbar = () => {
     const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     //const count = useSelector((state) => state.chat.count);
     const [count, setCount] = useState(0);
-    const { theme, setThemeMode } = useContext(ThemeContext);
-    const [darkMode, setDarkMode] = useState(theme);
     const [modal, setModal] = useState(false);
     const [picture, setPicture] = useState();
     const [caption, setCaption] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    //set Dark-Light mode
-    useEffect(() => {
-        setThemeMode(darkMode);
-    }, [darkMode, setThemeMode]);
 
     const toProfile = () => {
         listUserPostApi();
@@ -231,7 +226,7 @@ const Navbar = () => {
                     </form>
                 </ModalBody>
             </Modal>
-            <div className={cx(`${darkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
+            <div className={cx(`${isDarkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
                 <Grid container style={{ alignItems: 'center' }}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={2}>
@@ -241,7 +236,7 @@ const Navbar = () => {
                     </Grid>
                     <Grid item xs={3}>
                         {/* Search */}
-                        <Search darkMode={darkMode} />
+                        <Search darkMode={isDarkMode} />
                     </Grid>
                     <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end', position: 'relative' }}>
                         <FiPlusSquare
@@ -276,16 +271,22 @@ const Navbar = () => {
                                     />
                                 </Link>
                             </span>
-                            <div className={cx(`${darkMode ? 'theme-light' : ''}`, 'dropdown-content')}>
+                            <div className={cx(`${isDarkMode ? 'theme-light' : ''}`, 'dropdown-content')}>
                                 <div className={cx('dropdown-item')} onClick={toProfile}>
                                     Profile
                                 </div>
-                                <div className={cx('dropdown-item')} onClick={() => setDarkMode(!darkMode)}>
-                                    <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
+                                {/* <div className={cx('dropdown-item')} onClick={() => setDarkMode(!darkMode)}> */}
+                                <div
+                                    className={cx('dropdown-item')}
+                                    onClick={() =>
+                                        isDarkMode ? dispatch(disableDarkMode()) : dispatch(enableDarkMode())
+                                    }
+                                >
+                                    <span>{isDarkMode ? 'Dark mode' : 'Light mode'}</span>
 
                                     {/* set dark light */}
                                     <div title="Dark/Light mode" style={{ height: '30px' }}>
-                                        {darkMode ? (
+                                        {isDarkMode ? (
                                             <FiMoon size="30px" fill="grey" />
                                         ) : (
                                             <FiSun size="30px" fill="yellow" color="orange" />

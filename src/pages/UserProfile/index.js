@@ -9,7 +9,7 @@ import * as RelaService from '../../services/RelaService';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Grid } from '@mui/material';
-import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
+
 import Navbar from '../../components/Navbar';
 import { FiSettings } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
@@ -29,7 +29,7 @@ const Profile = () => {
     const [showPost, setShowPost] = useState(false);
     const [postData, setPostData] = useState();
 
-    const [theme] = useThemeHook();
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
 
     useEffect(() => {
         document.title = 'Leaf | ' + params.username;
@@ -96,7 +96,7 @@ const Profile = () => {
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userProfile.avatar }]} />
             <Navbar />
             <div
-                className={`${theme ? 'theme-dark' : 'bg-content-light'} container-profile`}
+                className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'} container-profile`}
                 style={{ paddingTop: '100px' }}
             >
                 <Grid container>
@@ -104,7 +104,7 @@ const Profile = () => {
                     <Grid item xs={2}>
                         <div className="dropdown">
                             <Avatar src={userProfile.avatar} className="profile-image" />
-                            <div className={`${theme ? 'theme-light' : ''} avatar_action`}>
+                            <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
                                 <div className="action_item" onClick={() => setToggler(!toggler)}>
                                     View avatar
                                 </div>
@@ -114,10 +114,13 @@ const Profile = () => {
                     <Grid item xs={4}>
                         <div className="profile">
                             <h4 className="profile-username">{userProfile.username}</h4>
-                            <button className={`${theme ? 'theme-dark' : ''} edit-profile`} onClick={hadleAddFriend}>
+                            <button
+                                className={`${isDarkMode ? 'theme-dark' : ''} edit-profile`}
+                                onClick={hadleAddFriend}
+                            >
                                 {status}
                             </button>
-                            <button className={`${theme ? 'theme-dark' : ''} settings`}>
+                            <button className={`${isDarkMode ? 'theme-dark' : ''} settings`}>
                                 <FiSettings size="25px" />
                             </button>
                         </div>
@@ -138,7 +141,7 @@ const Profile = () => {
                     <Grid
                         item
                         xs={8}
-                        style={{ borderTop: theme ? '1px solid white' : '1px solid black', padding: '20px 0' }}
+                        style={{ borderTop: isDarkMode ? '1px solid white' : '1px solid black', padding: '20px 0' }}
                     >
                         <div className="gallery">
                             {listPost &&

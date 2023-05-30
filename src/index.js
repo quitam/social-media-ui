@@ -4,8 +4,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from './components/GlobalStyles';
-import { ThemeProvider } from './GlobalComponents/ThemeProvider';
-import { createStore } from 'redux';
+import { legacy_createStore as createStore } from 'redux';
 import mainReducer from './redux/RootReducer';
 import { Provider } from 'react-redux';
 
@@ -15,9 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Provider store={store}>
         <GlobalStyles>
-            <ThemeProvider>
-                <App />
-            </ThemeProvider>
+            <App />
         </GlobalStyles>
     </Provider>,
 );

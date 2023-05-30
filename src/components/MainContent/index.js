@@ -1,22 +1,26 @@
 import React from 'react';
 
 import { Grid } from '@mui/material';
-import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import StatusBar from '../StatusBar';
 import MainPage from '../MainPage';
 import InfoSection from '../InfoSection';
 import Friends from '../Friends';
+import { useSelector } from 'react-redux';
 import './MainContent.scss';
 
 const MainContent = () => {
     //get theme
-    const [theme] = useThemeHook();
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
+
     return (
-        <div className={theme ? 'theme-dark' : 'bg-content-light'} style={{ minHeight: '1000px', paddingTop: '76px' }}>
+        <div
+            className={isDarkMode ? 'theme-dark' : 'bg-content-light'}
+            style={{ minHeight: '1000px', paddingTop: '76px' }}
+        >
             <Grid container>
                 <Grid item xs={2}></Grid>
                 <Grid item xs={6}>
-                    <StatusBar theme={theme} />
+                    <StatusBar theme={isDarkMode} />
                     <MainPage />
                 </Grid>
                 <Grid item xs={3}>

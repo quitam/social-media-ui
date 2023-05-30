@@ -8,8 +8,7 @@ import { toast } from 'react-toastify';
 import * as UserService from '../../services/UserService';
 import { Avatar, Grid } from '@mui/material';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
+
 import Navbar from '../../components/Navbar';
 import PostItem from '../../components/PostItem';
 import { FiSettings } from 'react-icons/fi';
@@ -17,10 +16,11 @@ import { useSelector } from 'react-redux';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import './Profile.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Profile = () => {
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     const dispatch = useDispatch();
-    const [theme] = useThemeHook();
     const inputRef = useRef();
 
     //get user info from redux
@@ -306,7 +306,7 @@ const Profile = () => {
             </Modal>
             <Navbar />
             <div
-                className={`${theme ? 'theme-dark' : 'bg-content-light'} container-profile`}
+                className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'} container-profile`}
                 style={{ paddingTop: '100px' }}
             >
                 <Grid container>
@@ -314,7 +314,7 @@ const Profile = () => {
                     <Grid item xs={2}>
                         <div className="dropdown">
                             <Avatar src={userInfo.avatar} className="profile-image" />
-                            <div className={`${theme ? 'theme-light' : ''} avatar_action`}>
+                            <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
                                 <div className="action_item" onClick={() => setToggler(!toggler)}>
                                     View avatar
                                 </div>
@@ -339,12 +339,12 @@ const Profile = () => {
                         <div className="profile">
                             <h4 className="profile-username">{userInfo.username}</h4>
                             <button
-                                className={`${theme ? 'theme-dark' : ''} edit-profile`}
+                                className={`${isDarkMode ? 'theme-dark' : ''} edit-profile`}
                                 onClick={() => setModal(!modal)}
                             >
                                 Edit profile
                             </button>
-                            <button className={`${theme ? 'theme-dark' : ''} settings`}>
+                            <button className={`${isDarkMode ? 'theme-dark' : ''} settings`}>
                                 <FiSettings size="25px" />
                             </button>
                         </div>
@@ -366,7 +366,7 @@ const Profile = () => {
                     <Grid
                         item
                         xs={8}
-                        style={{ borderTop: theme ? '1px solid white' : '1px solid black', padding: '20px 0' }}
+                        style={{ borderTop: isDarkMode ? '1px solid white' : '1px solid black', padding: '20px 0' }}
                     >
                         <div className="gallery">
                             {listPost &&

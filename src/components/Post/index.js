@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { Avatar } from '@mui/material';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { useThemeHook } from '../../GlobalComponents/ThemeProvider';
 import { FiSend, FiHeart, FiMessageSquare, FiMoreHorizontal } from 'react-icons/fi';
 import { BsEmojiSmile, BsArrowReturnRight } from 'react-icons/bs';
 
@@ -44,7 +43,7 @@ const Post = ({ data }) => {
     const [comment, setComment] = useState('');
 
     //get Dark/Light theme
-    const [theme] = useThemeHook();
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     const cmtRef = useRef();
     const moreRef = useRef();
 
@@ -182,7 +181,7 @@ const Post = ({ data }) => {
     };
 
     return (
-        <div className={`${theme ? 'post-theme-dark' : ''} post__container`}>
+        <div className={`${isDarkMode ? 'post-theme-dark' : ''} post__container`}>
             <ToastContainer />
 
             {/* Modal action post */}
@@ -314,7 +313,7 @@ const Post = ({ data }) => {
                                         />
 
                                         <div
-                                            className={`${theme ? 'theme-light' : ''} comment-action ${
+                                            className={`${isDarkMode ? 'theme-light' : ''} comment-action ${
                                                 toggleClass && commentId === comment.id ? 'activeAct' : ''
                                             }`}
                                         >
@@ -340,7 +339,7 @@ const Post = ({ data }) => {
                             onChange={(e) => setComment(e.target.value)}
                             ref={cmtRef}
                             type="text"
-                            className={`${theme ? 'post-theme-dark' : ''} post__commentInput`}
+                            className={`${isDarkMode ? 'post-theme-dark' : ''} post__commentInput`}
                             placeholder="Add a comment..."
                         />
                         {repId && (
