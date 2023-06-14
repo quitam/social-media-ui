@@ -3,7 +3,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import NotifyItem from './NotifyItem';
 import * as NotifyService from '../../services/NotifyService';
 
-import { FiBell } from 'react-icons/fi';
+//import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { BsCheckAll } from 'react-icons/bs';
 import classNames from 'classnames/bind';
 import styles from './Notification.module.scss';
@@ -73,7 +74,11 @@ const Notify = () => {
     };
     return (
         <div className={cx('wrapper')} ref={notifyRef}>
-            <FiBell title="Notifications" size="30px" className={cx('notify-icon')} />
+            <NotificationsNoneOutlinedIcon
+                title="Notifications"
+                className={cx('notify-icon')}
+                style={{ fontSize: '3rem', transition: 'all 0.3s' }}
+            />
             {count > 0 && (
                 <div className={cx('count')}>
                     <span>{count}</span>

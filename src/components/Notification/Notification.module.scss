@@ -70,8 +70,10 @@
     cursor: pointer;
     &:hover {
         opacity: 0.3;
+        scale: 1.2;
+        transform: rotate(15deg);
     }
-    &:hover+.count {
+    &:hover + .count {
         background-color: #00bd52;
     }
 }

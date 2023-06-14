@@ -1,34 +1,41 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
-import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
-
-import Notification from '../Notification';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import classNames from 'classnames/bind';
-import styles from './Navbar.module.scss';
-import useFirestore from '../../hooks/useFirestore';
-import { toast, ToastContainer } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import logoLight from '../../assets/images/logo/logo-light.png';
-import { FiSun, FiMoon, FiSend, FiPlusSquare } from 'react-icons/fi';
-import { GrClose } from 'react-icons/gr';
-import { FcAddImage } from 'react-icons/fc';
+import classNames from 'classnames/bind';
 
+import { Modal, ModalHeader, ModalBody, Container, Row, Col } from 'react-bootstrap';
+import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
-import { Grid, Avatar } from '@mui/material';
+// Components
+import Notification from '../Notification';
+import Invitation from '../Invitation';
 import Search from '../Search';
+
+// Assets
+import useFirestore from '../../hooks/useFirestore';
+import { toast, ToastContainer } from 'react-toastify';
+import logoLight from '../../assets/images/logo/logo-light.png';
+import { FiSun, FiMoon } from 'react-icons/fi';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { GrClose } from 'react-icons/gr';
+import { FcAddImage } from 'react-icons/fc';
+import { Avatar } from '@mui/material';
+
+// Styles
+import styles from './Navbar.module.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Action
 import { updateListPost } from '../../action/PostAction';
 import { logoutUser, updateUserListPost } from '../../action/UserAction';
 import { updateCurrentRoom } from '../../action/ChatAction';
 import { enableDarkMode, disableDarkMode } from '../../action/ThemeAction';
 
-import { useSelector } from 'react-redux';
+// Service
 import * as PostService from '../../services/PostService';
 import * as UserService from '../../services/UserService';
-
-import Invitation from '../Invitation';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
@@ -227,79 +234,77 @@ const Navbar = () => {
                 </ModalBody>
             </Modal>
             <div className={cx(`${isDarkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
-                <Grid container style={{ alignItems: 'center' }}>
-                    <Grid item xs={2}></Grid>
-                    <Grid item xs={2}>
-                        <Link to="/">
-                            <img src={logoLight} alt="logo" height="58px" style={{ paddingTop: '4px' }} />
-                        </Link>
-                    </Grid>
-                    <Grid item xs={3}>
-                        {/* Search */}
-                        <Search darkMode={isDarkMode} />
-                    </Grid>
-                    <Grid item xs={4} style={{ display: 'flex', justifyContent: 'end', position: 'relative' }}>
-                        <FiPlusSquare
-                            title="Create"
-                            size="30px"
-                            className={cx('navbar__icon')}
-                            onClick={() => setModal(!modal)}
-                        />
-                        <div className={cx('messages')}>
-                            <FiSend
-                                title="Messages"
-                                size="30px"
-                                className={cx('navbar__icon')}
-                                onClick={() => navigate('/messages')}
+                <Container style={{ maxWidth: '1024px' }}>
+                    <Row className="d-flex align-items-center justify-content-between">
+                        <Col>
+                            <Link to="/">
+                                <img src={logoLight} alt="logo" height="58px" style={{ paddingTop: '4px' }} />
+                            </Link>
+                        </Col>
+                        <Col>
+                            <Search darkMode={isDarkMode} />
+                        </Col>
+                        <Col className="d-flex align-items-center justify-content-end position-relative">
+                            <AddCircleOutlineIcon
+                                titleAccess="Create"
+                                style={{ fontSize: '3rem', transition: 'all 0.3s' }}
+                                className={cx('navbar-icon', 'add')}
+                                onClick={() => setModal(!modal)}
                             />
-                            {count > 0 && (
-                                <div className={cx('count')}>
-                                    <span>{count}</span>
-                                </div>
-                            )}
-                        </div>
-                        <Invitation />
-                        <Notification />
+                            <div className={cx('messages')}>
+                                <ChatOutlinedIcon
+                                    style={{ fontSize: '3rem', transition: 'all 0.3s' }}
+                                    fontSize="large"
+                                    title="Messages"
+                                    className={cx('navbar-icon')}
+                                    onClick={() => navigate('/messages')}
+                                />
+                                {count > 0 && (
+                                    <div className={cx('count')}>
+                                        <span>{count}</span>
+                                    </div>
+                                )}
+                            </div>
+                            <Invitation />
+                            <Notification />
 
-                        {/* profile action */}
-                        <div style={{ display: 'flex' }} className={cx('dropdown')}>
-                            <span style={{ display: 'flex' }}>
-                                <Link to="/profile">
-                                    <Avatar
-                                        sx={{ bgcolor: 'green', width: '32px', height: '32px' }}
-                                        src={userInfo.avatar}
-                                    />
-                                </Link>
-                            </span>
-                            <div className={cx(`${isDarkMode ? 'theme-light' : ''}`, 'dropdown-content')}>
-                                <div className={cx('dropdown-item')} onClick={toProfile}>
-                                    Profile
-                                </div>
-                                {/* <div className={cx('dropdown-item')} onClick={() => setDarkMode(!darkMode)}> */}
-                                <div
-                                    className={cx('dropdown-item')}
-                                    onClick={() =>
-                                        isDarkMode ? dispatch(disableDarkMode()) : dispatch(enableDarkMode())
-                                    }
-                                >
-                                    <span>{isDarkMode ? 'Dark mode' : 'Light mode'}</span>
+                            <div className={cx('dropdown')}>
+                                <span style={{ display: 'flex' }}>
+                                    <Link to="/profile">
+                                        <Avatar
+                                            sx={{ bgcolor: 'green', width: '32px', height: '32px' }}
+                                            src={userInfo.avatar}
+                                        />
+                                    </Link>
+                                </span>
+                                <div className={cx(`${isDarkMode ? 'theme-light' : ''}`, 'dropdown-content')}>
+                                    <div className={cx('dropdown-item')} onClick={toProfile}>
+                                        Profile
+                                    </div>
+                                    <div
+                                        className={cx('dropdown-item')}
+                                        onClick={() =>
+                                            isDarkMode ? dispatch(disableDarkMode()) : dispatch(enableDarkMode())
+                                        }
+                                    >
+                                        <span>{isDarkMode ? 'Dark mode' : 'Light mode'}</span>
 
-                                    {/* set dark light */}
-                                    <div title="Dark/Light mode" style={{ height: '30px' }}>
-                                        {isDarkMode ? (
-                                            <FiMoon size="30px" fill="grey" />
-                                        ) : (
-                                            <FiSun size="30px" fill="yellow" color="orange" />
-                                        )}
+                                        <div title="Dark/Light mode" style={{ height: '30px' }}>
+                                            {isDarkMode ? (
+                                                <FiMoon size="30px" fill="grey" />
+                                            ) : (
+                                                <FiSun size="30px" fill="yellow" color="orange" />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className={cx('dropdown-item')} onClick={handleLogout}>
+                                        <span>Logout</span>
                                     </div>
                                 </div>
-                                <div className={cx('dropdown-item')} onClick={handleLogout}>
-                                    <span>Logout</span>
-                                </div>
                             </div>
-                        </div>
-                    </Grid>
-                </Grid>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         </div>
     );

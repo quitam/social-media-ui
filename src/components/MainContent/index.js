@@ -15,7 +15,7 @@ const MainContent = () => {
     return (
         <div
             className={isDarkMode ? 'theme-dark' : 'bg-content-light'}
-            style={{ minHeight: '1000px', paddingTop: '76px' }}
+            style={{ minHeight: '1000px', paddingTop: '80px' }}
         >
             <Grid container>
                 <Grid item xs={2}></Grid>

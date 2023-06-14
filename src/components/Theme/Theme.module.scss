@@ -1,0 +1,57 @@
+.container {
+    z-index: 999;
+    position: fixed;
+    right: 10vh;
+    top: 0;
+    cursor: pointer;
+    &:hover {
+        .vertical-line {
+            height: 3vh;
+        }
+        .sun-line {
+            background-color: yellow;
+        }
+        .icon {
+            .moon-icon {
+                fill: black;
+                filter: drop-shadow(0 0 8px black);
+            }
+            .sun-icon {
+                transform: rotate(-45deg);
+                fill: yellow;
+                filter: drop-shadow(0 0 8px white);
+            }
+        }
+    }
+}
+.wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    .vertical-line {
+        width: 2px;
+        height: 2.5vh;
+        transition: all 0.3s;
+    }
+    .moon-line {
+        background-color: gray;
+    }
+    .sun-line {
+        background-color: orange;
+    }
+    .icon {
+        position: absolute;
+        bottom: 0;
+        transform: translate(-50%, 100%);
+        .moon-icon {
+            fill: gray;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+        }
+        .sun-icon {
+            fill: orange;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 4px rgba(255, 166, 0, 0.5));
+        }
+    }
+}

@@ -47,15 +47,16 @@
     align-items: center;
 }
 
-.notify-icon {
+.heart-icon {
     position: relative;
     display: flex;
     margin-right: 15px;
     cursor: pointer;
     &:hover {
         opacity: 0.3;
+        scale: 1.2;
     }
-    &:hover+.count {
+    &:hover + .count {
         background-color: #00bd52;
     }
 }

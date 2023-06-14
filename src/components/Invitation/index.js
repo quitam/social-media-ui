@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import FriendItem from './FriendItem';
 import * as RelaService from '../../services/RelaService';
 
-import { FiHeart } from 'react-icons/fi';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import classNames from 'classnames/bind';
 import styles from './Invitation.module.scss';
 
@@ -44,7 +44,11 @@ const Notify = () => {
     };
     return (
         <div className={cx('wrapper')} ref={notifyRef}>
-            <FiHeart title="Friends" size="30px" className={cx('notify-icon')} />
+            <FavoriteBorderIcon
+                title="Friends"
+                className={cx('heart-icon')}
+                style={{ fontSize: '3rem', transition: 'all 0.3s' }}
+            />
             {count > 0 && (
                 <div className={cx('count')}>
                     <span>{count}</span>
