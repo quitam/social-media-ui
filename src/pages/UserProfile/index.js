@@ -10,13 +10,13 @@ import * as RelaService from '../../services/RelaService';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Grid } from '@mui/material';
 
-import Navbar from '../../components/Navbar';
 import { FiSettings } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import './UserProfile.scss';
 import PostItem from '../../components/PostItem';
+import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
 
 const Profile = () => {
     const params = useParams();
@@ -91,75 +91,77 @@ const Profile = () => {
         setShowPost(status);
     };
     return (
-        <div>
-            {showPost && <PostItem data={postData} handleClose={handleClose} />}
-            <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userProfile.avatar }]} />
-            <Navbar />
-            <div
-                className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'} container-profile`}
-                style={{ paddingTop: '100px' }}
-            >
-                <Grid container>
-                    <Grid item xs={3}></Grid>
-                    <Grid item xs={2}>
-                        <div className="dropdown">
-                            <Avatar src={userProfile.avatar} className="profile-image" />
-                            <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
-                                <div className="action_item" onClick={() => setToggler(!toggler)}>
-                                    View avatar
+        <DefaultLayout>
+            <div>
+                {showPost && <PostItem data={postData} handleClose={handleClose} />}
+                <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userProfile.avatar }]} />
+
+                <div
+                    className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'} container-profile`}
+                    style={{ paddingTop: '100px' }}
+                >
+                    <Grid container>
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={2}>
+                            <div className="dropdown">
+                                <Avatar src={userProfile.avatar} className="profile-image" />
+                                <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
+                                    <div className="action_item" onClick={() => setToggler(!toggler)}>
+                                        View avatar
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <div className="profile">
+                                <h4 className="profile-username">{userProfile.username}</h4>
+                                <button
+                                    className={`${isDarkMode ? 'theme-dark' : ''} edit-profile`}
+                                    onClick={hadleAddFriend}
+                                >
+                                    {status}
+                                </button>
+                                <button className={`${isDarkMode ? 'theme-dark' : ''} settings`}>
+                                    <FiSettings size="25px" />
+                                </button>
+                            </div>
+                            <div className="profile-stats">
+                                <h5 className="profile-stat-item">40 posts</h5>
+                                <h5 className="profile-stat-item">50 followers</h5>
+                                <h5 className="profile-stat-item">60 following</h5>
+                            </div>
+                            <div className="profile-bio">
+                                <div className="profile-real-name">{userProfile.name}</div>
+                                <p>{userProfile.bio}</p>
+                            </div>
+                        </Grid>
+                        <Grid item xs={1}></Grid>
                     </Grid>
-                    <Grid item xs={4}>
-                        <div className="profile">
-                            <h4 className="profile-username">{userProfile.username}</h4>
-                            <button
-                                className={`${isDarkMode ? 'theme-dark' : ''} edit-profile`}
-                                onClick={hadleAddFriend}
-                            >
-                                {status}
-                            </button>
-                            <button className={`${isDarkMode ? 'theme-dark' : ''} settings`}>
-                                <FiSettings size="25px" />
-                            </button>
-                        </div>
-                        <div className="profile-stats">
-                            <h5 className="profile-stat-item">40 posts</h5>
-                            <h5 className="profile-stat-item">50 followers</h5>
-                            <h5 className="profile-stat-item">60 following</h5>
-                        </div>
-                        <div className="profile-bio">
-                            <div className="profile-real-name">{userProfile.name}</div>
-                            <p>{userProfile.bio}</p>
-                        </div>
+                    <Grid container style={{ margin: '20px 0' }}>
+                        <Grid item xs={2}></Grid>
+                        <Grid
+                            item
+                            xs={8}
+                            style={{ borderTop: isDarkMode ? '1px solid white' : '1px solid black', padding: '20px 0' }}
+                        >
+                            <div className="gallery">
+                                {listPost &&
+                                    listPost.map((result) => (
+                                        <img
+                                            key={result.id}
+                                            className="gallery-item"
+                                            src={result.files[0].value}
+                                            alt={result.value}
+                                            onClick={() => postDetail(result)}
+                                        />
+                                    ))}
+                            </div>
+                        </Grid>
+                        <Grid item xs={2}></Grid>
                     </Grid>
-                    <Grid item xs={1}></Grid>
-                </Grid>
-                <Grid container style={{ margin: '20px 0' }}>
-                    <Grid item xs={2}></Grid>
-                    <Grid
-                        item
-                        xs={8}
-                        style={{ borderTop: isDarkMode ? '1px solid white' : '1px solid black', padding: '20px 0' }}
-                    >
-                        <div className="gallery">
-                            {listPost &&
-                                listPost.map((result) => (
-                                    <img
-                                        key={result.id}
-                                        className="gallery-item"
-                                        src={result.files[0].value}
-                                        alt={result.value}
-                                        onClick={() => postDetail(result)}
-                                    />
-                                ))}
-                        </div>
-                    </Grid>
-                    <Grid item xs={2}></Grid>
-                </Grid>
+                </div>
             </div>
-        </div>
+        </DefaultLayout>
     );
 };
 

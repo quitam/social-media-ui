@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
+import MainContent from '../../components/MainContent';
 
 const cx = classNames.bind(styles);
 
@@ -12,7 +13,9 @@ const Home = () => {
     });
     return (
         <div className={cx('home')}>
-            <DefaultLayout />
+            <DefaultLayout>
+                <MainContent />
+            </DefaultLayout>
         </div>
     );
 };

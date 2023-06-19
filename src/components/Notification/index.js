@@ -20,7 +20,6 @@ const Notify = () => {
     useEffect(() => {
         const notifyApi = async () => {
             const result = await NotifyService.getNotify();
-            console.log('notify', result);
             if (result.data) {
                 setSearchResult(result.data);
                 setCount(result.data.filter((item) => item.status === 'WAITING').length);

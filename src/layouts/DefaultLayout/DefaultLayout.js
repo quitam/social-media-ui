@@ -1,6 +1,5 @@
 import React from 'react';
 import Navbar from '../../components/Navbar';
-import MainContent from '../../components/MainContent';
 import ThemeComponent from '../../components/Theme';
 
 const DefaultLayout = ({ children }) => {
@@ -8,10 +7,10 @@ const DefaultLayout = ({ children }) => {
         <div>
             {/* Header */}
             <Navbar />
+            <ThemeComponent />
 
             {/* Content page */}
-            <MainContent />
-            <ThemeComponent />
+            {children}
         </div>
     );
 };

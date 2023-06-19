@@ -32,7 +32,7 @@ const Friends = () => {
         fetchApi();
         // eslint-disable-next-line
     }, []);
-    console.log(listFriend);
+
     return (
         <div>
             <div className={cx('friends__container')}>

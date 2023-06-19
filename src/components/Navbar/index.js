@@ -135,7 +135,6 @@ const Navbar = () => {
         };
     }, [userInfo.username]);
     const rooms = useFirestore('rooms', roomsCondition);
-    console.log('rooms', rooms);
 
     useEffect(() => {
         setCount(0);
