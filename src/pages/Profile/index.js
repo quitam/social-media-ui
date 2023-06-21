@@ -6,7 +6,6 @@ import { updateUser, updateUserListPost } from '../../action/UserAction';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import * as UserService from '../../services/UserService';
-import { Grid } from '@mui/material';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 
 import PostItem from '../../components/PostItem';
@@ -14,10 +13,13 @@ import { FiSettings } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
-import './Profile.scss';
+import styles from './Profile.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
 import AppAvatar from '../../components/Avatar';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(styles);
 
 const Profile = () => {
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
@@ -310,22 +312,18 @@ const Profile = () => {
                         </form>
                     </ModalBody>
                 </Modal>
-                <div
-                    className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'} container-profile`}
-                    style={{ paddingTop: '100px' }}
-                >
-                    <Grid container>
-                        <Grid item xs={3}></Grid>
-                        <Grid item xs={2}>
-                            <div className="dropdown">
-                                <div className="profile-image">
+                <div className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'}`} style={{ minHeight: '100vh' }}>
+                    <div className={cx('container-profile')}>
+                        <header className={cx('profile-header')}>
+                            <div className={cx('dropdown')}>
+                                <div className={cx('profile-image')}>
                                     <AppAvatar src={userInfo.avatar} size={160} />
                                 </div>
-                                <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
-                                    <div className="action_item" onClick={() => setToggler(!toggler)}>
+                                <div className={cx('avatar_action', `${isDarkMode ? 'theme-light' : ''}`)}>
+                                    <div className={cx('action_item')} onClick={() => setToggler(!toggler)}>
                                         View avatar
                                     </div>
-                                    <div className="action_item" onClick={() => changeImage()}>
+                                    <div className={cx('action_item')} onClick={() => changeImage()}>
                                         Change avatar
                                     </div>
                                     <input
@@ -341,54 +339,58 @@ const Profile = () => {
                                     />
                                 </div>
                             </div>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <div className="profile">
-                                <h4 className="profile-username">{userInfo.username}</h4>
-                                <button
-                                    className={`${isDarkMode ? 'theme-dark' : ''} edit-profile`}
-                                    onClick={() => setModal(!modal)}
-                                >
-                                    Edit profile
-                                </button>
-                                <button className={`${isDarkMode ? 'theme-dark' : ''} settings`}>
-                                    <FiSettings size="25px" />
-                                </button>
+
+                            <div className={cx('content')}>
+                                <div className={cx('profile')}>
+                                    <h4 className={cx('profile-username')}>{userInfo.username}</h4>
+                                    <button
+                                        className={cx('edit-profile', `${isDarkMode ? 'theme-dark' : ''}`)}
+                                        onClick={() => setModal(!modal)}
+                                    >
+                                        Edit profile
+                                    </button>
+                                    <button className={cx('settings', `${isDarkMode ? 'theme-dark' : ''}`)}>
+                                        <FiSettings size="25px" />
+                                    </button>
+                                </div>
+                                <div className={cx('profile-follow')}>
+                                    <h5 className={cx('profile-follow-count')}>
+                                        <span>40</span> posts
+                                    </h5>
+                                    <h5 className={cx('profile-follow-count')}>
+                                        <span>50</span> followers
+                                    </h5>
+                                    <h5 className={cx('profile-follow-count')}>
+                                        <span>60</span> following
+                                    </h5>
+                                </div>
+                                <div className={cx('profile-bio')}>
+                                    <div className={cx('profile-real-name')}>{userInfo.name}</div>
+                                    <p>{userInfo.bio}</p>
+                                </div>
                             </div>
-                            <div className="profile-stats">
-                                <h5 className="profile-stat-item">40 posts</h5>
-                                <h5 className="profile-stat-item">50 followers</h5>
-                                <h5 className="profile-stat-item">60 following</h5>
-                            </div>
-                            <div className="profile-bio">
-                                <div className="profile-real-name">{userInfo.name}</div>
-                                <p>{userInfo.bio}</p>
-                            </div>
-                        </Grid>
-                        <Grid item xs={1}></Grid>
-                    </Grid>
-                    <Grid container style={{ margin: '20px 0' }}>
-                        <Grid item xs={2}></Grid>
-                        <Grid
-                            item
-                            xs={8}
-                            style={{ borderTop: isDarkMode ? '1px solid white' : '1px solid black', padding: '20px 0' }}
+                        </header>
+
+                        <div
+                            style={{
+                                borderTop: isDarkMode ? '1px solid white' : '1px solid black',
+                                padding: '20px 0',
+                            }}
                         >
-                            <div className="gallery">
+                            <div className={cx('gallery')}>
                                 {listPost &&
                                     listPost.map((result) => (
                                         <img
                                             key={result.id}
-                                            className="gallery-item"
+                                            className={cx('gallery-item')}
                                             src={result.files[0].value}
                                             alt={result.value}
                                             onClick={() => postDetail(result)}
                                         />
                                     ))}
                             </div>
-                        </Grid>
-                        <Grid item xs={2}></Grid>
-                    </Grid>
+                        </div>
+                    </div>
                 </div>
             </div>
         </DefaultLayout>

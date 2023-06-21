@@ -234,7 +234,7 @@ const Navbar = () => {
                 </ModalBody>
             </Modal>
             <div className={cx(`${isDarkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
-                <Container style={{ maxWidth: '1024px' }}>
+                <Container style={{ maxWidth: 'var(--default-layout-width)' }}>
                     <Row className="d-flex align-items-center justify-content-between">
                         <Col>
                             <Link to="/">
