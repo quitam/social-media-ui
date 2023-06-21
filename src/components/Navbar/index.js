@@ -36,6 +36,7 @@ import { enableDarkMode, disableDarkMode } from '../../action/ThemeAction';
 // Service
 import * as PostService from '../../services/PostService';
 import * as UserService from '../../services/UserService';
+import AppAvatar from '../Avatar';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
@@ -270,10 +271,7 @@ const Navbar = () => {
                             <div className={cx('dropdown')}>
                                 <span style={{ display: 'flex' }}>
                                     <Link to="/profile">
-                                        <Avatar
-                                            sx={{ bgcolor: 'green', width: '32px', height: '32px' }}
-                                            src={userInfo.avatar}
-                                        />
+                                        <AppAvatar src={userInfo.avatar} size={32} />
                                     </Link>
                                 </span>
                                 <div className={cx(`${isDarkMode ? 'theme-light' : ''}`, 'dropdown-content')}>

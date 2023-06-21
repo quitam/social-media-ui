@@ -1,10 +1,7 @@
 .container-profile {
     min-height: 100vh;
     overflow: auto;
-    .profile-image {
-        width: 160px;
-        height: 160px;
-    }
+
     .dropdown {
         position: relative;
         &:hover .avatar_action {

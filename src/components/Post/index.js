@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { Avatar } from '@mui/material';
+import AppAvatar from '../Avatar';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { FiSend, FiHeart, FiMessageSquare, FiMoreHorizontal } from 'react-icons/fi';
 import { BsEmojiSmile, BsArrowReturnRight } from 'react-icons/bs';
+import classNames from 'classnames/bind';
 
 import { toast, ToastContainer } from 'react-toastify';
 import { Modal, ModalBody } from 'react-bootstrap';
@@ -19,7 +20,8 @@ import loveIcon from '../../assets/images/reactIcon/love.svg';
 import sadIcon from '../../assets/images/reactIcon/sad.svg';
 import wowIcon from '../../assets/images/reactIcon/wow.svg';
 
-import './Post.scss';
+import styles from './Post.module.scss';
+const cx = classNames.bind(styles);
 
 TimeAgo.addLocale(en);
 // Create formatter (English).
@@ -181,31 +183,33 @@ const Post = ({ data }) => {
     };
 
     return (
-        <div className={`${isDarkMode ? 'post-theme-dark' : ''} post__container`}>
+        <div className={cx(`${isDarkMode ? 'post-theme-dark' : ''}`, 'post__container')}>
             <ToastContainer />
 
             {/* Modal action post */}
             <Modal size="sm" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalBody bsPrefix="modal-custom">
-                    <div className="more-action">Delete post</div>
-                    <div className="more-action" onClick={hiddenPost}>
+                    <div className={cx('more-action')}>Delete post</div>
+                    <div className={cx('more-action')} onClick={hiddenPost}>
                         Hidden post
                     </div>
-                    <div className="more-action">Unfollow</div>
-                    <div className="more-action" onClick={() => setModal(!modal)}>
+                    <div className={cx('more-action')}>Unfollow</div>
+                    <div className={cx('more-action')} onClick={() => setModal(!modal)}>
                         Cancel
                     </div>
                 </ModalBody>
             </Modal>
 
             {/* Header Post */}
-            <div className="post__header">
-                <Avatar className="post__avatar" src={data.user.avatar} />
-                <div className="post__username">
-                    <span>{data.user.name}</span>
-                    <span className="post-time">{timeAgo.format(new Date(data.createDate))}</span>
+            <div className={cx('post__header')}>
+                <div className="m-3">
+                    <AppAvatar src={data.user.avatar} />
                 </div>
-                <FiMoreHorizontal size="25px" className="icon-more" onClick={() => setModal(!modal)} />
+                <div className={cx('post__username')}>
+                    <span>{data.user.name}</span>
+                    <span className={cx('post-time')}>{timeAgo.format(new Date(data.createDate))}</span>
+                </div>
+                <FiMoreHorizontal size="25px" className={cx('icon-more')} onClick={() => setModal(!modal)} />
             </div>
 
             {/* Image Post*/}
@@ -215,8 +219,8 @@ const Post = ({ data }) => {
                     alt="Post"
                     style={{ width: '700px', height: '600px', objectFit: 'contain', background: 'black' }}
                 />
-                <div className="post-caption">
-                    <div style={{ position: 'relative' }}>
+                <div className={cx('post-caption')}>
+                    <div className="position-relative">
                         <span style={{ fontWeight: '300', fontSize: '14px', margin: '10px' }}>{data.value}</span>
                     </div>
                 </div>
@@ -225,19 +229,23 @@ const Post = ({ data }) => {
             {/* Reaction, Comment, Share */}
             <div>
                 <div style={{ marginBottom: '15px', display: 'flex' }}>
-                    <div className="dropdown-icons">
-                        <FiHeart size="25px" className="post__reactIcon" />
-                        <div className="dropdown-wrap">
-                            <img src={likeIcon} alt="love" className="dropdown-icon" />
-                            <img src={loveIcon} alt="love" className="dropdown-icon" />
-                            <img src={hahaIcon} alt="love" className="dropdown-icon" />
-                            <img src={wowIcon} alt="love" className="dropdown-icon" />
-                            <img src={sadIcon} alt="love" className="dropdown-icon" />
-                            <img src={angryIcon} alt="love" className="dropdown-icon" />
+                    <div className={cx('dropdown-icons')}>
+                        <FiHeart size="25px" className={cx('post__reactIcon')} />
+                        <div className={cx('dropdown-wrap')}>
+                            <img src={likeIcon} alt="love" className={cx('dropdown-icon')} />
+                            <img src={loveIcon} alt="love" className={cx('dropdown-icon')} />
+                            <img src={hahaIcon} alt="love" className={cx('dropdown-icon')} />
+                            <img src={wowIcon} alt="love" className={cx('dropdown-icon')} />
+                            <img src={sadIcon} alt="love" className={cx('dropdown-icon')} />
+                            <img src={angryIcon} alt="love" className={cx('dropdown-icon')} />
                         </div>
                     </div>
-                    <FiMessageSquare size="25px" className="post__reactIcon" onClick={() => cmtRef.current.focus()} />
-                    <FiSend size="25px" className="post__reactIcon" />
+                    <FiMessageSquare
+                        size="25px"
+                        className={cx('post__reactIcon')}
+                        onClick={() => cmtRef.current.focus()}
+                    />
+                    <FiSend size="25px" className={cx('post__reactIcon')} />
                 </div>
                 <div style={{ fontSize: '14px', marginLeft: '10px', fontWeight: '700', marginBottom: '10px' }}>
                     9999 likes
@@ -257,14 +265,14 @@ const Post = ({ data }) => {
                         (comment) =>
                             //Chỉ hiện những Comment có status là Enable
                             comment.status === 'ENABLE' && (
-                                <div key={comment.id} className="post__comment">
-                                    <div style={{ position: 'relative' }}>
+                                <div key={comment.id} className={cx('post__comment')}>
+                                    <div className="position-relative">
                                         <div>
                                             {comment.user.username}:
                                             <span style={{ fontWeight: '300', fontSize: '14px', marginLeft: '5px' }}>
                                                 {comment.value}
                                             </span>
-                                            <div className="like-comment">
+                                            <div className={cx('like-comment')}>
                                                 <div role="button">Like</div>
                                                 <div
                                                     role="button"
@@ -302,10 +310,10 @@ const Post = ({ data }) => {
                                                 </div>
                                             ))}
                                     </div>
-                                    <div className="comment-dropdown" ref={moreRef}>
+                                    <div className={cx('comment-dropdown')} ref={moreRef}>
                                         <FiMoreHorizontal
                                             size="15px"
-                                            className="more"
+                                            className={cx('more')}
                                             onClick={() => {
                                                 setToggleClass(!toggleClass);
                                                 setCommentId(comment.id);
@@ -313,17 +321,22 @@ const Post = ({ data }) => {
                                         />
 
                                         <div
-                                            className={`${isDarkMode ? 'theme-light' : ''} comment-action ${
-                                                toggleClass && commentId === comment.id ? 'activeAct' : ''
-                                            }`}
+                                            className={cx(
+                                                'comment-action',
+                                                `${isDarkMode ? 'theme-light' : ''}`,
+                                                `${toggleClass && commentId === comment.id ? 'activeAct' : ''}`,
+                                            )}
                                         >
-                                            <div className="action-item" onClick={() => hiddenComment(comment.id)}>
+                                            <div
+                                                className={cx('action-item')}
+                                                onClick={() => hiddenComment(comment.id)}
+                                            >
                                                 Hidden comment
                                             </div>
-                                            <div className="action-item">Report comment</div>
+                                            <div className={cx('action-item')}>Report comment</div>
                                         </div>
                                     </div>
-                                    <div className="cmt-time">{timeAgo.format(new Date(comment.createDate))}</div>
+                                    <div className={cx('cmt-time')}>{timeAgo.format(new Date(comment.createDate))}</div>
                                 </div>
                             ),
                     )}
@@ -331,7 +344,7 @@ const Post = ({ data }) => {
                 {/* Input Comment */}
                 <form onSubmit={postComment}>
                     <div style={{ display: 'flex', borderTop: '1px solid #dbdddb' }}>
-                        <div className="icon-emoji">
+                        <div className={cx('icon-emoji')}>
                             <BsEmojiSmile size={25} />
                         </div>
                         <input
@@ -339,12 +352,12 @@ const Post = ({ data }) => {
                             onChange={(e) => setComment(e.target.value)}
                             ref={cmtRef}
                             type="text"
-                            className={`${isDarkMode ? 'post-theme-dark' : ''} post__commentInput`}
+                            className={cx(`${isDarkMode ? 'post-theme-dark' : ''}`, 'post__commentInput')}
                             placeholder="Add a comment..."
                         />
                         {repId && (
                             <div
-                                className="reply-user"
+                                className={cx('reply-user')}
                                 onClick={() => {
                                     setRepId('');
                                     setComment('');
@@ -353,7 +366,7 @@ const Post = ({ data }) => {
                                 <span>Replying @{repUser}</span>
                             </div>
                         )}
-                        <button className="post-btn" disabled={comment === '' ? true : false}>
+                        <button className={cx('post-btn')} disabled={comment === '' ? true : false}>
                             Post
                         </button>
                     </div>

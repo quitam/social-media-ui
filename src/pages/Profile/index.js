@@ -6,7 +6,7 @@ import { updateUser, updateUserListPost } from '../../action/UserAction';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import * as UserService from '../../services/UserService';
-import { Avatar, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'react-bootstrap';
 
 import PostItem from '../../components/PostItem';
@@ -17,6 +17,7 @@ import 'yet-another-react-lightbox/styles.css';
 import './Profile.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
+import AppAvatar from '../../components/Avatar';
 
 const Profile = () => {
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
@@ -317,7 +318,9 @@ const Profile = () => {
                         <Grid item xs={3}></Grid>
                         <Grid item xs={2}>
                             <div className="dropdown">
-                                <Avatar src={userInfo.avatar} className="profile-image" />
+                                <div className="profile-image">
+                                    <AppAvatar src={userInfo.avatar} size={160} />
+                                </div>
                                 <div className={`${isDarkMode ? 'theme-light' : ''} avatar_action`}>
                                     <div className="action_item" onClick={() => setToggler(!toggler)}>
                                         View avatar
@@ -354,7 +357,6 @@ const Profile = () => {
                             </div>
                             <div className="profile-stats">
                                 <h5 className="profile-stat-item">40 posts</h5>
-                                {/* <h5 className="profile-stat-item">{listPost && listPost.map((result) => result.id)}</h5> */}
                                 <h5 className="profile-stat-item">50 followers</h5>
                                 <h5 className="profile-stat-item">60 following</h5>
                             </div>

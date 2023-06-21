@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { updateFriend } from '../../action/RelationAction';
 import * as RelaService from '../../services/RelaService';
-import { Avatar } from '@mui/material';
+import AppAvatar from '../Avatar';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Friends.module.scss';
@@ -47,7 +47,7 @@ const Friends = () => {
                                 key={friend.username}
                                 onClick={() => navigate(`/${friend.username}`)}
                             >
-                                <Avatar className={cx('friend__image')} src={friend.avatar} />
+                                <AppAvatar src={friend.avatar} />
                                 <div className={cx('friend-info')}>
                                     <div className={cx('friend-name')}>{friend.name}</div>
                                     <div className={cx('friend__username')}>{friend.username}</div>
