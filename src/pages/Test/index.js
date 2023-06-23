@@ -1,27 +1,46 @@
 import React from 'react';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-import './Test.scss';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-cards';
+
+import styles from './Test.module.scss';
+
+// import Swiper core and required modules
+import { Navigation, EffectCards } from 'swiper';
+import classNames from 'classnames/bind';
+const cx = classNames.bind(styles);
+
+// install Swiper modules
 
 const Test = () => {
+    const btnNextClass = cx('swiper-custom-next');
+    const btnPrevClass = cx('swiper-custom-prev');
+    const disableClass = cx('swiper-button-disabled');
     return (
-        <div className="profile-page">
-            <div className="profile-header">
-                <img src="avatar.jpg" alt="Avatar" className="profile-avatar" />
-                <h1 className="profile-username">John Doe</h1>
-                <p className="profile-bio">Web Developer</p>
-                <div className="profile-follow">
-                    <span className="profile-follow-count">1000</span> followers
-                    <span className="profile-follow-count">500</span> following
-                </div>
-            </div>
+        <div className={cx('container')}>
+            <div className={btnNextClass}>Next</div>
+            <div className={btnPrevClass}>Prev</div>
 
-            <h2 className="profile-section-title">Posts</h2>
-
-            <div className="profile-post">
-                <img src="post1.jpg" alt="Post" className="post-image" />
-                <img src="post2.jpg" alt="Post" className="post-image" />
-                <img src="post3.jpg" alt="Post" className="post-image" />
-            </div>
+            <Swiper
+                effect="cards"
+                style={{
+                    '--swiper-navigation-color': '#000',
+                    '--swiper-pagination-color': 'red',
+                }}
+                navigation={{ nextEl: `.${btnNextClass}`, prevEl: `.${btnPrevClass}`, disabledClass: disableClass }}
+                modules={[Navigation, EffectCards]}
+                className={cx('swiper')}
+            >
+                <SwiperSlide className={cx('swiper-slide')}>Slide 1</SwiperSlide>
+                <SwiperSlide className={cx('swiper-slide')}>Slide 2</SwiperSlide>
+                <SwiperSlide className={cx('swiper-slide')}>Slide 3</SwiperSlide>
+                <SwiperSlide className={cx('swiper-slide')}>Slide 4</SwiperSlide>
+            </Swiper>
         </div>
     );
 };
