@@ -17,8 +17,8 @@ import useFirestore from '../../hooks/useFirestore';
 import { toast, ToastContainer } from 'react-toastify';
 import logoLight from '../../assets/images/logo/logo-light.png';
 import { FiSun, FiMoon } from 'react-icons/fi';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { ChatOutlined, AddCircleOutline } from '@mui/icons-material';
+
 import { GrClose } from 'react-icons/gr';
 import { FcAddImage } from 'react-icons/fc';
 import { Avatar } from '@mui/material';
@@ -245,14 +245,14 @@ const Navbar = () => {
                             <Search darkMode={isDarkMode} />
                         </Col>
                         <Col className="d-flex align-items-center justify-content-end position-relative">
-                            <AddCircleOutlineIcon
+                            <AddCircleOutline
                                 titleAccess="Create"
                                 style={{ fontSize: '3rem', transition: 'all 0.3s' }}
                                 className={cx('navbar-icon', 'add')}
                                 onClick={() => setModal(!modal)}
                             />
                             <div className={cx('messages')}>
-                                <ChatOutlinedIcon
+                                <ChatOutlined
                                     style={{ fontSize: '3rem', transition: 'all 0.3s' }}
                                     fontSize="large"
                                     title="Messages"
