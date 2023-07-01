@@ -1,6 +1,10 @@
-const initialState = { isDarkModeEnabled: false };
+const storedTheme = localStorage.getItem('darkTheme');
+const defaultTheme = storedTheme ? storedTheme === 'true' : false;
+const initialState = { isDarkModeEnabled: defaultTheme };
 
-const themeReducer = (state = initialState, action) => {
+const storyState = { isOpen: false, indexSlide: 0 };
+
+export const themeReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ENABLE_DARK_MODE':
             return { ...state, isDarkModeEnabled: true };
@@ -10,4 +14,14 @@ const themeReducer = (state = initialState, action) => {
             return state;
     }
 };
-export default themeReducer;
+
+export const storyReducer = (state = storyState, action) => {
+    switch (action.type) {
+        case 'OPEN_STORY':
+            return { ...state, isOpen: true, indexSlide: action.indexSlide };
+        case 'CLOSE_STORY':
+            return { ...state, isOpen: false };
+        default:
+            return state;
+    }
+};

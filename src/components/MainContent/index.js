@@ -20,7 +20,7 @@ const MainContent = () => {
             <Grid container>
                 <Grid item xs={2}></Grid>
                 <Grid item xs={6}>
-                    <StatusBar theme={isDarkMode} />
+                    <StatusBar />
                     <MainPage />
                 </Grid>
                 <Grid item xs={3}>

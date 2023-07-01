@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-cards';
 
-import styles from './Test.module.scss';
+import styles from './Story.module.scss';
 
 // import Swiper core and required modules
 import { Navigation, EffectCards, Keyboard, Autoplay } from 'swiper';
@@ -16,7 +16,9 @@ import { Navigation, EffectCards, Keyboard, Autoplay } from 'swiper';
 import { NavigateBefore, NavigateNext, MoreHoriz, Close } from '@mui/icons-material';
 
 import classNames from 'classnames/bind';
-import AppAvatar from '../../components/Avatar';
+import AppAvatar from '../Avatar';
+import { useDispatch } from 'react-redux';
+import { closeStory } from '../../action/ThemeAction';
 const cx = classNames.bind(styles);
 
 // install Swiper modules
@@ -41,8 +43,9 @@ const dataTest = [
     },
 ];
 
-const Test = () => {
-    const timeCountdown = 5;
+const Story = ({ indexSlide = 0 }) => {
+    const dispatch = useDispatch();
+    const timeCountdown = 15;
     const [progress, setProgress] = useState(0);
 
     // eslint-disable-next-line
@@ -55,8 +58,14 @@ const Test = () => {
 
         // if change slide event active (next, prev), set timer progress to 0%
         const handleSlideChange = () => {
-            console.log('change slide');
             setProgress(0);
+        };
+
+        const handleKeyDown = (e) => {
+            // press Esc key
+            if (e.keyCode === 27) {
+                dispatch(closeStory());
+            }
         };
 
         // set width % of timer
@@ -64,9 +73,13 @@ const Test = () => {
             setProgress((prevProgress) => (prevProgress < 100 ? prevProgress + 100 / (timeCountdown * 10) : 100));
         }, 100);
 
+        swiperInstance.slideTo(indexSlide);
+
         if (swiperInstance) {
             swiperInstance.on('slideChange', handleSlideChange);
         }
+
+        document.addEventListener('keydown', handleKeyDown);
 
         // cleanup function
         return () => {
@@ -74,22 +87,27 @@ const Test = () => {
                 swiperInstance.off('slideChange', handleSlideChange);
             }
             clearInterval(interval);
+            document.removeEventListener('keydown', handleKeyDown);
         };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
         // check if the last slide, timer progress do not change to the next slide
         if (progress === 100 && !swiperRef.current.swiper.isEnd) {
             swiperRef.current.swiper.slideNext(500, true);
+        } else if (progress === 100 && swiperRef.current.swiper.isEnd) {
+            // auto close story if the end slide and progress = 100%
+            dispatch(closeStory());
         }
-    }, [progress]);
+    }, [progress, dispatch]);
 
     const btnNextClass = cx('swiper-custom-next');
     const btnPrevClass = cx('swiper-custom-prev');
     const disableClass = cx('swiper-button-disabled');
     return (
         <div className={cx('container')}>
-            <div className={cx('close-btn')} title="Exit">
+            <div className={cx('close-btn')} title="Exit" onClick={() => dispatch(closeStory())}>
                 <Close style={{ fontSize: '3rem' }} />
             </div>
             <div className={btnNextClass}>
@@ -154,4 +172,4 @@ const Test = () => {
     );
 };
 
-export default Test;
+export default Story;
