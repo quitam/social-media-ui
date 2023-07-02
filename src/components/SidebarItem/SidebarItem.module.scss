@@ -1,0 +1,17 @@
+.sidebar-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 4px 0;
+    padding: 10px;
+    cursor: pointer;
+    &:hover {
+        background-color: #fafafa;
+        border-radius: 2rem;
+    }
+}
+.sidebar-title {
+    font-size: 1.6rem;
+    padding-left: 16px;
+    margin: 0;
+}

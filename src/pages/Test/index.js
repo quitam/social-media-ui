@@ -1,155 +1,50 @@
-import React, { useEffect, useState, useRef } from 'react';
-// Import Swiper React components
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-cards';
-
+import React from 'react';
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import ExploreIcon from '@mui/icons-material/Explore';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
+import ChatIcon from '@mui/icons-material/Chat';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import MenuIcon from '@mui/icons-material/Menu';
+import AppAvatar from '../../components/Avatar';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import classNames from 'classnames/bind';
 import styles from './Test.module.scss';
 
-// import Swiper core and required modules
-import { Navigation, EffectCards, Keyboard, Autoplay } from 'swiper';
+import logoLight from '../../assets/images/logo/logo-light.png';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import SidebarItem from '../../components/SidebarItem';
 
-import { NavigateBefore, NavigateNext, MoreHoriz, Close } from '@mui/icons-material';
-
-import classNames from 'classnames/bind';
-import AppAvatar from '../../components/Avatar';
 const cx = classNames.bind(styles);
-
-// install Swiper modules
-
-const dataTest = [
-    {
-        id: 1,
-        img: 'https://d1hjkbq40fs2x4.cloudfront.net/2019-06-24/files/travel-portrait-photography-tips_1886_b.jpg',
-    },
-    {
-        id: 2,
-        img: 'https://i.pinimg.com/originals/0a/9b/66/0a9b66b9cfc9b49a71c4826b6dbfc028.png',
-    },
-    {
-        id: 3,
-        img: 'https://200lab-blog.imgix.net/2021/07/1_h5UGPzaL1E4dIy_JWDrsAw.png',
-    },
-
-    {
-        id: 4,
-        img: 'https://www.imperial.ac.uk/ImageCropToolT4/imageTool/uploaded-images/newseventsimage_1675335768700_mainnews2012_x1.jpg',
-    },
-];
-
 const Test = () => {
-    const timeCountdown = 5;
-    const [progress, setProgress] = useState(0);
-
-    // eslint-disable-next-line
-    const swiper = useSwiper();
-    const swiperRef = useRef(null);
-
-    useEffect(() => {
-        // check ref is null or undefined
-        const swiperInstance = swiperRef.current && swiperRef.current.swiper;
-
-        // if change slide event active (next, prev), set timer progress to 0%
-        const handleSlideChange = () => {
-            console.log('change slide');
-            setProgress(0);
-        };
-
-        // set width % of timer
-        const interval = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress < 100 ? prevProgress + 100 / (timeCountdown * 10) : 100));
-        }, 100);
-
-        if (swiperInstance) {
-            swiperInstance.on('slideChange', handleSlideChange);
-        }
-
-        // cleanup function
-        return () => {
-            if (swiperInstance) {
-                swiperInstance.off('slideChange', handleSlideChange);
-            }
-            clearInterval(interval);
-        };
-    }, []);
-
-    useEffect(() => {
-        // check if the last slide, timer progress do not change to the next slide
-        if (progress === 100 && !swiperRef.current.swiper.isEnd) {
-            swiperRef.current.swiper.slideNext(500, true);
-        }
-    }, [progress]);
-
-    const btnNextClass = cx('swiper-custom-next');
-    const btnPrevClass = cx('swiper-custom-prev');
-    const disableClass = cx('swiper-button-disabled');
+    // const userInfo = useSelector((state) => state.user.user);
     return (
-        <div className={cx('container')}>
-            <div className={cx('close-btn')} title="Exit">
-                <Close style={{ fontSize: '3rem' }} />
-            </div>
-            <div className={btnNextClass}>
-                <NavigateNext style={{ fontSize: '4rem' }} />
-            </div>
-            <div className={btnPrevClass}>
-                <NavigateBefore style={{ fontSize: '4rem' }} />
-            </div>
+        <div className={cx('sidebar-layout')}>
+            <div className={cx('sidebar')}>
+                <div className={cx('logo')}>
+                    <Link>
+                        <img src={logoLight} alt="logo" height="58px" />
+                    </Link>
+                </div>
+                <SidebarItem
+                    icon={<HomeOutlinedIcon style={{ fontSize: '3rem' }} />}
+                    activeIcon={<HomeIcon style={{ fontSize: '3rem' }} />}
+                    isActive={true}
+                    title="Home"
+                    onClick={() => console.log('Home')}
+                />
 
-            <Swiper
-                ref={swiperRef}
-                effect="cards"
-                keyboard={{ enabled: true }}
-                navigation={{ nextEl: `.${btnNextClass}`, prevEl: `.${btnPrevClass}`, disabledClass: disableClass }}
-                modules={[Navigation, EffectCards, Keyboard, Autoplay]}
-                className={cx('swiper')}
-            >
-                {dataTest.map((item) => (
-                    <SwiperSlide className={cx('swiper-slide')} key={item.id}>
-                        <div className={cx('story')}>
-                            <header className={cx('story-header')}>
-                                <div
-                                    className={cx('timer')}
-                                    style={{
-                                        width: '100%',
-                                        height: '2px',
-                                        backgroundColor: '#FFFFFF30',
-                                        borderRadius: '4px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: `${progress}%`,
-                                            height: '100%',
-                                            backgroundColor: 'white',
-                                            transition: progress === 0 ? 'none' : 'width 0.2s linear',
-                                        }}
-                                    />
-                                </div>
-                                <div className={cx('header-content')}>
-                                    <div className={cx('story-info')}>
-                                        <AppAvatar
-                                            src="https://i.pinimg.com/originals/2a/40/ec/2a40ec0333897aa3309ffbfd5bff47d5.jpg"
-                                            size={32}
-                                        />
-                                        <div className={cx('story-username')}>tampham4002</div>
-                                        <div className={cx('story-time')}>2h ago</div>
-                                    </div>
-
-                                    <div className={cx('story-action')}>
-                                        <MoreHoriz className={cx('icon')} />
-                                    </div>
-                                </div>
-                            </header>
-                            <img className={cx('story-img')} src={item.img} alt="" />
-                        </div>
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+                <SidebarItem
+                    icon={<SearchIcon style={{ fontSize: '3rem' }} />}
+                    activeIcon={<HomeIcon style={{ fontSize: '3rem' }} />}
+                    isActive={false}
+                    title="Search"
+                    onClick={() => console.log('Search')}
+                />
+            </div>
+            <div>Main layout</div>
         </div>
     );
 };
