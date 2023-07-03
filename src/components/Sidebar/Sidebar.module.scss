@@ -1,9 +1,3 @@
-.sidebar-layout {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-}
-
 // >= 1920px
 .sidebar {
     display: flex;
@@ -19,21 +13,15 @@
         padding: 20px 12px 8px;
         margin-bottom: 16px;
     }
-}
-
-@media (min-width: 1264px) and (max-width: 1919px) {
-    .content {
-        width: calc(100% - var(--nav-medium-width));
-    }
-    .sidebar {
-        width: var(--nav-medium-width);
-    }
+    user-select: none;
 }
 
 .items-container {
     flex-grow: 1;
 }
 
-.content {
-    width: calc(100% - var(--nav-wide-width));
+@media (min-width: 1264px) and (max-width: 1919px) {
+    .sidebar {
+        width: var(--nav-medium-width);
+    }
 }

@@ -18,6 +18,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
 import AppAvatar from '../../components/Avatar';
 import classNames from 'classnames/bind';
+import SidebarLayout from '../../layouts/SidebarLayout/SidebarLayout';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,8 @@ const Profile = () => {
     //get user info from redux
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.user.userListPost);
+    const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
+
     //console.log('listpost', listPost);
 
     const [name, setName] = useState(userInfo.name);
@@ -158,242 +161,497 @@ const Profile = () => {
     };
 
     return (
-        <DefaultLayout>
-            <div>
-                {showPost && <PostItem data={postData} handleClose={handleClose} />}
+        <div>
+            {isHeaderLayout ? (
+                <DefaultLayout>
+                    <div>
+                        {showPost && <PostItem data={postData} handleClose={handleClose} />}
 
-                {/* View avatar */}
-                <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+                        {/* View avatar */}
+                        <Lightbox
+                            open={toggler}
+                            close={() => setToggler(!toggler)}
+                            slides={[{ src: userInfo.avatar }]}
+                        />
 
-                {/* Change avatar modal */}
-                <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
-                    <ModalHeader closeButton={true}>Confirm change</ModalHeader>
-                    <ModalBody>
-                        {avatar && <img src={avatar.preview} alt="avatar" width="100%" />}
-                        <div className="d-flex justify-content-end">
-                            <button
-                                className="btn btn-primary mt-3"
-                                style={{ fontSize: '1.5rem' }}
-                                onClick={handleChange}
-                            >
-                                Change
-                            </button>
-                        </div>
-                    </ModalBody>
-                </Modal>
-                {/* Edit profile modal */}
-
-                <Modal centered show={modal} onHide={() => setModal(!modal)}>
-                    <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
-                    <ModalBody>
-                        <form onSubmit={handleSubmit}>
-                            <Row>
-                                <div className="d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Name</label>
-                                    </Col>
-                                    <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="form-control"
-                                        placeholder="Enter Name"
-                                    />
-                                </div>
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Username</label>
-                                    </Col>
-                                    <input
-                                        type="text"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        disabled
-                                        className="form-control"
-                                        placeholder="Enter Username"
-                                    />
-                                </div>
-
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Bio</label>
-                                    </Col>
-                                    <textarea
-                                        value={bio}
-                                        onChange={(e) => setBio(e.target.value)}
-                                        className="form-control"
-                                        placeholder="Enter bio"
-                                    />
-                                </div>
-
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Email</label>
-                                    </Col>
-                                    <input
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        disabled
-                                        className="form-control"
-                                        placeholder="Enter Email"
-                                    />
-                                </div>
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Phone Number</label>
-                                    </Col>
-                                    <input
-                                        type="text"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        className="form-control"
-                                        placeholder="Enter Phone"
-                                    />
-                                </div>
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Birthday</label>
-                                    </Col>
-                                    <input
-                                        type="date"
-                                        value={birthday.split('T')[0]}
-                                        onChange={(e) => setBirthday(e.target.value)}
-                                        className="form-control"
-                                    />
-                                </div>
-                                <div className="mt-5 d-flex align-items-center">
-                                    <Col lg={3}>
-                                        <label>Gender</label>
-                                    </Col>
-                                    <label style={{ marginRight: '20px' }}>
-                                        <input
-                                            style={{ marginRight: '5px' }}
-                                            type="radio"
-                                            id="male"
-                                            name="gender"
-                                            checked={gender === 'MALE'}
-                                            onChange={(e) => setGender(e.target.value)}
-                                            value="MALE"
-                                        />
-                                        Male
-                                    </label>
-                                    <label style={{ marginRight: '20px' }}>
-                                        <input
-                                            style={{ marginRight: '5px' }}
-                                            type="radio"
-                                            id="female"
-                                            name="gender"
-                                            checked={gender === 'FEMALE'}
-                                            onChange={(e) => setGender(e.target.value)}
-                                            value="FEMALE"
-                                        />
-                                        Female
-                                    </label>
-                                    <label>
-                                        <input
-                                            style={{ marginRight: '5px' }}
-                                            type="radio"
-                                            id="other"
-                                            name="gender"
-                                            checked={gender === 'OTHER'}
-                                            onChange={(e) => setGender(e.target.value)}
-                                            value="OTHER"
-                                        />
-                                        Other
-                                    </label>
-                                </div>
-                            </Row>
-                            <div className="d-flex justify-content-end">
-                                <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }}>
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </ModalBody>
-                </Modal>
-                <div className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'}`} style={{ minHeight: '100vh' }}>
-                    <div className={cx('container-profile')}>
-                        <header className={cx('profile-header')}>
-                            <div className={cx('dropdown')}>
-                                <div className={cx('profile-image')}>
-                                    <AppAvatar src={userInfo.avatar} size={160} />
-                                </div>
-                                <div className={cx('avatar_action', `${isDarkMode ? 'theme-light' : ''}`)}>
-                                    <div className={cx('action_item')} onClick={() => setToggler(!toggler)}>
-                                        View avatar
-                                    </div>
-                                    <div className={cx('action_item')} onClick={() => changeImage()}>
-                                        Change avatar
-                                    </div>
-                                    <input
-                                        type="file"
-                                        hidden={true}
-                                        ref={inputRef}
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            file.preview = URL.createObjectURL(file);
-                                            setAvatar(file);
-                                            setModal2(!modal2);
-                                        }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={cx('content')}>
-                                <div className={cx('profile')}>
-                                    <h4 className={cx('profile-username')}>{userInfo.username}</h4>
+                        {/* Change avatar modal */}
+                        <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
+                            <ModalHeader closeButton={true}>Confirm change</ModalHeader>
+                            <ModalBody>
+                                {avatar && <img src={avatar.preview} alt="avatar" width="100%" />}
+                                <div className="d-flex justify-content-end">
                                     <button
-                                        className={cx('edit-profile', `${isDarkMode ? 'theme-dark' : ''}`)}
-                                        onClick={() => setModal(!modal)}
+                                        className="btn btn-primary mt-3"
+                                        style={{ fontSize: '1.5rem' }}
+                                        onClick={handleChange}
                                     >
-                                        Edit profile
-                                    </button>
-                                    <button className={cx('settings', `${isDarkMode ? 'theme-dark' : ''}`)}>
-                                        <FiSettings size="25px" />
+                                        Change
                                     </button>
                                 </div>
-                                <div className={cx('profile-follow')}>
-                                    <h5 className={cx('profile-follow-count')}>
-                                        <span>40</span> posts
-                                    </h5>
-                                    <h5 className={cx('profile-follow-count')}>
-                                        <span>50</span> followers
-                                    </h5>
-                                    <h5 className={cx('profile-follow-count')}>
-                                        <span>60</span> following
-                                    </h5>
-                                </div>
-                                <div className={cx('profile-bio')}>
-                                    <div className={cx('profile-real-name')}>{userInfo.name}</div>
-                                    <p>{userInfo.bio}</p>
-                                </div>
-                            </div>
-                        </header>
+                            </ModalBody>
+                        </Modal>
+                        {/* Edit profile modal */}
 
+                        <Modal centered show={modal} onHide={() => setModal(!modal)}>
+                            <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
+                            <ModalBody>
+                                <form onSubmit={handleSubmit}>
+                                    <Row>
+                                        <div className="d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Name</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter Name"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Username</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                disabled
+                                                className="form-control"
+                                                placeholder="Enter Username"
+                                            />
+                                        </div>
+
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Bio</label>
+                                            </Col>
+                                            <textarea
+                                                value={bio}
+                                                onChange={(e) => setBio(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter bio"
+                                            />
+                                        </div>
+
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Email</label>
+                                            </Col>
+                                            <input
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                disabled
+                                                className="form-control"
+                                                placeholder="Enter Email"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Phone Number</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter Phone"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Birthday</label>
+                                            </Col>
+                                            <input
+                                                type="date"
+                                                value={birthday.split('T')[0]}
+                                                onChange={(e) => setBirthday(e.target.value)}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Gender</label>
+                                            </Col>
+                                            <label style={{ marginRight: '20px' }}>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="male"
+                                                    name="gender"
+                                                    checked={gender === 'MALE'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="MALE"
+                                                />
+                                                Male
+                                            </label>
+                                            <label style={{ marginRight: '20px' }}>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="female"
+                                                    name="gender"
+                                                    checked={gender === 'FEMALE'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="FEMALE"
+                                                />
+                                                Female
+                                            </label>
+                                            <label>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="other"
+                                                    name="gender"
+                                                    checked={gender === 'OTHER'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="OTHER"
+                                                />
+                                                Other
+                                            </label>
+                                        </div>
+                                    </Row>
+                                    <div className="d-flex justify-content-end">
+                                        <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }}>
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            </ModalBody>
+                        </Modal>
                         <div
-                            style={{
-                                borderTop: isDarkMode ? '1px solid white' : '1px solid black',
-                                padding: '20px 0',
-                            }}
+                            className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'}`}
+                            style={{ minHeight: '100vh' }}
                         >
-                            <div className={cx('gallery')}>
-                                {listPost &&
-                                    listPost.map((result) => (
-                                        <img
-                                            key={result.id}
-                                            className={cx('gallery-item')}
-                                            src={result.files[0].value}
-                                            alt={result.value}
-                                            onClick={() => postDetail(result)}
-                                        />
-                                    ))}
+                            <div className={cx('container-profile')}>
+                                <header className={cx('profile-header')}>
+                                    <div className={cx('dropdown')}>
+                                        <div className={cx('profile-image')}>
+                                            <AppAvatar src={userInfo.avatar} size={160} />
+                                        </div>
+                                        <div className={cx('avatar_action', `${isDarkMode ? 'theme-light' : ''}`)}>
+                                            <div className={cx('action_item')} onClick={() => setToggler(!toggler)}>
+                                                View avatar
+                                            </div>
+                                            <div className={cx('action_item')} onClick={() => changeImage()}>
+                                                Change avatar
+                                            </div>
+                                            <input
+                                                type="file"
+                                                hidden={true}
+                                                ref={inputRef}
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    file.preview = URL.createObjectURL(file);
+                                                    setAvatar(file);
+                                                    setModal2(!modal2);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className={cx('content')}>
+                                        <div className={cx('profile')}>
+                                            <h4 className={cx('profile-username')}>{userInfo.username}</h4>
+                                            <button
+                                                className={cx('edit-profile', `${isDarkMode ? 'theme-dark' : ''}`)}
+                                                onClick={() => setModal(!modal)}
+                                            >
+                                                Edit profile
+                                            </button>
+                                            <button className={cx('settings', `${isDarkMode ? 'theme-dark' : ''}`)}>
+                                                <FiSettings size="25px" />
+                                            </button>
+                                        </div>
+                                        <div className={cx('profile-follow')}>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>40</span> posts
+                                            </h5>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>50</span> followers
+                                            </h5>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>60</span> following
+                                            </h5>
+                                        </div>
+                                        <div className={cx('profile-bio')}>
+                                            <div className={cx('profile-real-name')}>{userInfo.name}</div>
+                                            <p>{userInfo.bio}</p>
+                                        </div>
+                                    </div>
+                                </header>
+
+                                <div
+                                    style={{
+                                        borderTop: isDarkMode ? '1px solid white' : '1px solid black',
+                                        padding: '20px 0',
+                                    }}
+                                >
+                                    <div className={cx('gallery')}>
+                                        {listPost &&
+                                            listPost.map((result) => (
+                                                <img
+                                                    key={result.id}
+                                                    className={cx('gallery-item')}
+                                                    src={result.files[0].value}
+                                                    alt={result.value}
+                                                    onClick={() => postDetail(result)}
+                                                />
+                                            ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </DefaultLayout>
+                </DefaultLayout>
+            ) : (
+                <SidebarLayout>
+                    <div>
+                        {showPost && <PostItem data={postData} handleClose={handleClose} />}
+
+                        {/* View avatar */}
+                        <Lightbox
+                            open={toggler}
+                            close={() => setToggler(!toggler)}
+                            slides={[{ src: userInfo.avatar }]}
+                        />
+
+                        {/* Change avatar modal */}
+                        <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
+                            <ModalHeader closeButton={true}>Confirm change</ModalHeader>
+                            <ModalBody>
+                                {avatar && <img src={avatar.preview} alt="avatar" width="100%" />}
+                                <div className="d-flex justify-content-end">
+                                    <button
+                                        className="btn btn-primary mt-3"
+                                        style={{ fontSize: '1.5rem' }}
+                                        onClick={handleChange}
+                                    >
+                                        Change
+                                    </button>
+                                </div>
+                            </ModalBody>
+                        </Modal>
+                        {/* Edit profile modal */}
+
+                        <Modal centered show={modal} onHide={() => setModal(!modal)}>
+                            <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
+                            <ModalBody>
+                                <form onSubmit={handleSubmit}>
+                                    <Row>
+                                        <div className="d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Name</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter Name"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Username</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                disabled
+                                                className="form-control"
+                                                placeholder="Enter Username"
+                                            />
+                                        </div>
+
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Bio</label>
+                                            </Col>
+                                            <textarea
+                                                value={bio}
+                                                onChange={(e) => setBio(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter bio"
+                                            />
+                                        </div>
+
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Email</label>
+                                            </Col>
+                                            <input
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                disabled
+                                                className="form-control"
+                                                placeholder="Enter Email"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Phone Number</label>
+                                            </Col>
+                                            <input
+                                                type="text"
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                className="form-control"
+                                                placeholder="Enter Phone"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Birthday</label>
+                                            </Col>
+                                            <input
+                                                type="date"
+                                                value={birthday.split('T')[0]}
+                                                onChange={(e) => setBirthday(e.target.value)}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="mt-5 d-flex align-items-center">
+                                            <Col lg={3}>
+                                                <label>Gender</label>
+                                            </Col>
+                                            <label style={{ marginRight: '20px' }}>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="male"
+                                                    name="gender"
+                                                    checked={gender === 'MALE'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="MALE"
+                                                />
+                                                Male
+                                            </label>
+                                            <label style={{ marginRight: '20px' }}>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="female"
+                                                    name="gender"
+                                                    checked={gender === 'FEMALE'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="FEMALE"
+                                                />
+                                                Female
+                                            </label>
+                                            <label>
+                                                <input
+                                                    style={{ marginRight: '5px' }}
+                                                    type="radio"
+                                                    id="other"
+                                                    name="gender"
+                                                    checked={gender === 'OTHER'}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    value="OTHER"
+                                                />
+                                                Other
+                                            </label>
+                                        </div>
+                                    </Row>
+                                    <div className="d-flex justify-content-end">
+                                        <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }}>
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            </ModalBody>
+                        </Modal>
+                        <div
+                            className={`${isDarkMode ? 'theme-dark' : 'bg-content-light'}`}
+                            style={{ minHeight: '100vh' }}
+                        >
+                            <div className={cx('container-profile')}>
+                                <header className={cx('profile-header')}>
+                                    <div className={cx('dropdown')}>
+                                        <div className={cx('profile-image')}>
+                                            <AppAvatar src={userInfo.avatar} size={160} />
+                                        </div>
+                                        <div className={cx('avatar_action', `${isDarkMode ? 'theme-light' : ''}`)}>
+                                            <div className={cx('action_item')} onClick={() => setToggler(!toggler)}>
+                                                View avatar
+                                            </div>
+                                            <div className={cx('action_item')} onClick={() => changeImage()}>
+                                                Change avatar
+                                            </div>
+                                            <input
+                                                type="file"
+                                                hidden={true}
+                                                ref={inputRef}
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    file.preview = URL.createObjectURL(file);
+                                                    setAvatar(file);
+                                                    setModal2(!modal2);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className={cx('content')}>
+                                        <div className={cx('profile')}>
+                                            <h4 className={cx('profile-username')}>{userInfo.username}</h4>
+                                            <button
+                                                className={cx('edit-profile', `${isDarkMode ? 'theme-dark' : ''}`)}
+                                                onClick={() => setModal(!modal)}
+                                            >
+                                                Edit profile
+                                            </button>
+                                            <button className={cx('settings', `${isDarkMode ? 'theme-dark' : ''}`)}>
+                                                <FiSettings size="25px" />
+                                            </button>
+                                        </div>
+                                        <div className={cx('profile-follow')}>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>40</span> posts
+                                            </h5>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>50</span> followers
+                                            </h5>
+                                            <h5 className={cx('profile-follow-count')}>
+                                                <span>60</span> following
+                                            </h5>
+                                        </div>
+                                        <div className={cx('profile-bio')}>
+                                            <div className={cx('profile-real-name')}>{userInfo.name}</div>
+                                            <p>{userInfo.bio}</p>
+                                        </div>
+                                    </div>
+                                </header>
+
+                                <div
+                                    style={{
+                                        borderTop: isDarkMode ? '1px solid white' : '1px solid black',
+                                        padding: '20px 0',
+                                    }}
+                                >
+                                    <div className={cx('gallery')}>
+                                        {listPost &&
+                                            listPost.map((result) => (
+                                                <img
+                                                    key={result.id}
+                                                    className={cx('gallery-item')}
+                                                    src={result.files[0].value}
+                                                    alt={result.value}
+                                                    onClick={() => postDetail(result)}
+                                                />
+                                            ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </SidebarLayout>
+            )}
+        </div>
     );
 };
 

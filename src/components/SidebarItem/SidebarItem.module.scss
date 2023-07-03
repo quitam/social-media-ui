@@ -4,14 +4,23 @@
     align-items: center;
     margin: 4px 0;
     padding: 10px;
+
     cursor: pointer;
     &:hover {
-        background-color: #fafafa;
+        background-color: #f2f2f2;
         border-radius: 2rem;
+        :first-child {
+            scale: 1.02;
+        }
     }
 }
 .sidebar-title {
     font-size: 1.6rem;
     padding-left: 16px;
     margin: 0;
+}
+.hihi {
+    &:hover {
+        background-color: #3a3b3c;
+    }
 }

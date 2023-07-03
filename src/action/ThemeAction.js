@@ -15,3 +15,13 @@ export const openStory = (index) => {
 export const closeStory = () => {
     return { type: 'CLOSE_STORY' };
 };
+
+export const headerLayout = () => {
+    localStorage.setItem('layoutHeader', true);
+    return { type: 'USE_HEADER' };
+};
+
+export const sidebarLayout = () => {
+    localStorage.setItem('layoutHeader', false);
+    return { type: 'USE_SIDE_BAR' };
+};

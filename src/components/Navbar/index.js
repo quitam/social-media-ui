@@ -16,7 +16,6 @@ import Search from '../Search';
 import useFirestore from '../../hooks/useFirestore';
 import { toast, ToastContainer } from 'react-toastify';
 import logoLight from '../../assets/images/logo/logo-light.png';
-import { FiSun, FiMoon } from 'react-icons/fi';
 import { ChatOutlined, AddCircleOutline } from '@mui/icons-material';
 
 import { GrClose } from 'react-icons/gr';
@@ -31,7 +30,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { updateListPost } from '../../action/PostAction';
 import { logoutUser, updateUserListPost } from '../../action/UserAction';
 import { updateCurrentRoom } from '../../action/ChatAction';
-import { enableDarkMode, disableDarkMode } from '../../action/ThemeAction';
+import { headerLayout, sidebarLayout } from '../../action/ThemeAction';
 
 // Service
 import * as PostService from '../../services/PostService';
@@ -43,6 +42,7 @@ const Navbar = () => {
     const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
+    const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
     //const count = useSelector((state) => state.chat.count);
     const [count, setCount] = useState(0);
     const [modal, setModal] = useState(false);
@@ -280,19 +280,11 @@ const Navbar = () => {
                                     </div>
                                     <div
                                         className={cx('dropdown-item')}
-                                        onClick={() =>
-                                            isDarkMode ? dispatch(disableDarkMode()) : dispatch(enableDarkMode())
-                                        }
+                                        onClick={() => dispatch(isHeaderLayout ? sidebarLayout() : headerLayout())}
                                     >
-                                        <span>{isDarkMode ? 'Dark mode' : 'Light mode'}</span>
-
-                                        <div title="Dark/Light mode" style={{ height: '30px' }}>
-                                            {isDarkMode ? (
-                                                <FiMoon size="30px" fill="grey" />
-                                            ) : (
-                                                <FiSun size="30px" fill="yellow" color="orange" />
-                                            )}
-                                        </div>
+                                        {/* <span>{isHeaderLayout ? 'Header layout' : 'Light mode'}</span> */}
+                                        <span>Change layout</span>
+                                        <div title="Dark/Light mode" style={{ height: '30px' }}></div>
                                     </div>
                                     <div className={cx('dropdown-item')} onClick={handleLogout}>
                                         <span>Logout</span>

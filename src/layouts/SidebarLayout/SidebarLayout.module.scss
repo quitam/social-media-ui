@@ -1,0 +1,12 @@
+.sidebar-layout {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
+}
