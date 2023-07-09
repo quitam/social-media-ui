@@ -40,10 +40,6 @@ const Post = ({ data }) => {
 
     //State ẩn/hiện Comment action
     const [toggleClass, setToggleClass] = useState(false);
-    const [commentId, setCommentId] = useState();
-    //State để Rep Comment
-    const [repId, setRepId] = useState('');
-    const [repUser, setRepUser] = useState('');
 
     const [comment, setComment] = useState('');
 
@@ -53,17 +49,6 @@ const Post = ({ data }) => {
     const moreRef = useRef();
 
     //Format list post, Add prop children to comment if have rep comment
-    const format = (list) => {
-        // eslint-disable-next-line
-        let listComment = list.filter((item) => {
-            if (!item.comment) {
-                let tmp = item;
-                tmp.children = list.filter((item) => item.comment && item.comment.id === tmp.id);
-                return tmp;
-            }
-        });
-        return listComment;
-    };
 
     const openPost = () => {
         dispatch(updateDetailPost(data));
@@ -101,24 +86,11 @@ const Post = ({ data }) => {
                 );
 
                 if (data.user.username !== userInfo.username) {
-                    if (repId) {
-                        if (data.user.username === repUser) {
-                            const content = `${userInfo.avatar}###${userInfo.name} replied your comment on your post.`;
-                            createNotify(content, data.user.username);
-                        } else {
-                            const content1 = `${userInfo.avatar}###${userInfo.name} replied ${repUser}'s comment on your post.`;
-                            const content2 = `${userInfo.avatar}###${userInfo.name} replied your comment on ${data.user.username}'s post.`;
-                            createNotify(content1, data.user.username);
-                            createNotify(content2, repUser);
-                        }
-                    } else {
-                        const content = `${userInfo.avatar}###${userInfo.name} commented on your post.`;
-                        createNotify(content, data.user.username);
-                    }
+                    const content = `${userInfo.avatar}###${userInfo.name} commented on your post.`;
+                    createNotify(content, data.user.username);
                 }
             }
         });
-        setRepId('');
     };
     //Ẩn bài Post
     const hiddenPost = () => {

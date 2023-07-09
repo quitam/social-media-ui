@@ -6,7 +6,6 @@ import { publicRoutes, privateRoutes, ScrollToTop } from './routes';
 function App() {
     const token = useSelector((state) => state.user.token);
     console.log(token);
-    console.log('hihi');
     return (
         <Router>
             <ScrollToTop />

@@ -19,7 +19,7 @@ export let endpoints = {
     createNotify: '/notify',
 };
 const request = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
+    baseURL: process.env.REACT_APP_BASE_URL,
 });
 export const getRQ = async (path, options = []) => {
     const response = await request.get(path, options);

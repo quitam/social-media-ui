@@ -1,5 +1,5 @@
 import ThemeComponent from '@components/Theme';
-import Sidebar from '@layouts/SidebarLayout/components/Sidebar';
+import Sidebar from './components/Sidebar';
 
 import classNames from 'classnames/bind';
 import styles from './SidebarLayout.module.scss';

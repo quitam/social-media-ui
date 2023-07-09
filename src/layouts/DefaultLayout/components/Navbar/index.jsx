@@ -30,7 +30,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { updateListPost } from '@/action/PostAction';
 import { logoutUser, updateUserListPost } from '@/action/UserAction';
 import { updateCurrentRoom } from '@/action/ChatAction';
-import { headerLayout, sidebarLayout } from '@/action/ThemeAction';
+import { sidebarLayout } from '@/action/ThemeAction';
 
 // Service
 import * as PostService from '@/services/PostService';
