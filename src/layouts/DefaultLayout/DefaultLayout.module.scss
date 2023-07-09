@@ -1,0 +1,9 @@
+.default-layout {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    width: 100%;
+    height: calc(100vh - var(--default-layout-header-height));
+    overflow: auto;
+}

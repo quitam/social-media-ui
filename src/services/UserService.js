@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import * as request from '../utils/request';
 import { endpoints } from '../utils/request';
 

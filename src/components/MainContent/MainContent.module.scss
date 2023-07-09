@@ -1,0 +1,23 @@
+.main-container {
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    .main-wrapper {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+}
+
+.post-content {
+    padding-right: 20px;
+    flex: 1;
+    max-height: calc(100vh - 20px);
+    overflow-y: scroll;
+}
+
+@media (max-width: 1000px) {
+    .right-section {
+        display: none;
+    }
+}

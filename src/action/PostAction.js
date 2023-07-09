@@ -4,3 +4,10 @@ export function updateListPost(listPost) {
         listPost: listPost,
     };
 }
+
+export function updateDetailPost(detailPost) {
+    return {
+        type: 'UPDATE_DETAIL_POST',
+        detailPost: detailPost,
+    };
+}

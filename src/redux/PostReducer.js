@@ -1,5 +1,6 @@
 const initialState = {
     listPost: [],
+    detailPost: {},
 };
 
 const postReducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ const postReducer = (state = initialState, action) => {
             return {
                 ...state,
                 listPost: action.listPost,
+            };
+        case 'UPDATE_DETAIL_POST':
+            return {
+                ...state,
+                detailPost: action.detailPost,
             };
         default:
             return state;

@@ -18,6 +18,14 @@
             font-size: 14px;
         }
     }
+    .view-all {
+        padding: 1rem;
+        font-weight: 500;
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
     .post__reactIcon {
         margin-left: 15px;
         cursor: pointer;
@@ -205,6 +213,6 @@
 }
 
 .post-theme-dark {
-    background-color: #3a3a3a !important;
+    background-color: #181818 !important;
     color: #fff;
 }

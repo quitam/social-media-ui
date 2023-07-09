@@ -49,6 +49,7 @@ button {
 .theme-dark {
     background-color: #181818;
     color: #fff;
+    transition: all 0.3s;
 }
 
 .active {
@@ -58,10 +59,6 @@ button {
 
 ::-webkit-scrollbar {
     width: 7px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -76,8 +73,18 @@ button {
 .theme-light {
     background-color: #fff !important;
     color: black;
+    transition: all 0.3s;
 }
 
 .bg-content-light {
     background-color: #fafafa;
+}
+
+.username-hover {
+    :first-child {
+        &:hover {
+            color: var(--primary);
+            cursor: pointer;
+        }
+    }
 }
