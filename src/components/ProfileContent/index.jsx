@@ -377,15 +377,19 @@ const ProfileContent = () => {
                     >
                         <div className={cx('gallery')}>
                             {listPost &&
-                                listPost.map((result) => (
-                                    <img
-                                        key={result.id}
-                                        className={cx('gallery-item')}
-                                        src={result.files[0].value}
-                                        alt={result.value}
-                                        onClick={() => openPost(result)}
-                                    />
-                                ))}
+                                listPost.map((result) => {
+                                    return (
+                                        result.files.length > 0 && (
+                                            <img
+                                                key={result.id}
+                                                className={cx('gallery-item')}
+                                                src={result.files[0].value}
+                                                alt={result.value}
+                                                onClick={() => openPost(result)}
+                                            />
+                                        )
+                                    );
+                                })}
                         </div>
                     </div>
                 </div>

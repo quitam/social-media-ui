@@ -91,6 +91,7 @@ const Navbar = () => {
 
     //xử lý khi thêm một bài Post
     const handlePost = (e) => {
+        console.log(picture);
         e.preventDefault();
         const createPost = async () => {
             const obj = {
