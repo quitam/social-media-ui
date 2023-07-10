@@ -85,3 +85,15 @@ export const repComment = async (id, data) => {
         return res;
     } catch (e) {}
 };
+
+export const postReaction = async (id, data) => {
+    try {
+        const res = await request.postRQ(endpoints['postReaction'] + '/' + id, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};

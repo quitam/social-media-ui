@@ -184,11 +184,13 @@ const Post = ({ data }) => {
 
             {/* Image Post*/}
             <div>
-                <img
-                    src={data.files[0].value}
-                    alt="Post"
-                    style={{ width: '700px', height: '600px', objectFit: 'contain', background: '#181818' }}
-                />
+                {data.files.length > 0 && (
+                    <img
+                        src={data.files[0].value}
+                        alt="Post"
+                        style={{ width: '700px', height: '600px', objectFit: 'contain', background: '#181818' }}
+                    />
+                )}
                 <div className={cx('post-caption')}>
                     <div className="position-relative">
                         <b>{data.user.name}:</b> <span style={{ fontWeight: '300', margin: '10px' }}>{data.value}</span>

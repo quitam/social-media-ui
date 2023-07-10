@@ -36,6 +36,7 @@ const PostDetail = ({ onClose }) => {
     const dispatch = useDispatch();
     const detailPost = useSelector((state) => state.post.detailPost);
     const listPost = useSelector((state) => state.post.listPost);
+    console.log(detailPost);
     const userInfo = useSelector((state) => state.user.user);
 
     //State để Rep Comment
@@ -45,6 +46,37 @@ const PostDetail = ({ onClose }) => {
 
     const cmtRef = useRef();
     const endListRef = createRef(null);
+    const listReaction = [
+        { icon: likeIcon, name: 'LIKE' },
+        { icon: loveIcon, name: 'LOVE' },
+        { icon: hahaIcon, name: 'HAHA' },
+        { icon: wowIcon, name: 'WOW' },
+        { icon: sadIcon, name: 'SAD' },
+        { icon: angryIcon, name: 'ANGRY' },
+    ];
+
+    // Xử lý khi reaction post
+    const postReacton = async (reation) => {
+        // if(detailPost.reactions.map(item=>{
+        //     item.user.username
+        // }))
+
+        const result = await PostService.postReaction(detailPost.id, reation);
+        if (result.success) {
+            const { post, ...orther } = result.data;
+            dispatch(updateDetailPost({ ...detailPost, reactions: [...detailPost.reactions, orther] }));
+            dispatch(
+                updateListPost(
+                    listPost.map((item) => {
+                        if (item.id === detailPost.id) {
+                            item = detailPost;
+                        }
+                        return item;
+                    }),
+                ),
+            );
+        }
+    };
 
     //Xử lý khi Comment
     const postComment = (e) => {
@@ -138,11 +170,13 @@ const PostDetail = ({ onClose }) => {
                         <Close style={{ fontSize: '3rem' }} />
                     </div>
                     <div className={cx('wrapper')}>
-                        <div className={cx('left')}>
-                            <div className={cx('img-post')}>
-                                <img src={detailPost.files[0].value} alt="" />
+                        {detailPost.files.length > 0 && (
+                            <div className={cx('left')}>
+                                <div className={cx('img-post')}>
+                                    <img src={detailPost.files[0].value} alt="" />
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <div className={cx('right')}>
                             {/* Header Post */}
                             <div className={cx('post-header')}>
@@ -189,14 +223,17 @@ const PostDetail = ({ onClose }) => {
                                     </div>
                                     <div className={cx('action')}>
                                         <div className={cx('dropdown-icons')}>
-                                            <FiHeart size="25px" className={cx('post-react')} />
+                                            <FiHeart size="25px" className={cx('post-react')} onClick={postReacton} />
                                             <div className={cx('dropdown-wrap')}>
-                                                <img src={likeIcon} alt="like" className={cx('dropdown-icon')} />
-                                                <img src={loveIcon} alt="love" className={cx('dropdown-icon')} />
-                                                <img src={hahaIcon} alt="haha" className={cx('dropdown-icon')} />
-                                                <img src={wowIcon} alt="wow" className={cx('dropdown-icon')} />
-                                                <img src={sadIcon} alt="sad" className={cx('dropdown-icon')} />
-                                                <img src={angryIcon} alt="angry" className={cx('dropdown-icon')} />
+                                                {listReaction.map((item, index) => (
+                                                    <img
+                                                        key={index}
+                                                        src={item.icon}
+                                                        alt="like"
+                                                        className={cx('dropdown-icon')}
+                                                        onClick={() => postReacton(item.name)}
+                                                    />
+                                                ))}
                                             </div>
                                         </div>
                                         <FiMessageSquare
@@ -206,7 +243,12 @@ const PostDetail = ({ onClose }) => {
                                         />
                                         <FiSend size="25px" className={cx('post-react')} />
                                     </div>
-                                    <div className={cx('all-reaction')}>0 Like</div>
+                                    <div className={cx('all-reaction')}>
+                                        {detailPost.reactions.filter((item) => item.status !== 'DISABLE').length}{' '}
+                                        {detailPost.reactions.filter((item) => item.status !== 'DISABLE').length > 1
+                                            ? 'Reactions'
+                                            : 'Reaction'}
+                                    </div>
                                 </div>
 
                                 {/* Input Comment */}

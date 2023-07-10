@@ -4,7 +4,7 @@
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: #1a1a1aee;
+    background-color: #1a1a1abb;
     color: black;
     height: 100vh;
     width: 100vw;
@@ -36,13 +36,13 @@
     //background-color: #242526;
     background-color: white;
     border-radius: 4px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     height: 90vh;
-    width: 1024px;
     overflow: hidden;
+    animation: fadeIn 0.2s ease-in;
 }
 .left {
+    flex: 1;
     position: relative;
     background-color: black;
     display: flex;
@@ -53,16 +53,18 @@
     border-right: 1px solid #ccc;
     .img-post {
         img {
-            max-height: 100%;
+            max-height: 90vh;
             max-width: 100%;
             object-fit: cover;
         }
     }
 }
 .right {
+    flex: 1;
     min-height: 100%;
     display: flex;
     flex-direction: column;
+    width: 512px;
     .post-header {
         position: relative;
         height: 60px;
@@ -157,6 +159,9 @@
         padding: 5px;
         border-radius: 20px;
         position: absolute;
+        top: -4rem;
+        left: -5px;
+
         display: none;
         .dropdown-icon {
             cursor: pointer;
@@ -187,5 +192,15 @@
     }
     .wrapper {
         height: 80vh;
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(200px) scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }

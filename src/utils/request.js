@@ -17,6 +17,7 @@ export let endpoints = {
     getNotify: '/notify/user',
     seenNotify: '/notify/seen',
     createNotify: '/notify',
+    postReaction: '/post/reaction',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
