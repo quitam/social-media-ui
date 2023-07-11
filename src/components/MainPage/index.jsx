@@ -10,6 +10,7 @@ const MainPage = () => {
     const dispatch = useDispatch();
     //get listPost from redux
     const listPost = useSelector((state) => state.post.listPost);
+    console.log(listPost);
 
     useEffect(() => {
         fetchApi();

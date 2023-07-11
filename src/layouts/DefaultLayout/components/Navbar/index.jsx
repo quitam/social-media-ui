@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
-import { Modal, ModalHeader, ModalBody, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 
@@ -18,35 +18,27 @@ import { toast, ToastContainer } from 'react-toastify';
 import logoLight from '@/assets/images/logo/logo-light.png';
 import { ChatOutlined, AddCircleOutline } from '@mui/icons-material';
 
-import { GrClose } from 'react-icons/gr';
-import { FcAddImage } from 'react-icons/fc';
-import { Avatar } from '@mui/material';
-
 // Styles
 import styles from './Navbar.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Action
-import { updateListPost } from '@/action/PostAction';
 import { logoutUser, updateUserListPost } from '@/action/UserAction';
 import { updateCurrentRoom } from '@/action/ChatAction';
 import { sidebarLayout } from '@/action/ThemeAction';
 
 // Service
-import * as PostService from '@/services/PostService';
 import * as UserService from '@/services/UserService';
 import AppAvatar from '@components/Avatar';
+import CreatePost from '@/components/CreatePost';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
-    const listPost = useSelector((state) => state.post.listPost);
     const userInfo = useSelector((state) => state.user.user);
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     //const count = useSelector((state) => state.chat.count);
     const [count, setCount] = useState(0);
     const [modal, setModal] = useState(false);
-    const [picture, setPicture] = useState();
-    const [caption, setCaption] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -61,18 +53,8 @@ const Navbar = () => {
             navigate('/profile');
         }
     };
-    // hàm Clear
-    useEffect(() => {
-        return () => {
-            picture && URL.revokeObjectURL(picture.preview);
-        };
-    }, [picture]);
-
-    //xem trước ảnh được load lên
-    const handlePreview = (e) => {
-        const file = e.target.files[0];
-        file.preview = URL.createObjectURL(file);
-        setPicture(file);
+    const handleCloseModal = () => {
+        setModal(false);
     };
 
     //xử lý khi Logout
@@ -86,45 +68,6 @@ const Navbar = () => {
         //set offline in firestore
         updateDoc(doc(db, 'user', userInfo.username), {
             isOnline: false,
-        });
-    };
-
-    //xử lý khi thêm một bài Post
-    const handlePost = (e) => {
-        console.log(picture);
-        e.preventDefault();
-        const createPost = async () => {
-            const obj = {
-                value: caption,
-            };
-            const json = JSON.stringify(obj);
-            const blob = new Blob([json], {
-                type: 'application/json',
-            });
-            const data = new FormData();
-            data.append('info', blob);
-            if (picture) {
-                data.append('files', picture);
-            }
-            const post = await PostService.createPost(data);
-
-            return post;
-        };
-        createPost().then((data) => {
-            if (data.success) {
-                dispatch(updateListPost([data.data, ...listPost]));
-                setModal(!modal);
-                setCaption('');
-                setPicture();
-                toast.success('Post success', {
-                    position: 'bottom-right',
-                    autoClose: 1500,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    theme: 'dark',
-                });
-            }
         });
     };
 
@@ -158,81 +101,8 @@ const Navbar = () => {
     return (
         <div>
             <ToastContainer />
-            {/* Modal thêm bài Post mới */}
-            <Modal
-                size="lg"
-                centered
-                show={modal}
-                onHide={() => {
-                    setModal(!modal);
-                    setCaption('');
-                    setPicture();
-                }}
-            >
-                <ModalHeader closeButton={true}>Create a new Post</ModalHeader>
-                <ModalBody>
-                    <form>
-                        <Row>
-                            <div className="d-flex">
-                                <Col>
-                                    <div
-                                        // nếu không có ảnh thì hiện input ở giữa
-                                        className={`d-flex ${
-                                            picture
-                                                ? 'justify-content-between'
-                                                : 'justify-content-center align-items-center h-100 d-inline-block'
-                                        }`}
-                                    >
-                                        <input className="d-none" type="file" onChange={handlePreview} id="file" />
-                                        <label htmlFor="file" role="button">
-                                            <FcAddImage size="50px" />
-                                            {picture ? (
-                                                <span className="ms-2">{picture.name}</span>
-                                            ) : (
-                                                <span className="ms-2">Add a picture</span>
-                                            )}
-                                        </label>
-                                        {picture && (
-                                            <button
-                                                className="bg-transparent"
-                                                type="button"
-                                                onClick={() => setPicture()}
-                                            >
-                                                <GrClose />
-                                            </button>
-                                        )}
-                                    </div>
-                                    {picture && <img src={picture.preview} alt="error" className={cx('img-preview')} />}
-                                </Col>
-                                <Col>
-                                    <div className="d-flex align-items-center ms-3">
-                                        <Avatar src={userInfo.avatar} />
-                                        <div className="ms-3">{userInfo.username}</div>
-                                    </div>
-                                    <div>
-                                        <textarea
-                                            value={caption}
-                                            onChange={(e) => setCaption(e.target.value)}
-                                            rows="10"
-                                            placeholder="Write a caption..."
-                                            className="form-control mt-3 ms-1 ps-3 pt-3"
-                                        ></textarea>
-                                    </div>
-                                </Col>
-                            </div>
-                        </Row>
-                        <div className="d-flex justify-content-end">
-                            <button
-                                className="btn btn-primary mt-3"
-                                style={{ fontSize: '1.5rem' }}
-                                onClick={handlePost}
-                            >
-                                Post
-                            </button>
-                        </div>
-                    </form>
-                </ModalBody>
-            </Modal>
+            {modal && <CreatePost onClose={handleCloseModal} />}
+
             <div className={cx(`${isDarkMode ? 'theme-dark' : 'theme-light'}`, 'navbar__barContent')}>
                 <Container style={{ maxWidth: 'var(--default-layout-width)' }}>
                     <Row className="d-flex align-items-center justify-content-between">
@@ -249,7 +119,7 @@ const Navbar = () => {
                                 titleAccess="Create"
                                 style={{ fontSize: '3rem', transition: 'all 0.3s' }}
                                 className={cx('navbar-icon', 'add')}
-                                onClick={() => setModal(!modal)}
+                                onClick={() => setModal(true)}
                             />
                             <div className={cx('messages')}>
                                 <ChatOutlined

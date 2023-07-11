@@ -102,3 +102,14 @@ export const postReaction = async (id, data) => {
         return res;
     } catch (e) {}
 };
+export const unReactionPost = async (id) => {
+    try {
+        const res = await request.postRQ(endpoints['unReactionPost'] + '/' + id, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};

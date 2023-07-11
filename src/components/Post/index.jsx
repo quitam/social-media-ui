@@ -79,6 +79,7 @@ const Post = ({ data }) => {
                         listPost.map((item) => {
                             if (item.id === result.data.post.id) {
                                 item.comments = [...item.comments, result.data];
+                                item.countComment++;
                             }
                             return item;
                         }),
@@ -219,7 +220,9 @@ const Post = ({ data }) => {
                     />
                     <FiSend size="25px" className={cx('post__reactIcon')} />
                 </div>
-                <div style={{ fontSize: '14px', marginLeft: '10px', fontWeight: '100' }}>9999 Likes</div>
+                <div style={{ fontSize: '14px', marginLeft: '20px', marginBottom: '10px', fontWeight: '100' }}>
+                    {data.countReaction} {data.countReaction > 1 ? 'Likes' : 'Like'}
+                </div>
             </div>
 
             {/* List Comment */}
@@ -310,9 +313,11 @@ const Post = ({ data }) => {
                                 </div>
                             ),
                     )} */}
-                <div className={cx('view-all')} onClick={openPost}>
-                    View all {data.comments.length} comments
-                </div>
+                {data.countComment > 0 && (
+                    <div className={cx('view-all')} onClick={openPost}>
+                        View {data.countComment} {data.countComment > 1 ? 'comments' : 'comment'}
+                    </div>
+                )}
 
                 {/* Input Comment */}
                 <form onSubmit={postComment}>

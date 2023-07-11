@@ -57,10 +57,6 @@ const PostDetail = ({ onClose }) => {
 
     // Xử lý khi reaction post
     const postReacton = async (reation) => {
-        // if(detailPost.reactions.map(item=>{
-        //     item.user.username
-        // }))
-
         const result = await PostService.postReaction(detailPost.id, reation);
         if (result.success) {
             const { post, ...orther } = result.data;
@@ -244,10 +240,7 @@ const PostDetail = ({ onClose }) => {
                                         <FiSend size="25px" className={cx('post-react')} />
                                     </div>
                                     <div className={cx('all-reaction')}>
-                                        {detailPost.reactions.filter((item) => item.status !== 'DISABLE').length}{' '}
-                                        {detailPost.reactions.filter((item) => item.status !== 'DISABLE').length > 1
-                                            ? 'Reactions'
-                                            : 'Reaction'}
+                                        {detailPost.countReaction} {detailPost.countReaction > 1 ? 'Likes' : 'Like'}
                                     </div>
                                 </div>
 

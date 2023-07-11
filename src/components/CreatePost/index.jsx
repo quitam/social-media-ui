@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { Close, AddPhotoAlternate } from '@mui/icons-material';
 import classNames from 'classnames/bind';
@@ -12,7 +12,7 @@ import styles from './CreatePost.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 const cx = classNames.bind(styles);
 
-const CreatePost = () => {
+const CreatePost = ({ onClose }) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.post.listPost);
@@ -71,6 +71,7 @@ const CreatePost = () => {
                         pauseOnHover: false,
                         theme: 'dark',
                     });
+                    onClose();
                 }
             });
         }
@@ -78,8 +79,23 @@ const CreatePost = () => {
 
     const handlePreview = (e) => {
         const files = Array.from(e.target.files);
+        let selectedFiles;
 
-        const updatedPictures = files.map((file) => {
+        if (files.length > 6) {
+            selectedFiles = files.slice(0, 6);
+            toast.warning('Only upload maximum 6 files', {
+                position: 'bottom-right',
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: 'dark',
+            });
+        } else {
+            selectedFiles = files;
+        }
+
+        const updatedPictures = selectedFiles.map((file) => {
             file.preview = URL.createObjectURL(file);
             return file;
         });
@@ -101,10 +117,17 @@ const CreatePost = () => {
         }
     };
 
+    useEffect(() => {
+        setCaption('');
+        setPictures([]);
+        setIsPostPicture(false);
+        setSelectedOption('PUBLIC');
+    }, []);
+
     return (
         <div className={cx('create-post')}>
             <ToastContainer />
-            <div className={cx('close-btn')}>
+            <div className={cx('close-btn')} onClick={onClose}>
                 <Close style={{ fontSize: '3rem' }} />
             </div>
             <div className={cx('wrapper')}>
@@ -150,7 +173,7 @@ const CreatePost = () => {
                                     <img
                                         key={index}
                                         src={picture.preview}
-                                        alt={`Picture ${index}`}
+                                        alt={`files ${index}`}
                                         className={cx('picture-item')}
                                         onClick={() => handleRemovePicture(index)}
                                     />
@@ -167,6 +190,7 @@ const CreatePost = () => {
                     </div>
                 )}
                 <input
+                    max={2}
                     type="file"
                     multiple
                     ref={fileInputRef}
