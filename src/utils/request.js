@@ -13,7 +13,7 @@ export let endpoints = {
     getUserListPost: '/post/user',
     repComment: '/comment/rep',
     addFriend: '/relationship',
-    newFeed: '/post/new-feed/1',
+    newFeed: '/post/new-feed',
     getNotify: '/notify/user',
     seenNotify: '/notify/seen',
     createNotify: '/notify',

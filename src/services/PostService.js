@@ -23,9 +23,9 @@ export const getListPost = async () => {
         return res;
     } catch (e) {}
 };
-export const getNewFeed = async () => {
+export const getNewFeed = async (page) => {
     try {
-        const res = await request.getRQ(endpoints['newFeed'], {
+        const res = await request.getRQ(endpoints['newFeed'] + '/' + page, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + localStorage.getItem('token'),

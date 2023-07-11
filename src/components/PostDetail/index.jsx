@@ -10,6 +10,7 @@ import { Close } from '@mui/icons-material';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { FiSend, FiHeart, FiMessageSquare } from 'react-icons/fi';
 import { updateListPost, updateDetailPost } from '@/action/PostAction';
+import { Modal } from 'react-bootstrap';
 
 import * as PostService from '../../services/PostService';
 import * as NotifyService from '../../services/NotifyService';
@@ -43,6 +44,7 @@ const PostDetail = ({ onClose }) => {
     const [repId, setRepId] = useState('');
     const [repUser, setRepUser] = useState('');
     const [comment, setComment] = useState('');
+    const [reactionModal, setReactionModal] = useState(false);
 
     const cmtRef = useRef();
     const endListRef = createRef(null);
@@ -160,6 +162,18 @@ const PostDetail = ({ onClose }) => {
 
     return (
         <div>
+            <Modal
+                size="sm"
+                centered
+                show={reactionModal}
+                onHide={() => setReactionModal(false)}
+                aria-labelledby="example-modal-sizes-title-sm"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-sm">All Reaction</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>hihi</Modal.Body>
+            </Modal>
             {detailPost && (
                 <div className={cx('post-detail')}>
                     <div className={cx('close-btn')} onClick={onClose}>
@@ -239,7 +253,7 @@ const PostDetail = ({ onClose }) => {
                                         />
                                         <FiSend size="25px" className={cx('post-react')} />
                                     </div>
-                                    <div className={cx('all-reaction')}>
+                                    <div className={cx('all-reaction')} onClick={() => setReactionModal(true)}>
                                         {detailPost.countReaction} {detailPost.countReaction > 1 ? 'Likes' : 'Like'}
                                     </div>
                                 </div>

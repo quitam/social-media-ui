@@ -90,6 +90,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 1rem 0;
+    border-bottom: 1px solid #ccc;
 }
 .post-footer {
     .form-input {
@@ -145,6 +146,17 @@
         &:hover {
             cursor: pointer;
             opacity: 0.6;
+        }
+    }
+    .all-reaction {
+        display: flex;
+        width: fit-content;
+        user-select: none;
+        cursor: pointer;
+        padding: 0 1rem;
+        border-radius: 4px;
+        &:hover {
+            background-color: #f0f2f5;
         }
     }
 }

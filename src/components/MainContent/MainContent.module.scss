@@ -8,12 +8,11 @@
         overflow: hidden;
     }
 }
-
+.right-section {
+    position: fixed;
+}
 .post-content {
-    padding-right: 20px;
-    flex: 1;
-    max-height: calc(100vh - 20px);
-    overflow-y: scroll;
+    margin-right: 35rem;
 }
 
 @media (max-width: 1000px) {

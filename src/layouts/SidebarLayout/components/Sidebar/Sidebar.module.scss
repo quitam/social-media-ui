@@ -1,5 +1,7 @@
 // >= 1920px
 .sidebar {
+    position: fixed;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     width: var(--nav-wide-width);
