@@ -31,7 +31,6 @@ import { sidebarLayout } from '@/action/ThemeAction';
 import * as UserService from '@/services/UserService';
 import AppAvatar from '@components/Avatar';
 import CreatePost from '@/components/CreatePost';
-import { updateListPost } from '@/action/PostAction';
 
 const cx = classNames.bind(styles);
 const Navbar = () => {
@@ -152,7 +151,6 @@ const Navbar = () => {
                                     <div
                                         className={cx('dropdown-item')}
                                         onClick={() => {
-                                            dispatch(updateListPost([]));
                                             dispatch(sidebarLayout());
                                         }}
                                     >

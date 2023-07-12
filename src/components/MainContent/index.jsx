@@ -25,9 +25,9 @@ const MainContent = () => {
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
     const listPost = useSelector((state) => state.post.listPost);
+    console.log(listPost)
 
     const fetchApi = async () => {
-        console.log(page);
         const result = await PostService.getNewFeed(page);
         if (result.success) {
             const newPosts = result.data;
@@ -35,8 +35,13 @@ const MainContent = () => {
             if (newPosts.length === 0) {
                 setHasMore(false);
             } else {
-                dispatch(updateListPost([...listPost, ...newPosts]));
-                setPage((prevPage) => prevPage + 1);
+                // Kiểm tra xem list post cũ có chứa list post vừa get từ api không
+                const check = newPosts.every((item2) => listPost.some((item1) => item1.id === item2.id));
+                if (!check) {
+                    // nếu list mới không có trong list cũ mới cập nhật list post
+                    dispatch(updateListPost([...listPost, ...newPosts]));
+                    setPage((prevPage) => prevPage + 1);
+                }
             }
         }
     };
@@ -55,7 +60,7 @@ const MainContent = () => {
                     <InfiniteScroll
                         dataLength={listPost.length}
                         next={fetchApi}
-                        hasMore={true}
+                        hasMore={hasMore}
                         loader={<h1>Loading...</h1>}
                     >
                         <StatusBar />

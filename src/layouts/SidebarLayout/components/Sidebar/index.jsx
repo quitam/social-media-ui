@@ -25,7 +25,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SidebarItem from '../SidebarItem';
 import { headerLayout } from '@/action/ThemeAction';
-import { updateListPost } from '@/action/PostAction';
 
 const cx = classNames.bind(styles);
 
@@ -113,7 +112,6 @@ const Sidebar = () => {
                 title="More"
                 onClick={() => {
                     setActiveTab('more');
-                    dispatch(updateListPost([]));
                     dispatch(headerLayout());
                 }}
             />

@@ -89,6 +89,7 @@ const UserProfileContent = ({ username }) => {
         fetchApi();
         listPostApi();
         statusRelation();
+        console.log(userProfile);
         // eslint-disable-next-line
     }, [username]);
 
@@ -132,7 +133,7 @@ const UserProfileContent = ({ username }) => {
                             </div>
                             <div className={cx('profile-follow')}>
                                 <h5 className={cx('profile-follow-count')}>
-                                    <span>{listPost.length}</span> posts
+                                    <span>{listPost.length}</span> {listPost.length > 1 ? 'posts' : 'post'}
                                 </h5>
                                 <h5 className={cx('profile-follow-count')}>
                                     <span>50</span> followers

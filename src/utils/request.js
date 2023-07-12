@@ -19,6 +19,8 @@ export let endpoints = {
     createNotify: '/notify',
     postReaction: '/post/reaction',
     unReactionPost: '/post/un-reaction',
+    getCommentByPostId: '/comment/post',
+    getRepComment: '/comment/child-comment',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

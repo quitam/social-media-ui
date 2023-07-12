@@ -82,11 +82,10 @@
 .notify-item {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    //justify-content: center;
 }
 
 .list-notify {
-    padding-top: 220px;
     max-height: 40vh;
     overflow-y: scroll;
 }

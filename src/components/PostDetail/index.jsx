@@ -1,4 +1,4 @@
-import React, { useState, useRef, createRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -43,11 +43,14 @@ const PostDetail = ({ onClose }) => {
     //State để Rep Comment
     const [repId, setRepId] = useState('');
     const [repUser, setRepUser] = useState('');
+    const [repName, setRepName] = useState('');
+
     const [comment, setComment] = useState('');
     const [reactionModal, setReactionModal] = useState(false);
+    const [listRepComment, setListRepComment] = useState([]);
 
     const cmtRef = useRef();
-    const endListRef = createRef(null);
+    const topListRef = useRef();
     const listReaction = [
         { icon: likeIcon, name: 'LIKE' },
         { icon: loveIcon, name: 'LOVE' },
@@ -101,11 +104,12 @@ const PostDetail = ({ onClose }) => {
             fetchApi().then((result) => {
                 if (result.success) {
                     setComment('');
+                    dispatch(updateDetailPost({ ...detailPost, comments: [result.data, ...detailPost.comments] }));
                     dispatch(
                         updateListPost(
                             listPost.map((item) => {
                                 if (item.id === result.data.post.id) {
-                                    item.comments = [...item.comments, result.data];
+                                    item.countComment++;
                                 }
                                 return item;
                             }),
@@ -114,14 +118,22 @@ const PostDetail = ({ onClose }) => {
 
                     if (detailPost.user.username !== userInfo.username) {
                         if (repId) {
-                            if (detailPost.user.username === repUser) {
-                                const content = `${userInfo.avatar}###${userInfo.name} replied your comment on your post.`;
-                                createNotify(content, detailPost.user.username);
+                            if (repUser !== userInfo.username) {
+                                if (detailPost.user.username === repUser) {
+                                    const content = `${userInfo.avatar}###${userInfo.name} replied your comment on your post.`;
+                                    createNotify(content, detailPost.user.username);
+                                } else {
+                                    const content1 = `${userInfo.avatar}###${userInfo.name} replied ${repName}'s comment on your post.`;
+                                    console.log('content1', content1);
+                                    const content2 = `${userInfo.avatar}###${userInfo.name} replied your comment on ${detailPost.user.name}'s post.`;
+                                    createNotify(content1, detailPost.user.username);
+                                    createNotify(content2, repUser);
+                                }
                             } else {
-                                const content1 = `${userInfo.avatar}###${userInfo.name} replied ${repUser}'s comment on your post.`;
-                                const content2 = `${userInfo.avatar}###${userInfo.name} replied your comment on ${detailPost.user.username}'s post.`;
+                                const content1 = `${userInfo.avatar}###${userInfo.name} replied ${
+                                    userInfo.gender === 'MALE' ? 'his' : 'her'
+                                } comment on your post.`;
                                 createNotify(content1, detailPost.user.username);
-                                createNotify(content2, repUser);
                             }
                         } else {
                             const content = `${userInfo.avatar}###${userInfo.name} commented on your post.`;
@@ -131,7 +143,10 @@ const PostDetail = ({ onClose }) => {
                 }
             });
             setRepId('');
-            endListRef.current.scrollIntoView({ behavior: 'smooth' });
+            topListRef.current.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
         }
     };
 
@@ -156,9 +171,40 @@ const PostDetail = ({ onClose }) => {
     };
     const handleClickReply = (comment) => {
         setRepId(comment.id);
+        setRepName(comment.user.name);
         setRepUser(comment.user.username);
         cmtRef.current.focus();
     };
+
+    const fetchRepComment = async (id) => {
+        const result = await PostService.getRepComment(id, 1);
+        if (result.success) {
+            const listRep = result.data;
+
+            dispatch(
+                updateDetailPost({
+                    ...detailPost,
+
+                    comments: detailPost.comments.map((item) => {
+                        if (item.id === id) {
+                            item.child = listRep;
+                        }
+                        return item;
+                    }),
+                }),
+            );
+        }
+    };
+
+    useEffect(() => {
+        const fetchApiComment = async () => {
+            const result = await PostService.getCommentByPostId(detailPost.id, 1);
+            if (result.success) {
+                dispatch(updateDetailPost({ ...detailPost, comments: result.data }));
+            }
+        };
+        fetchApiComment();
+    }, []);
 
     return (
         <div>
@@ -201,28 +247,33 @@ const PostDetail = ({ onClose }) => {
                             </div>
 
                             {/* Comment list */}
-                            <div className={cx('comment-list')}>
-                                {sortByTime(format(detailPost.comments)).map(
-                                    (comment) =>
-                                        //Chỉ hiện những Comment có status là Enable
-                                        comment.status === 'ENABLE' && (
-                                            <div key={comment.id} className={cx('post__comment')}>
-                                                <div className="position-relative">
-                                                    <CommentItem
-                                                        data={comment}
-                                                        onReplyClick={() => handleClickReply(comment)}
-                                                    />
+                            <div className={cx('comment-list')} ref={topListRef}>
+                                {detailPost.comments &&
+                                    detailPost.comments.map(
+                                        (comment) =>
+                                            //Chỉ hiện những Comment có status là Enable
+                                            comment.status === 'ENABLE' && (
+                                                <div key={comment.id} className={cx('post__comment')}>
+                                                    <div className="position-relative">
+                                                        <CommentItem
+                                                            data={comment}
+                                                            onReplyClick={() => handleClickReply(comment)}
+                                                        />
+                                                        {comment.countRep > 0 && !comment.child && (
+                                                            <div onClick={() => fetchRepComment(comment.id)}>
+                                                                View {comment.countRep} reply
+                                                            </div>
+                                                        )}
 
-                                                    {/* render những Comment có Rep Comment */}
-                                                    {sortByTime(comment.children).map((item, index) => (
-                                                        <CommentItem data={item} key={index} isReply={true} />
-                                                    ))}
+                                                        {/* render những Comment có Rep Comment */}
+                                                        {comment.child &&
+                                                            comment.child.map((item, index) => (
+                                                                <CommentItem data={item} key={index} isReply={true} />
+                                                            ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ),
-                                )}
-
-                                <div ref={endListRef} />
+                                            ),
+                                    )}
                             </div>
                             <footer className={cx('post-footer')}>
                                 {/* Reaction, Comment, Share */}
@@ -254,7 +305,8 @@ const PostDetail = ({ onClose }) => {
                                         <FiSend size="25px" className={cx('post-react')} />
                                     </div>
                                     <div className={cx('all-reaction')} onClick={() => setReactionModal(true)}>
-                                        {detailPost.countReaction} {detailPost.countReaction > 1 ? 'Likes' : 'Like'}
+                                        {detailPost.countReaction[6]}{' '}
+                                        {detailPost.countReaction[6] > 1 ? 'Likes' : 'Like'}
                                     </div>
                                 </div>
 

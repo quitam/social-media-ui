@@ -50,8 +50,8 @@ const Post = ({ data }) => {
 
     //Format list post, Add prop children to comment if have rep comment
 
-    const openPost = () => {
-        dispatch(updateDetailPost(data));
+    const openPost = async () => {
+        dispatch(updateDetailPost({ ...data, comments: [] }));
         setIsPostOpen(true);
     };
 
@@ -221,7 +221,7 @@ const Post = ({ data }) => {
                     <FiSend size="25px" className={cx('post__reactIcon')} />
                 </div>
                 <div style={{ fontSize: '14px', marginLeft: '20px', marginBottom: '10px', fontWeight: '100' }}>
-                    {data.countReaction} {data.countReaction > 1 ? 'Likes' : 'Like'}
+                    {data.countReaction[6]} {data.countReaction[6] > 1 ? 'Likes' : 'Like'}
                 </div>
             </div>
 

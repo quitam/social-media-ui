@@ -113,3 +113,27 @@ export const unReactionPost = async (id) => {
         return res;
     } catch (e) {}
 };
+
+export const getCommentByPostId = async (id, size) => {
+    try {
+        const res = await request.getRQ(endpoints['getCommentByPostId'] + '/' + id + '/' + size, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+
+export const getRepComment = async (id, size) => {
+    try {
+        const res = await request.getRQ(endpoints['getRepComment'] + '/' + id + '/' + size, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
