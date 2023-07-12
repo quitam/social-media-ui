@@ -18,15 +18,9 @@ const Friends = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await RelaService.getAllFriend();
+            const result = await RelaService.getRecommendFriend();
             if (result.data) {
-                dispatch(
-                    updateFriend(
-                        result.data.map((item) =>
-                            item.userFrom.username === userInfo.username ? item.userTo : item.userFrom,
-                        ),
-                    ),
-                );
+                dispatch(updateFriend(result.data));
             }
         };
         fetchApi();
@@ -37,11 +31,11 @@ const Friends = () => {
         <div>
             <div className={cx('friends__container')}>
                 <div className={cx('friends__header')}>
-                    <div>{listFriend.length > 0 ? 'All friends' : 'No friend'}</div>
+                    <div>Suggested for you</div>
                 </div>
                 <div className={cx('friends__body')}>
                     {listFriend &&
-                        listFriend.map((friend) => (
+                        listFriend.slice(0, 5).map((friend) => (
                             <div
                                 className={cx('friend')}
                                 key={friend.username}

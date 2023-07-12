@@ -12,15 +12,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import { Modal, ModalBody } from 'react-bootstrap';
 import * as PostService from '../../services/PostService';
 import * as NotifyService from '../../services/NotifyService';
+import { LIST_REACTION } from '@/constant';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { updateListPost, updateDetailPost } from '../../action/PostAction';
-import angryIcon from '../../assets/images/reactIcon/angry.svg';
-import hahaIcon from '../../assets/images/reactIcon/haha.svg';
-import likeIcon from '../../assets/images/reactIcon/like.svg';
-import loveIcon from '../../assets/images/reactIcon/love.svg';
-import sadIcon from '../../assets/images/reactIcon/sad.svg';
-import wowIcon from '../../assets/images/reactIcon/wow.svg';
 
 import styles from './Post.module.scss';
 
@@ -35,6 +30,7 @@ const timeAgo = new TimeAgo('en-US');
 const Post = ({ data }) => {
     const dispatch = useDispatch();
     const listPost = useSelector((state) => state.post.listPost);
+    const detailPost = useSelector((state) => state.post.detailPost);
     const userInfo = useSelector((state) => state.user.user);
 
     const [modal, setModal] = useState(false);
@@ -59,7 +55,7 @@ const Post = ({ data }) => {
         setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? data.files.length - 1 : prevIndex - 1));
     };
 
-    const openPost = async () => {
+    const openPost = () => {
         dispatch(updateDetailPost({ ...data, comments: [] }));
         setIsPostOpen(true);
     };
@@ -154,6 +150,66 @@ const Post = ({ data }) => {
         return result;
     };
 
+    const postReacton = async (reation) => {
+        if (reation.name !== data.likedPost) {
+            const result = await PostService.postReaction(data.id, reation.name);
+            if (result.success) {
+                const updatedCountReaction = data.countReaction.map((count, index) => {
+                    if (index === reation.id) {
+                        return count + 1;
+                    }
+                    return count;
+                });
+
+                LIST_REACTION.forEach((item) => {
+                    if (item.name === data.likedPost) {
+                        updatedCountReaction[item.id] -= 1;
+                    }
+                });
+
+                if (data.likedPost === '') {
+                    updatedCountReaction[6] += 1;
+                }
+
+                dispatch(
+                    updateListPost(
+                        listPost.map((item) => {
+                            if (item.id === data.id) {
+                                item = { ...data, countReaction: updatedCountReaction, likedPost: reation.name };
+                            }
+                            return item;
+                        }),
+                    ),
+                );
+            }
+        }
+    };
+
+    const unReaction = async () => {
+        const result = await PostService.unReactionPost(data.id);
+        if (result.success) {
+            const updatedCountReaction = data.countReaction;
+            LIST_REACTION.forEach((item) => {
+                if (item.name === data.likedPost) {
+                    updatedCountReaction[item.id] -= 1;
+                }
+            });
+            if (data.likedPost !== '') {
+                updatedCountReaction[6] -= 1;
+            }
+            dispatch(
+                updateListPost(
+                    listPost.map((item) => {
+                        if (item.id === data.id) {
+                            item = { ...data, countReaction: updatedCountReaction, likedPost: '' };
+                        }
+                        return item;
+                    }),
+                ),
+            );
+        }
+    };
+
     return (
         <div className={cx(`${isDarkMode ? 'post-theme-dark' : ''}`, 'post__container')}>
             <ToastContainer />
@@ -240,16 +296,42 @@ const Post = ({ data }) => {
 
             {/* Reaction, Comment, Share */}
             <div>
-                <div style={{ marginBottom: '15px', display: 'flex' }}>
+                <div style={{ marginBottom: '15px', display: 'flex', padding: '0 1rem' }}>
                     <div className={cx('dropdown-icons')}>
-                        <FiHeart size="25px" className={cx('post__reactIcon')} />
+                        {LIST_REACTION.map((item, index) => {
+                            if (item.name === data.likedPost) {
+                                return (
+                                    <img
+                                        key={index}
+                                        src={item.icon}
+                                        alt="like"
+                                        className={cx('post-react')}
+                                        style={{ width: '25px' }}
+                                        onClick={unReaction}
+                                    />
+                                );
+                            }
+                            return null;
+                        })}
+
+                        {/* Default click like not choose reaction is Love reaction */}
+                        {!data.likedPost && (
+                            <FiHeart
+                                size="25px"
+                                className={cx('post-react')}
+                                // onClick={() => postReacton(LIST_REACTION[1])}
+                            />
+                        )}
                         <div className={cx('dropdown-wrap')}>
-                            <img src={likeIcon} alt="like" className={cx('dropdown-icon')} />
-                            <img src={loveIcon} alt="love" className={cx('dropdown-icon')} />
-                            <img src={hahaIcon} alt="haha" className={cx('dropdown-icon')} />
-                            <img src={wowIcon} alt="wow" className={cx('dropdown-icon')} />
-                            <img src={sadIcon} alt="sad" className={cx('dropdown-icon')} />
-                            <img src={angryIcon} alt="angry" className={cx('dropdown-icon')} />
+                            {LIST_REACTION.map((item, index) => (
+                                <img
+                                    key={index}
+                                    src={item.icon}
+                                    alt="like"
+                                    className={cx('dropdown-icon')}
+                                    onClick={() => postReacton(item)}
+                                />
+                            ))}
                         </div>
                     </div>
                     <FiMessageSquare

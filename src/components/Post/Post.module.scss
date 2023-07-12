@@ -190,17 +190,26 @@
 
 .dropdown-icons {
     position: relative;
-    &:hover .dropdown-wrap {
-        display: flex;
+    &:hover {
+        .dropdown-wrap {
+            display: flex;
+        }
+    }
+    .post-react {
+        &:hover {
+            cursor: pointer;
+            opacity: 0.6;
+        }
     }
     .dropdown-wrap {
-        margin-left: 5px;
-        padding: 4px 8px;
+        background-color: #f0f2f5;
+        padding: 5px;
         border-radius: 20px;
         position: absolute;
+        top: -4rem;
+        left: -5px;
+
         display: none;
-        //background-color: #f9f9f9;
-        //box-shadow: 4px 1px 10px 4px rgba(0, 0, 0, 0.3);
         .dropdown-icon {
             cursor: pointer;
             margin-right: 2px;

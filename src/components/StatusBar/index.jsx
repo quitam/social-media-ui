@@ -44,7 +44,7 @@ const StatusBar = () => {
                 <div className="statusBar__text">Me</div>
             </div>
             {listFriend &&
-                listFriend.map((item, index) => (
+                listFriend.slice(0, 10).map((item, index) => (
                     <Tippy content={item.name} placement="bottom" delay={100} key={item.username}>
                         <div
                             className="status"

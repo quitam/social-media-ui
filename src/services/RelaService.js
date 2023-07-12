@@ -50,6 +50,18 @@ export const getAllFriend = async () => {
     } catch (e) {}
 };
 
+export const getRecommendFriend = async () => {
+    try {
+        const res = await request.getRQ(endpoints['getRecommendFriend'], {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+
 export const getInvitation = async () => {
     try {
         const res = await request.getRQ(endpoints['addFriend'] + '/invitation', {

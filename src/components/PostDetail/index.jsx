@@ -15,14 +15,8 @@ import { Modal } from 'react-bootstrap';
 import * as PostService from '../../services/PostService';
 import * as NotifyService from '../../services/NotifyService';
 
-import angryIcon from '../../assets/images/reactIcon/angry.svg';
-import hahaIcon from '../../assets/images/reactIcon/haha.svg';
-import likeIcon from '../../assets/images/reactIcon/like.svg';
-import loveIcon from '../../assets/images/reactIcon/love.svg';
-import sadIcon from '../../assets/images/reactIcon/sad.svg';
-import wowIcon from '../../assets/images/reactIcon/wow.svg';
-
-import { sortByTime } from '@/utils/helper';
+import { NavigateBefore, NavigateNext } from '@mui/icons-material';
+import { LIST_REACTION } from '@/constant';
 
 import { useDispatch, useSelector } from 'react-redux';
 import CommentItem from '@components/CommentItem';
@@ -47,25 +41,62 @@ const PostDetail = ({ onClose }) => {
 
     const [comment, setComment] = useState('');
     const [reactionModal, setReactionModal] = useState(false);
-    const [listRepComment, setListRepComment] = useState([]);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const cmtRef = useRef();
     const topListRef = useRef();
-    const listReaction = [
-        { icon: likeIcon, name: 'LIKE' },
-        { icon: loveIcon, name: 'LOVE' },
-        { icon: hahaIcon, name: 'HAHA' },
-        { icon: wowIcon, name: 'WOW' },
-        { icon: sadIcon, name: 'SAD' },
-        { icon: angryIcon, name: 'ANGRY' },
-    ];
 
     // Xử lý khi reaction post
     const postReacton = async (reation) => {
-        const result = await PostService.postReaction(detailPost.id, reation);
+        if (reation.name !== detailPost.likedPost) {
+            const result = await PostService.postReaction(detailPost.id, reation.name);
+            if (result.success) {
+                const updatedCountReaction = detailPost.countReaction.map((count, index) => {
+                    if (index === reation.id) {
+                        return count + 1;
+                    }
+                    return count;
+                });
+
+                LIST_REACTION.forEach((item) => {
+                    if (item.name === detailPost.likedPost) {
+                        updatedCountReaction[item.id] -= 1;
+                    }
+                });
+
+                if (detailPost.likedPost === '') {
+                    updatedCountReaction[6] += 1;
+                }
+                dispatch(
+                    updateDetailPost({ ...detailPost, countReaction: updatedCountReaction, likedPost: reation.name }),
+                );
+                dispatch(
+                    updateListPost(
+                        listPost.map((item) => {
+                            if (item.id === detailPost.id) {
+                                item = detailPost;
+                            }
+                            return item;
+                        }),
+                    ),
+                );
+            }
+        }
+    };
+
+    const unReaction = async () => {
+        const result = await PostService.unReactionPost(detailPost.id);
         if (result.success) {
-            const { post, ...orther } = result.data;
-            dispatch(updateDetailPost({ ...detailPost, reactions: [...detailPost.reactions, orther] }));
+            const updatedCountReaction = detailPost.countReaction;
+            LIST_REACTION.forEach((item) => {
+                if (item.name === detailPost.likedPost) {
+                    updatedCountReaction[item.id] -= 1;
+                }
+            });
+            if (detailPost.likedPost !== '') {
+                updatedCountReaction[6] -= 1;
+            }
+            dispatch(updateDetailPost({ ...detailPost, countReaction: updatedCountReaction, likedPost: '' }));
             dispatch(
                 updateListPost(
                     listPost.map((item) => {
@@ -77,6 +108,14 @@ const PostDetail = ({ onClose }) => {
                 ),
             );
         }
+    };
+
+    const handleNextImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % detailPost.files.length);
+    };
+
+    const handlePreviousImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? detailPost.files.length - 1 : prevIndex - 1));
     };
 
     //Xử lý khi Comment
@@ -250,8 +289,34 @@ const PostDetail = ({ onClose }) => {
                     <div className={cx('wrapper')}>
                         {detailPost.files.length > 0 && (
                             <div className={cx('left')}>
+                                {detailPost.files.length > 1 && (
+                                    <div className={cx('image-action')}>
+                                        <div className={cx('previous-btn')} onClick={handlePreviousImage}>
+                                            <NavigateBefore style={{ fontSize: '2rem' }} />
+                                        </div>
+                                        <div className={cx('panigation')}>
+                                            {detailPost.files.map((file, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={cx(currentImageIndex === index ? 'img-active' : '')}
+                                                    onClick={() => setCurrentImageIndex(index)}
+                                                ></span>
+                                            ))}
+                                        </div>
+                                        <div className={cx('next-btn')} onClick={handleNextImage}>
+                                            <NavigateNext style={{ fontSize: '2rem' }} />
+                                        </div>
+                                    </div>
+                                )}
                                 <div className={cx('img-post')}>
-                                    <img src={detailPost.files[0].value} alt="" />
+                                    {detailPost.files[currentImageIndex].type === 1 ? (
+                                        <img src={detailPost.files[currentImageIndex].value} alt="Post" />
+                                    ) : (
+                                        <video controls className={cx('video')}>
+                                            <source src={detailPost.files[currentImageIndex].value} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -320,15 +385,35 @@ const PostDetail = ({ onClose }) => {
                                     </div>
                                     <div className={cx('action')}>
                                         <div className={cx('dropdown-icons')}>
-                                            <FiHeart size="25px" className={cx('post-react')} onClick={postReacton} />
+                                            {LIST_REACTION.map((item, index) => {
+                                                if (item.name === detailPost.likedPost) {
+                                                    return (
+                                                        <img
+                                                            src={item.icon}
+                                                            key={index}
+                                                            alt="like"
+                                                            className={cx('post-react')}
+                                                            style={{ width: '25px' }}
+                                                            onClick={unReaction}
+                                                        />
+                                                    );
+                                                }
+                                            })}
+                                            {!detailPost.likedPost && (
+                                                <FiHeart
+                                                    size="25px"
+                                                    className={cx('post-react')}
+                                                    onClick={postReacton}
+                                                />
+                                            )}
                                             <div className={cx('dropdown-wrap')}>
-                                                {listReaction.map((item, index) => (
+                                                {LIST_REACTION.map((item, index) => (
                                                     <img
                                                         key={index}
                                                         src={item.icon}
                                                         alt="like"
                                                         className={cx('dropdown-icon')}
-                                                        onClick={() => postReacton(item.name)}
+                                                        onClick={() => postReacton(item)}
                                                     />
                                                 ))}
                                             </div>
