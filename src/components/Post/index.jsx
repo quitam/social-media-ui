@@ -4,6 +4,8 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { FiSend, FiHeart, FiMessageSquare, FiMoreHorizontal } from 'react-icons/fi';
 import { BsEmojiSmile } from 'react-icons/bs';
+import { NavigateBefore, NavigateNext } from '@mui/icons-material';
+
 import classNames from 'classnames/bind';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -42,13 +44,20 @@ const Post = ({ data }) => {
     const [toggleClass, setToggleClass] = useState(false);
 
     const [comment, setComment] = useState('');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     //get Dark/Light theme
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     const cmtRef = useRef();
     const moreRef = useRef();
 
-    //Format list post, Add prop children to comment if have rep comment
+    const handleNextImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.files.length);
+    };
+
+    const handlePreviousImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? data.files.length - 1 : prevIndex - 1));
+    };
 
     const openPost = async () => {
         dispatch(updateDetailPost({ ...data, comments: [] }));
@@ -78,7 +87,6 @@ const Post = ({ data }) => {
                     updateListPost(
                         listPost.map((item) => {
                             if (item.id === result.data.post.id) {
-                                item.comments = [...item.comments, result.data];
                                 item.countComment++;
                             }
                             return item;
@@ -186,11 +194,42 @@ const Post = ({ data }) => {
             {/* Image Post*/}
             <div>
                 {data.files.length > 0 && (
-                    <img
-                        src={data.files[0].value}
-                        alt="Post"
-                        style={{ width: '700px', height: '600px', objectFit: 'contain', background: '#181818' }}
-                    />
+                    <div className={cx('list-image')}>
+                        {data.files.length > 1 && (
+                            <div className={cx('image-action')}>
+                                <div className={cx('previous-btn')} onClick={handlePreviousImage}>
+                                    <NavigateBefore style={{ fontSize: '2rem' }} />
+                                </div>
+                                <div className={cx('panigation')}>
+                                    {data.files.map((file, index) => (
+                                        <span
+                                            key={index}
+                                            className={cx(currentImageIndex === index ? 'img-active' : '')}
+                                            onClick={() => setCurrentImageIndex(index)}
+                                        ></span>
+                                    ))}
+                                </div>
+                                <div className={cx('next-btn')} onClick={handleNextImage}>
+                                    <NavigateNext style={{ fontSize: '2rem' }} />
+                                </div>
+                            </div>
+                        )}
+                        {data.files[currentImageIndex].type === 1 ? (
+                            <img
+                                src={data.files[currentImageIndex].value}
+                                alt="Post"
+                                style={{ width: '700px', height: '600px', objectFit: 'contain', background: '#181818' }}
+                            />
+                        ) : (
+                            <video
+                                controls
+                                style={{ width: '700px', height: '600px', objectFit: 'contain', background: '#181818' }}
+                            >
+                                <source src={data.files[currentImageIndex].value} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        )}
+                    </div>
                 )}
                 <div className={cx('post-caption')}>
                     <div className="position-relative">

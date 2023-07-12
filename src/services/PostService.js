@@ -126,9 +126,9 @@ export const getCommentByPostId = async (id, size) => {
     } catch (e) {}
 };
 
-export const getRepComment = async (id, size) => {
+export const getRepComment = async (id) => {
     try {
-        const res = await request.getRQ(endpoints['getRepComment'] + '/' + id + '/' + size, {
+        const res = await request.getRQ(endpoints['getRepComment'] + '/' + id, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + localStorage.getItem('token'),

@@ -43,7 +43,7 @@
     animation: fadeIn 0.2s ease-out;
 }
 .left {
-    flex: 1;
+    width: 512px;
     position: relative;
     background-color: black;
     display: flex;
@@ -53,9 +53,10 @@
     padding: 0 20px;
     border-right: 1px solid #ccc;
     .img-post {
+        width: 100%;
         img {
             max-height: 90vh;
-            max-width: 100%;
+            width: 100%;
             object-fit: cover;
         }
     }
@@ -189,6 +190,15 @@
         }
     }
 }
+.view-all {
+    padding-left: 5rem;
+    font-weight: 500;
+    width: fit-content;
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
 
 @media screen and (max-width: 768px) {
     .post-detail {
@@ -217,7 +227,8 @@
     .wrapper {
         height: 80vh;
         max-width: 80vw;
-        .right {
+        .right,
+        .left {
             width: 350px;
         }
     }

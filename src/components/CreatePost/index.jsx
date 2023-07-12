@@ -53,6 +53,7 @@ const CreatePost = ({ onClose }) => {
                         data.append('files', pictures[i]);
                     }
                 }
+                toast.dark('Uploading...', { position: 'bottom-right', autoClose: 15000 });
                 const post = await PostService.createPost(data);
 
                 return post;
@@ -63,6 +64,7 @@ const CreatePost = ({ onClose }) => {
                     //setModal(!modal);
                     setCaption('');
                     setPictures([]);
+                    toast.dismiss();
                     toast.success('Post success', {
                         position: 'bottom-right',
                         autoClose: 1500,

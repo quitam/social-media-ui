@@ -104,7 +104,25 @@ const PostDetail = ({ onClose }) => {
             fetchApi().then((result) => {
                 if (result.success) {
                     setComment('');
-                    dispatch(updateDetailPost({ ...detailPost, comments: [result.data, ...detailPost.comments] }));
+                    if (repId) {
+                        dispatch(
+                            updateDetailPost({
+                                ...detailPost,
+                                comments: detailPost.comments.map((item) => {
+                                    if (item.id === repId) {
+                                        if (!item.child) {
+                                            item.child = [];
+                                        }
+                                        item.child = [result.data, ...item.child];
+                                        item.countRep++;
+                                    }
+                                    return item;
+                                }),
+                            }),
+                        );
+                    } else {
+                        dispatch(updateDetailPost({ ...detailPost, comments: [result.data, ...detailPost.comments] }));
+                    }
                     dispatch(
                         updateListPost(
                             listPost.map((item) => {
@@ -158,17 +176,6 @@ const PostDetail = ({ onClose }) => {
         return result;
     };
 
-    const format = (list) => {
-        // eslint-disable-next-line
-        let listComment = list.filter((item) => {
-            if (!item.comment) {
-                let tmp = item;
-                tmp.children = list.filter((item) => item.comment && item.comment.id === tmp.id);
-                return tmp;
-            }
-        });
-        return listComment;
-    };
     const handleClickReply = (comment) => {
         setRepId(comment.id);
         setRepName(comment.user.name);
@@ -177,7 +184,7 @@ const PostDetail = ({ onClose }) => {
     };
 
     const fetchRepComment = async (id) => {
-        const result = await PostService.getRepComment(id, 1);
+        const result = await PostService.getRepComment(id);
         if (result.success) {
             const listRep = result.data;
 
@@ -194,6 +201,21 @@ const PostDetail = ({ onClose }) => {
                 }),
             );
         }
+    };
+
+    const hideRepComment = (id) => {
+        dispatch(
+            updateDetailPost({
+                ...detailPost,
+
+                comments: detailPost.comments.map((item) => {
+                    if (item.id === id) {
+                        delete item.child;
+                    }
+                    return item;
+                }),
+            }),
+        );
     };
 
     useEffect(() => {
@@ -260,7 +282,10 @@ const PostDetail = ({ onClose }) => {
                                                             onReplyClick={() => handleClickReply(comment)}
                                                         />
                                                         {comment.countRep > 0 && !comment.child && (
-                                                            <div onClick={() => fetchRepComment(comment.id)}>
+                                                            <div
+                                                                className={cx('view-all')}
+                                                                onClick={() => fetchRepComment(comment.id)}
+                                                            >
                                                                 View {comment.countRep} reply
                                                             </div>
                                                         )}
@@ -270,6 +295,17 @@ const PostDetail = ({ onClose }) => {
                                                             comment.child.map((item, index) => (
                                                                 <CommentItem data={item} key={index} isReply={true} />
                                                             ))}
+
+                                                        {comment.countRep > 0 &&
+                                                            comment.child &&
+                                                            comment.child.length > 0 && (
+                                                                <div
+                                                                    className={cx('view-all')}
+                                                                    onClick={() => hideRepComment(comment.id)}
+                                                                >
+                                                                    Hide reply
+                                                                </div>
+                                                            )}
                                                     </div>
                                                 </div>
                                             ),
