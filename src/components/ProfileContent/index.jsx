@@ -183,7 +183,7 @@ const ProfileContent = () => {
 
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
-                <ModalBody>
+                <ModalBody className="px-4">
                     <form onSubmit={handleSubmit}>
                         <Row>
                             <div className="d-flex align-items-center">
@@ -353,13 +353,10 @@ const ProfileContent = () => {
                             </div>
                             <div className={cx('profile-follow')}>
                                 <h5 className={cx('profile-follow-count')}>
-                                    <span>40</span> posts
+                                    <span>{listPost.length}</span> posts
                                 </h5>
                                 <h5 className={cx('profile-follow-count')}>
                                     <span>50</span> followers
-                                </h5>
-                                <h5 className={cx('profile-follow-count')}>
-                                    <span>60</span> following
                                 </h5>
                             </div>
                             <div className={cx('profile-bio')}>

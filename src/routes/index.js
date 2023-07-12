@@ -7,7 +7,6 @@ import Profile from '../pages/Profile';
 import UserProfile from '../pages/UserProfile';
 import Message from '../pages/Message';
 import Register from '../pages/Register';
-import Test from '@/pages/Test';
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -32,7 +31,7 @@ const privateRoutes = [
     { path: '/profile', component: Profile },
     { path: '/messages', component: Message },
     { path: '/:username', component: UserProfile },
-    { path: '/test', component: Test },
+    // { path: '/test', component: Test },
 ];
 
 export { publicRoutes, privateRoutes, ScrollToTop };
