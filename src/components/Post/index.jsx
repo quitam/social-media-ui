@@ -170,6 +170,10 @@ const Post = ({ data }) => {
                 if (data.likedPost === '') {
                     updatedCountReaction[6] += 1;
                 }
+                if (data.user.user !== userInfo.username) {
+                    const content = `${userInfo.avatar}###${userInfo.name} reaction on your post.`;
+                    createNotify(content, data.user.username);
+                }
 
                 dispatch(
                     updateListPost(
@@ -319,7 +323,7 @@ const Post = ({ data }) => {
                             <FiHeart
                                 size="25px"
                                 className={cx('post-react')}
-                                // onClick={() => postReacton(LIST_REACTION[1])}
+                                onClick={() => postReacton(LIST_REACTION[1])}
                             />
                         )}
                         <div className={cx('dropdown-wrap')}>

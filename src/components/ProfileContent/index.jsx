@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser, updateUserListPost } from '@/action/UserAction';
 import { updateDetailPost } from '../../action/PostAction';
+import * as RelaService from '@/services/RelaService';
 
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
@@ -29,6 +30,7 @@ const ProfileContent = () => {
     //get user info from redux
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.user.userListPost);
+    const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
 
     const [name, setName] = useState(userInfo.name);
     const [username, setUsername] = useState(userInfo.username);
@@ -40,9 +42,15 @@ const ProfileContent = () => {
     const [toggler, setToggler] = useState(false);
     const [modal, setModal] = useState(false);
     const [modal2, setModal2] = useState(false);
+    const [friendModal, setFriendModal] = useState(false);
+    const [size, setSize] = useState(1);
+    const [listFriend, setListFriend] = useState([]);
+
     const [avatar, setAvatar] = useState(userInfo.avatar);
 
     const [isPostOpen, setIsPostOpen] = useState(false);
+    const [countFriend, setCountFriend] = useState(0);
+    const [selectedOption, setSelectedOption] = useState('PUBLIC');
 
     const changeImage = () => {
         inputRef.current.click();
@@ -60,19 +68,49 @@ const ProfileContent = () => {
         setGender(userInfo.gender);
         setBirthday(userInfo.birthday);
         setBio(userInfo.bio);
+        setSelectedOption(userInfo.security);
     }, [userInfo]);
 
     useEffect(() => {
         document.title = 'Leaf | Profile';
+        getCountFriend();
         listPostApi();
         // eslint-disable-next-line
     }, []);
+
+    const getCountFriend = async () => {
+        const result = await UserService.getCountFriend();
+        if (result.success) {
+            setCountFriend(result.data);
+        }
+    };
+
+    const getListFriend = async () => {
+        const result = await UserService.getListFriend(size);
+        if (result.success) {
+            const list = result.data.map((item) => {
+                if (item.userTo === userInfo.username) {
+                    return item.userFrom;
+                }
+                return item.userTo;
+            });
+            setListFriend([...listFriend, ...list]);
+        }
+    };
 
     //Api get list post
     const listPostApi = async () => {
         const result = await UserService.getUserListPost();
         if (result.success) {
             dispatch(updateUserListPost(result.data));
+        }
+    };
+
+    const unFollow = async (username) => {
+        const result = await RelaService.deleteRelation(username);
+        if (result.success) {
+            setListFriend((prev) => prev.filter((item) => item.username !== username));
+            setCountFriend((prev) => prev - 1);
         }
     };
 
@@ -110,6 +148,7 @@ const ProfileContent = () => {
             birthday: birthday.trim(),
             gender: gender,
             bio: bio,
+            security: selectedOption,
         });
         checkResult(result);
     };
@@ -157,7 +196,7 @@ const ProfileContent = () => {
     };
 
     return (
-        <div>
+        <div style={{ marginLeft: isHeaderLayout ? '0' : '25rem', marginTop: isHeaderLayout ? '6rem' : '0' }}>
             {isPostOpen && (
                 <Suspense fallback={<div>Loading...</div>}>
                     <PostDetail onClose={closePost} />
@@ -166,6 +205,53 @@ const ProfileContent = () => {
 
             {/* View avatar */}
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: userInfo.avatar }]} />
+
+            {/* Friend modal */}
+            <Modal
+                centered
+                show={friendModal}
+                onHide={() => {
+                    setFriendModal(!friendModal);
+                    setSize(1);
+                    setListFriend([]);
+                }}
+            >
+                <ModalHeader closeButton={true}>List friend</ModalHeader>
+                <ModalBody>
+                    <div style={{ padding: '1rem' }}>
+                        <input placeholder="Search friend..." className={cx('input-search')} type="text" />
+                    </div>
+                    <div className={cx('list-friend-content')}>
+                        {listFriend &&
+                            listFriend.length > 0 &&
+                            listFriend.map((friend) => {
+                                return (
+                                    <div className={cx('friend-item')} key={friend.username}>
+                                        <div className={cx('userfriend-info')}>
+                                            <AppAvatar src={friend.avatar} size={35} />
+                                            <div className={cx('friend-username-name')}>
+                                                <span className={cx('friend-name')}>{friend.name}</span>
+                                                <span className={cx('friend-username')}>{friend.username}</span>
+                                            </div>
+                                        </div>
+                                        <div className={cx('friend-btn')}>
+                                            <button onClick={() => unFollow(friend.username)}>Unfriend</button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        <div
+                            className={cx('view-more')}
+                            onClick={() => {
+                                setSize((prev) => prev + 1);
+                                getListFriend();
+                            }}
+                        >
+                            View more
+                        </div>
+                    </div>
+                </ModalBody>
+            </Modal>
 
             {/* Change avatar modal */}
             <Modal centered show={modal2} onHide={() => setModal2(!modal2)}>
@@ -184,7 +270,7 @@ const ProfileContent = () => {
             <Modal centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalHeader closeButton={true}>Edit Profile</ModalHeader>
                 <ModalBody className="px-4">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} style={{ fontSize: '14px' }}>
                         <Row>
                             <div className="d-flex align-items-center">
                                 <Col lg={3}>
@@ -301,6 +387,22 @@ const ProfileContent = () => {
                                     Other
                                 </label>
                             </div>
+                            <div className="mt-5 d-flex align-items-center">
+                                <Col lg={3}>
+                                    <label>Status</label>
+                                </Col>
+                                <select
+                                    role="button"
+                                    value={selectedOption}
+                                    onChange={(e) => setSelectedOption(e.target.value)}
+                                    name="status"
+                                    id="status-post"
+                                    className={cx('select-status')}
+                                >
+                                    <option value="PUBLIC">Public</option>
+                                    <option value="PRIVATE">Private</option>
+                                </select>
+                            </div>
                         </Row>
                         <div className="d-flex justify-content-end">
                             <button className="btn btn-primary mt-3" style={{ fontSize: '1.5rem' }}>
@@ -355,8 +457,14 @@ const ProfileContent = () => {
                                 <h5 className={cx('profile-follow-count')}>
                                     <span>{listPost.length}</span> posts
                                 </h5>
-                                <h5 className={cx('profile-follow-count')}>
-                                    <span>50</span> followers
+                                <h5
+                                    className={cx('profile-follow-count')}
+                                    onClick={() => {
+                                        setFriendModal(!friendModal);
+                                        getListFriend();
+                                    }}
+                                >
+                                    <span>{countFriend}</span> {countFriend > 1 ? 'friends' : 'friend'}
                                 </h5>
                             </div>
                             <div className={cx('profile-bio')}>
@@ -376,7 +484,8 @@ const ProfileContent = () => {
                             {listPost &&
                                 listPost.map((result) => {
                                     return (
-                                        result.files.length > 0 && (
+                                        result.files.length > 0 &&
+                                        (result.files[0].type === 1 ? (
                                             <img
                                                 key={result.id}
                                                 className={cx('gallery-item')}
@@ -384,7 +493,15 @@ const ProfileContent = () => {
                                                 alt={result.value}
                                                 onClick={() => openPost(result)}
                                             />
-                                        )
+                                        ) : (
+                                            <video
+                                                key={result.id}
+                                                className={cx('gallery-item')}
+                                                src={result.files[0].value}
+                                                alt={result.value}
+                                                onClick={() => openPost(result)}
+                                            ></video>
+                                        ))
                                     );
                                 })}
                         </div>

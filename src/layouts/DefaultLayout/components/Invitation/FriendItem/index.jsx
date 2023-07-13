@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFriend } from '@/action/RelationAction';
 import * as RelaService from '@/services/RelaService';
+import * as NotifyService from '@/services/NotifyService';
 
 import classNames from 'classnames/bind';
 import styles from './FriendItem.module.scss';
@@ -28,6 +29,8 @@ const NotifyItem = ({ user, changeCount }) => {
             );
             changeCount();
             setNotify('Accepted');
+            const content = `${userInfo.avatar}###${userInfo.name} accepted your friendship invitation`;
+            createNotify(content, user.username);
         }
     };
     const denyFriend = async () => {
@@ -42,6 +45,14 @@ const NotifyItem = ({ user, changeCount }) => {
     };
     const deny = () => {
         denyFriend();
+    };
+
+    const createNotify = async (content, user) => {
+        const result = await NotifyService.createNotify({
+            content: content,
+            username: user,
+        });
+        return result;
     };
 
     return (

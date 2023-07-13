@@ -74,7 +74,7 @@ const PostDetail = ({ onClose }) => {
                     updateListPost(
                         listPost.map((item) => {
                             if (item.id === detailPost.id) {
-                                item = detailPost;
+                                item = { ...detailPost, countReaction: updatedCountReaction, likedPost: reation.name };
                             }
                             return item;
                         }),
@@ -403,7 +403,7 @@ const PostDetail = ({ onClose }) => {
                                                 <FiHeart
                                                     size="25px"
                                                     className={cx('post-react')}
-                                                    onClick={postReacton}
+                                                    onClick={() => postReacton(LIST_REACTION[1])}
                                                 />
                                             )}
                                             <div className={cx('dropdown-wrap')}>

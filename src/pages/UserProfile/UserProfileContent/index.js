@@ -27,6 +27,7 @@ const UserProfileContent = ({ username }) => {
     const dispatch = useDispatch();
 
     const listPost = useSelector((state) => state.user.userListPost);
+    const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
 
     const [userProfile, setUserProfile] = useState({});
     const status = useSelector((state) => state.relation.status);
@@ -89,12 +90,12 @@ const UserProfileContent = ({ username }) => {
         fetchApi();
         listPostApi();
         statusRelation();
-        console.log(userProfile);
+
         // eslint-disable-next-line
     }, [username]);
 
     return (
-        <div>
+        <div style={{ marginLeft: isHeaderLayout ? '0' : '25rem', marginTop: isHeaderLayout ? '6rem' : '0' }}>
             {isPostOpen && (
                 <Suspense fallback={<div>Loading...</div>}>
                     <PostDetail onClose={closePost} />
@@ -136,7 +137,12 @@ const UserProfileContent = ({ username }) => {
                                     <span>{listPost.length}</span> {listPost.length > 1 ? 'posts' : 'post'}
                                 </h5>
                                 <h5 className={cx('profile-follow-count')}>
-                                    <span>50</span> followers
+                                    <span>{userProfile.countFriend}</span>{' '}
+                                    {userProfile.countFriend > 1 ? 'friends' : 'friend'}
+                                </h5>
+                                <h5 className={cx('profile-follow-count')}>
+                                    <span>{userProfile.countFriend}</span>{' '}
+                                    {userProfile.countCommonFriend > 1 ? 'mutual friends' : 'mutual friend'}
                                 </h5>
                             </div>
                             <div className={cx('profile-bio')}>
@@ -156,7 +162,8 @@ const UserProfileContent = ({ username }) => {
                             <div className={cx('gallery')}>
                                 {listPost.map((result) => {
                                     return (
-                                        result.files.length > 0 && (
+                                        result.files.length > 0 &&
+                                        (result.files[0].type === 1 ? (
                                             <img
                                                 key={result.id}
                                                 className={cx('gallery-item')}
@@ -164,11 +171,19 @@ const UserProfileContent = ({ username }) => {
                                                 alt={result.value}
                                                 onClick={() => openPost(result)}
                                             />
-                                        )
+                                        ) : (
+                                            <video
+                                                key={result.id}
+                                                className={cx('gallery-item')}
+                                                src={result.files[0].value}
+                                                alt={result.value}
+                                                onClick={() => openPost(result)}
+                                            ></video>
+                                        ))
                                     );
                                 })}
                             </div>
-                        ) : userProfile.security !== 'PUBLIC' ? (
+                        ) : userProfile.security !== 'PUBLIC' && status !== 'FRIEND' ? (
                             <div className={cx('private')}>
                                 <div className={cx('private-icon')}>
                                     <Https style={{ fontSize: '4rem' }} />

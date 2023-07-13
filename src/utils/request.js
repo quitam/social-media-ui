@@ -22,6 +22,8 @@ export let endpoints = {
     getCommentByPostId: '/comment/post',
     getRepComment: '/comment/child-comment',
     getRecommendFriend: '/user/recomend-friend',
+    getCountFriend: '/user/count-friend',
+    getListFriend: '/user/list-friend',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

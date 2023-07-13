@@ -77,3 +77,29 @@ export const getUserListPost = async () => {
         return res;
     } catch (e) {}
 };
+
+export const getCountFriend = async () => {
+    try {
+        const res = await request.getRQ(endpoints['getCountFriend'], {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};
+
+export const getListFriend = async (size) => {
+    try {
+        const res = await request.getRQ(endpoints['getListFriend'] + '/' + size, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};
