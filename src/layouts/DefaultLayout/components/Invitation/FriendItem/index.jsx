@@ -11,6 +11,8 @@ import { Avatar } from '@mui/material';
 
 const cx = classNames.bind(styles);
 const NotifyItem = ({ user, changeCount }) => {
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
+
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const listFriend = useSelector((state) => state.relation.listFriend);
@@ -72,7 +74,7 @@ const NotifyItem = ({ user, changeCount }) => {
                     <button className={cx('btn-accept')} onClick={accept}>
                         Accept
                     </button>
-                    <button className={cx('btn-deny')} onClick={deny}>
+                    <button className={cx('btn-deny', isDarkMode ? 'theme-dark' : '')} onClick={deny}>
                         Deny
                     </button>
                 </div>

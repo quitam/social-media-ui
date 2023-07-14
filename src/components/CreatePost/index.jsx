@@ -171,15 +171,30 @@ const CreatePost = ({ onClose }) => {
                     <div className={cx('bottom')}>
                         {pictures.length > 0 ? (
                             <div className={cx('wrap-picture')}>
-                                {pictures.map((picture, index) => (
-                                    <img
-                                        key={index}
-                                        src={picture.preview}
-                                        alt={`files ${index}`}
-                                        className={cx('picture-item')}
-                                        onClick={() => handleRemovePicture(index)}
-                                    />
-                                ))}
+                                {pictures.map((picture, index) => {
+                                    if (picture.type.startsWith('image/')) {
+                                        return (
+                                            <img
+                                                key={index}
+                                                src={picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                                onClick={() => handleRemovePicture(index)}
+                                            />
+                                        );
+                                    } else if (picture.type.startsWith('video/')) {
+                                        return (
+                                            <video
+                                                key={index}
+                                                src={picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                                onClick={() => handleRemovePicture(index)}
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                })}
                             </div>
                         ) : (
                             <div className={cx('wrap-title')}>

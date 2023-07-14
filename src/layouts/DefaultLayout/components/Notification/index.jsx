@@ -8,9 +8,12 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import { BsCheckAll } from 'react-icons/bs';
 import classNames from 'classnames/bind';
 import styles from './Notification.module.scss';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 const Notify = () => {
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
+
     const [count, setCount] = useState(0);
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
@@ -83,7 +86,7 @@ const Notify = () => {
                     <span>{count}</span>
                 </div>
             )}
-            <div className={cx('notify-result', !showResult && 'hidden')}>
+            <div className={cx('notify-result', !showResult && 'hidden', isDarkMode ? 'theme-dark' : '')}>
                 <div className={cx('top')}>
                     <h4 className={cx('notify-title')}>Notifications</h4>
                     <div className={cx('mark')} onClick={seenAll}>

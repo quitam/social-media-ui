@@ -101,7 +101,7 @@ const PostDetail = ({ onClose }) => {
                 updateListPost(
                     listPost.map((item) => {
                         if (item.id === detailPost.id) {
-                            item = detailPost;
+                            item = { ...detailPost, countReaction: updatedCountReaction, likedPost: '' };
                         }
                         return item;
                     }),
@@ -265,6 +265,7 @@ const PostDetail = ({ onClose }) => {
             }
         };
         fetchApiComment();
+        // eslint-disable-next-line
     }, []);
 
     return (
@@ -398,6 +399,7 @@ const PostDetail = ({ onClose }) => {
                                                         />
                                                     );
                                                 }
+                                                return null;
                                             })}
                                             {!detailPost.likedPost && (
                                                 <FiHeart

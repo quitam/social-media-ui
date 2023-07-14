@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 
 import FriendItem from './FriendItem';
 import * as RelaService from '@/services/RelaService';
+import { useSelector } from 'react-redux';
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import classNames from 'classnames/bind';
@@ -9,6 +10,8 @@ import styles from './Invitation.module.scss';
 
 const cx = classNames.bind(styles);
 const Notify = () => {
+    const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
+
     const [count, setCount] = useState(0);
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
@@ -54,7 +57,7 @@ const Notify = () => {
                     <span>{count}</span>
                 </div>
             )}
-            <div className={cx('notify-result', !showResult && 'hidden')}>
+            <div className={cx('notify-result', !showResult && 'hidden', isDarkMode ? 'theme-dark' : '')}>
                 <h4 className={cx('notify-title')}>Friend Invitations</h4>
                 {searchResult.length > 0 ? (
                     <div className={cx('list-notify')}>

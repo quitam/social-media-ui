@@ -18,6 +18,7 @@ import {
 
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
+import CreatePost from '@/components/CreatePost';
 
 import logoLight from '@/assets/images/logo/logo-light.png';
 
@@ -39,8 +40,15 @@ const Sidebar = () => {
     };
     const location = useLocation().pathname.substring(1);
     const [activeTab, setActiveTab] = useState(location || '');
+    const [modal, setModal] = useState(false);
+
+    const handleCloseModal = () => {
+        setModal(false);
+        setActiveTab('');
+    };
     return (
         <div className={cx('sidebar', `${isDarkMode ? 'theme-dark' : 'theme-light'}`)}>
+            {modal && <CreatePost onClose={handleCloseModal} />}
             <div className={cx('logo')}>
                 <Link to="/">
                     <img src={logoLight} alt="logo" height="58px" />
@@ -92,7 +100,10 @@ const Sidebar = () => {
                     activeIcon={<AddCircle style={iconStyle} />}
                     isActive={activeTab === 'create'}
                     title="Create"
-                    onClick={() => setActiveTab('create')}
+                    onClick={() => {
+                        setActiveTab('create');
+                        setModal(true);
+                    }}
                 />
                 <SidebarItem
                     icon={<AppAvatar src={userInfo.avatar} size={24} alt="" />}
