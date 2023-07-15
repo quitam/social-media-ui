@@ -9,6 +9,13 @@ export const loginCustomer = async (data) => {
         return res;
     } catch (e) {}
 };
+export const loginAdmin = async (data) => {
+    try {
+        const res = await request.postRQ(endpoints['adminLogin'], data);
+
+        return res;
+    } catch (e) {}
+};
 export const registerCustomer = async (data) => {
     try {
         const res = await request.postRQ(endpoints['customerRegister'], data);

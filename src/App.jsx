@@ -5,6 +5,8 @@ import { publicRoutes, privateRoutes, ScrollToTop } from './routes';
 
 function App() {
     const token = useSelector((state) => state.user.token);
+    const userInfo = useSelector((state) => state.user.user);
+
     console.log(token);
     return (
         <Router>
@@ -13,7 +15,21 @@ function App() {
                 {publicRoutes.map((route, index) => {
                     const Page = route.component;
                     return (
-                        <Route key={index} path={route.path} element={token ? <Navigate to="/" /> : <Page />}></Route>
+                        <Route
+                            key={index}
+                            path={route.path}
+                            element={
+                                token ? (
+                                    userInfo?.role.name === 'CUSTOMER' ? (
+                                        <Navigate to="/" />
+                                    ) : (
+                                        <Navigate to="/admin" />
+                                    )
+                                ) : (
+                                    <Page />
+                                )
+                            }
+                        ></Route>
                     );
                 })}
                 {privateRoutes.map((route, index) => {
@@ -22,7 +38,15 @@ function App() {
                         <Route
                             key={index}
                             path={route.path}
-                            element={token ? <Page /> : <Navigate to="/login" />}
+                            element={
+                                token ? (
+                                    <Page />
+                                ) : userInfo?.role.name === 'CUSTOMMER' ? (
+                                    <Navigate to="/login" />
+                                ) : (
+                                    <Navigate to="/login/admin" />
+                                )
+                            }
                         ></Route>
                     );
                 })}

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export let endpoints = {
     customerLogin: '/login/customer',
+    adminLogin: 'login/admin',
     customerRegister: '/user/create',
     customerUpdate: '/user/update-profile',
     changeAvatar: '/user/change-avatar',
@@ -24,6 +25,10 @@ export let endpoints = {
     getRecommendFriend: '/user/recomend-friend',
     getCountFriend: '/user/count-friend',
     getListFriend: '/user/list-friend',
+    getAllUser: '/admin/all-user',
+    getAllPost: '/admin/all-post',
+    getAllComment: '/admin/all-comment',
+    getStatistic: 'statistic/get-data',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

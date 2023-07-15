@@ -33,6 +33,7 @@
         "react-scripts": "5.0.1",
         "react-use-draggable-scroll": "^0.4.7",
         "react-uuid": "^2.0.0",
+        "recharts": "^2.7.2",
         "redux": "^4.2.0",
         "sass": "^1.56.0",
         "sweetalert2": "^11.6.8",

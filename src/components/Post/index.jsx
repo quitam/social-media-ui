@@ -170,7 +170,7 @@ const Post = ({ data }) => {
                 if (data.likedPost === '') {
                     updatedCountReaction[6] += 1;
                 }
-                if (data.user.user !== userInfo.username) {
+                if (data.user.username !== userInfo.username) {
                     const content = `${userInfo.avatar}###${userInfo.name} reaction on your post.`;
                     createNotify(content, data.user.username);
                 }

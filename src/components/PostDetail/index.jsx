@@ -67,6 +67,10 @@ const PostDetail = ({ onClose }) => {
                 if (detailPost.likedPost === '') {
                     updatedCountReaction[6] += 1;
                 }
+                if (detailPost.user.username !== userInfo.username) {
+                    const content = `${userInfo.avatar}###${userInfo.name} reaction on your post.`;
+                    createNotify(content, detailPost.user.username);
+                }
                 dispatch(
                     updateDetailPost({ ...detailPost, countReaction: updatedCountReaction, likedPost: reation.name }),
                 );

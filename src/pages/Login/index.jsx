@@ -18,8 +18,7 @@ import { Link } from 'react-router-dom';
 import './Login.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Leaf from '../../assets/images/login/leaf-logo1.png';
-import { Google, GitHub } from '@mui/icons-material/';
+import Leaf from '@/assets/images/login/leaf-logo1.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -233,12 +232,6 @@ const Login = () => {
                                         Register now
                                     </Link>
                                 </span>
-                            </p>
-                            <hr />
-                            <p className={'others'}>
-                                Login with:
-                                <Google titleAccess="Login with Google" className={'icon google'} />
-                                <GitHub titleAccess="Login with Github" className={'icon github'} />
                             </p>
                         </div>
                     </Col>

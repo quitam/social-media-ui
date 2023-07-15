@@ -10,7 +10,6 @@
         border-radius: 10px;
         display: flex;
         background-color: #fff;
-        min-height: 550px;
         .left {
             height: 100%;
             background-image: url(../../assets/images/login/leaf.jpeg);
@@ -96,21 +95,6 @@
             padding: 5px;
             transition: 0.2s;
             cursor: pointer;
-        }
-        .google {
-            margin-left: 20px;
-            &:hover {
-                border: 1px solid red;
-                color: #fff;
-                background-color: red;
-            }
-        }
-        .github {
-            margin-left: 10px;
-            &:hover {
-                background-color: #000;
-                color: #fff;
-            }
         }
     }
 }
