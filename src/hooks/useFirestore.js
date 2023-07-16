@@ -8,8 +8,10 @@ const useFirestore = (table, condition) => {
 
     useEffect(() => {
         //let collectionRef = db.collection(collection).orderBy('createdAt');
-
-        const q = query(collection(db, table), where(condition.fieldName, condition.operator, condition.compareValue));
+        let q = query(collection(db, table));
+        if (condition) {
+            q = query(collection(db, table), where(condition.fieldName, condition.operator, condition.compareValue));
+        }
         if (condition) {
             if (!condition.compareValue || !condition.compareValue.length) {
                 // reset documents data

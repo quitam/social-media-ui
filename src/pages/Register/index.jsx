@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import * as UserService from '../../services/UserService';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 
 import { Row, Col } from 'react-bootstrap';
@@ -75,6 +75,7 @@ const Register = () => {
                 name: name.trim(),
                 username: username.trim(),
                 password: password.trim(),
+                date: serverTimestamp(),
                 email: email.trim(),
                 isOnline: false,
             });

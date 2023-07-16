@@ -6,9 +6,9 @@ import Tippy from '@tippyjs/react/headless';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Wrapper as PopperWrapper } from '../Popper';
-
-import { onSnapshot, query, collection, where, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { onSnapshot, query, collection, where, doc, setDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 import { v4 } from 'uuid';
 import styles from './Search.module.scss';
 import classNames from 'classnames/bind';
@@ -67,10 +67,42 @@ const Search = ({ darkMode, chat = false }) => {
         }
     };
 
-    const chatRoom = (result) => {
-        const q = query(collection(db, 'rooms'), where('members', 'array-contains', userInfo.username));
+    const chatRoom = async (result) => {
+        const collection_ref = collection(db, 'user');
+        const q = query(collection_ref, where('username', '==', result.username));
+        const doc_refs = await getDocs(q);
 
-        const unsubcribe = onSnapshot(q, (snapshot) => {
+        const res = [];
+
+        doc_refs.forEach((country) => {
+            res.push({
+                id: country.id,
+                ...country.data(),
+            });
+        });
+
+        const friendFireBase = res[0];
+
+        if (!friendFireBase) {
+            try {
+                const res = await createUserWithEmailAndPassword(auth, result.username + '@gamil.com', result.username);
+                await setDoc(doc(db, 'user', result.username.trim()), {
+                    uid: res.user.uid,
+                    name: result.name.trim(),
+                    username: result.username.trim(),
+                    password: '',
+                    date: serverTimestamp(),
+                    email: '',
+                    isOnline: false,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        const roomQuery = query(collection(db, 'rooms'), where('members', 'array-contains', userInfo.username));
+
+        const unsubcribe = onSnapshot(roomQuery, (snapshot) => {
             const document = snapshot.docs
                 .filter((doc) => doc.data().members.includes(result.username))
                 .map((doc) => ({ ...doc.data(), id: doc.id }));

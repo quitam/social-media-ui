@@ -6,18 +6,27 @@ import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout';
 import SidebarLayout from '../../layouts/SidebarLayout/SidebarLayout';
 import MainContent from '../../components/MainContent';
 import Story from '../../components/Story';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '@/action/UserAction';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 const Home = () => {
-    useEffect(() => {
-        document.title = 'Leaf';
-    });
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userInfo = useSelector((state) => state.user.user);
     const storyVisible = useSelector((state) => state.story.isOpen);
     const indexSlide = useSelector((state) => state.story.indexSlide);
     const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
 
+    useEffect(() => {
+        document.title = 'Leaf';
+        if (userInfo && userInfo.role.name === 'ADMIN') {
+            dispatch(logoutUser());
+            navigate('/login');
+        }
+    }, []);
     return (
         <div className={cx('home')}>
             {storyVisible && (

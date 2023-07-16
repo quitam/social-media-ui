@@ -22,7 +22,7 @@ import * as AdminService from '@/services/AdminService';
 
 import logo from '@/assets/images/login/leaf-logo2.png';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SidebarItem from '@/layouts/SidebarLayout/components/SidebarItem';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
@@ -30,6 +30,7 @@ import { toast, ToastContainer } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 const HomeAdmin = () => {
+    const userInfo = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const iconStyle = {
@@ -168,6 +169,10 @@ const HomeAdmin = () => {
     }, [page]);
 
     useEffect(() => {
+        if (userInfo && userInfo.role.name === 'CUSTOMER') {
+            dispatch(logoutUser());
+            navigate('/login/admin');
+        }
         getStatistic();
     }, []);
 

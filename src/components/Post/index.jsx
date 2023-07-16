@@ -99,24 +99,38 @@ const Post = ({ data }) => {
     };
     //Ẩn bài Post
     const hiddenPost = () => {
-        const hiddenApi = async () => {
-            const result = await PostService.hiddenPost(data.id);
-            return result;
-        };
-        hiddenApi().then((data) => {
-            if (data.success) {
-                dispatch(updateListPost(listPost.filter((item) => !(item.id === data.data.id))));
-                toast.success('Hidden post success', {
-                    position: 'bottom-right',
-                    autoClose: 1500,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    theme: 'dark',
-                });
-                setModal(!modal);
-            }
-        });
+        // Owner post hidden
+        if (userInfo.username === data.user.username) {
+            const hiddenApi = async () => {
+                const result = await PostService.hiddenPost(data.id);
+                return result;
+            };
+            hiddenApi().then((data) => {
+                if (data.success) {
+                    dispatch(updateListPost(listPost.filter((item) => !(item.id === data.data.id))));
+                    toast.success('Hidden post success', {
+                        position: 'bottom-right',
+                        autoClose: 1500,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        theme: 'dark',
+                    });
+                    setModal(!modal);
+                }
+            });
+        } else {
+            dispatch(updateListPost(listPost.filter((item) => !(item.id === data.id))));
+            toast.info('Hidden post on your new feed', {
+                position: 'bottom-right',
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                theme: 'dark',
+            });
+            setModal(!modal);
+        }
     };
     //Ẩn Comment
     const hiddenComment = (id) => {
@@ -228,11 +242,13 @@ const Post = ({ data }) => {
             {/* Modal action post */}
             <Modal size="sm" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalBody bsPrefix="modal-custom">
-                    <div className={cx('more-action')}>Delete post</div>
+                    {userInfo.username && data.user.username && userInfo.username === data.user.username && (
+                        <div className={cx('more-action')}>Delete post</div>
+                    )}
                     <div className={cx('more-action')} onClick={hiddenPost}>
                         Hidden post
                     </div>
-                    <div className={cx('more-action')}>Unfollow</div>
+                    {userInfo.username === data.user.username && <div className={cx('more-action')}>Edit post</div>}
                     <div className={cx('more-action')} onClick={() => setModal(!modal)}>
                         Cancel
                     </div>

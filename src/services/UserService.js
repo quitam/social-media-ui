@@ -110,3 +110,16 @@ export const getListFriend = async (size) => {
         return res;
     } catch (e) {}
 };
+
+export const uploadFileChat = async (data) => {
+    try {
+        const res = await request.postRQ(endpoints['uploadFileChat'], data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+
+        return res;
+    } catch (e) {}
+};

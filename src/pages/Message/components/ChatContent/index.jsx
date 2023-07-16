@@ -1,6 +1,8 @@
-import { useState, createRef, useEffect, useMemo } from 'react';
+import { useState, createRef, useEffect, useMemo, useRef } from 'react';
 
-import { FaCog, FaPlus } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
+import { GrAttachment } from 'react-icons/gr';
+import { query, collection, where, getDocs } from 'firebase/firestore';
 import { IoSend } from 'react-icons/io5';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../../firebase';
@@ -21,10 +23,31 @@ const ChatContent = () => {
     const currentRoom = useSelector((state) => state.chat.currentRoom);
     const [inputMsg, setinputMsg] = useState('');
     const [friend, setFriend] = useState({});
+    const [pictures, setPictures] = useState([]);
+    const chatRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     };
+
+    const userCondition = useMemo(() => {
+        if (friend.username) {
+            console.log(friend);
+            return {
+                fieldName: 'username',
+                operator: '==',
+                compareValue: friend.username,
+            };
+        } else {
+            return {
+                fieldName: 'username',
+                operator: '==',
+                compareValue: '-1',
+            };
+        }
+    }, [friend]);
+    const userList = useFirestore('user', userCondition);
+
     useEffect(() => {
         if (currentRoom && currentRoom.members) {
             console.log('current', currentRoom);
@@ -33,26 +56,107 @@ const ChatContent = () => {
             const userApi = async () => {
                 const result = await UserService.userProfile(friendName);
                 if (result.data) {
-                    setFriend(result.data);
+                    const collection_ref = collection(db, 'user');
+                    const q = query(collection_ref, where('username', '==', friendName[0]));
+                    const doc_refs = await getDocs(q);
+
+                    const res = [];
+
+                    doc_refs.forEach((country) => {
+                        res.push({
+                            id: country.id,
+                            ...country.data(),
+                        });
+                    });
+
+                    const friendFireBase = res[0];
+                    setFriend({
+                        ...result.data,
+                        isOnline: friendFireBase?.isOnline,
+                        offLineDate: friendFireBase?.date,
+                    });
                 }
             };
-            userApi();
+            if (friend.username) {
+                userApi();
+            }
         }
         // eslint-disable-next-line
-    }, [currentRoom]);
+    }, [userList]);
 
-    const sendMsg = (e) => {
+    const handlePreview = (e) => {
+        const files = Array.from(e.target.files);
+        let selectedFiles;
+
+        if (files.length > 6) {
+            selectedFiles = files.slice(0, 6);
+        } else {
+            selectedFiles = files;
+        }
+
+        const updatedPictures = selectedFiles.map((file) => {
+            file.preview = URL.createObjectURL(file);
+            return file;
+        });
+
+        setPictures((prev) => [...prev, ...updatedPictures]);
+    };
+
+    const handleRemovePicture = (index) => {
+        const updatedPictures = [...pictures];
+        updatedPictures.splice(index, 1);
+        setPictures(updatedPictures);
+    };
+
+    const uploadFileChat = async (data) => {
+        const result = await UserService.uploadFileChat(data);
+        if (result.success) {
+            return result.data;
+        }
+    };
+
+    const sendMsg = async (e) => {
         e.preventDefault();
 
         try {
-            setDoc(doc(db, 'messages', v4()), {
-                content: inputMsg,
-                user: userInfo.username,
-                room: currentRoom.id,
-                date: serverTimestamp(),
-                status: 'WAITING',
-            });
-            setinputMsg('');
+            if (pictures && pictures.length > 0) {
+                const data = new FormData();
+                if (pictures.length > 0) {
+                    //data.append('files', pictures);
+                    for (let i = 0; i < pictures.length; i++) {
+                        data.append('files', pictures[i]);
+                    }
+                }
+                const listFile = await uploadFileChat(data);
+                for (let i = 0; i < pictures.length; i++) {
+                    var type = 1;
+                    if (pictures[i].type.startsWith('video/')) {
+                        type = 2;
+                    }
+                    setDoc(doc(db, 'messages', v4()), {
+                        content: listFile[i],
+                        user: userInfo.username,
+                        room: currentRoom.id,
+                        date: serverTimestamp(),
+                        type: type,
+                        status: 'WAITING',
+                    });
+                }
+
+                setPictures([]);
+            }
+
+            if (inputMsg) {
+                setDoc(doc(db, 'messages', v4()), {
+                    content: inputMsg,
+                    user: userInfo.username,
+                    room: currentRoom.id,
+                    date: serverTimestamp(),
+                    type: 0,
+                    status: 'WAITING',
+                });
+                setinputMsg('');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -77,7 +181,7 @@ const ChatContent = () => {
                 <div className={cx('blocks')}>
                     {currentRoom.id && (
                         <div className={cx('current-chatting-user')}>
-                            <Avatar isOnline="active" image={friend.avatar} />
+                            <Avatar isOnline={friend.isOnline && 'active'} image={friend.avatar} />
                             <p>{friend.name}</p>
                         </div>
                     )}
@@ -113,6 +217,8 @@ const ChatContent = () => {
                                         me={userInfo.username}
                                         user={item.user === userInfo.username ? userInfo : friend}
                                         msg={item.content}
+                                        time={item.date}
+                                        type={item.type}
                                     />
                                 );
                             })}
@@ -121,18 +227,63 @@ const ChatContent = () => {
             </div>
             <div className={cx('content-footer')}>
                 <form className={cx('sendNewMessage')} onSubmit={sendMsg}>
-                    <button className={cx('addFiles')} type="button">
-                        <FaPlus />
-                    </button>
-                    <input
-                        type="text"
-                        placeholder="Type a message here"
-                        onChange={(e) => setinputMsg(e.target.value)}
-                        value={inputMsg}
-                    />
-                    <button className={cx('btnSendMsg')} id="sendMsgBtn" type="submit">
-                        <IoSend />
-                    </button>
+                    <div className={cx('chat-input')}>
+                        <button className={cx('addFiles')} type="button" onClick={() => chatRef.current.click()}>
+                            <GrAttachment className={cx('add-file-icon')} />
+                        </button>
+                        <input
+                            onChange={handlePreview}
+                            ref={chatRef}
+                            type="file"
+                            name="chat-file"
+                            id="chat-file"
+                            multiple
+                            hidden
+                        />
+                        <input
+                            type="text"
+                            placeholder="Type a message here"
+                            onChange={(e) => setinputMsg(e.target.value)}
+                            value={inputMsg}
+                        />
+
+                        <button className={cx('btnSendMsg')} id="sendMsgBtn" type="submit">
+                            <IoSend />
+                        </button>
+                    </div>
+
+                    {pictures && pictures.length > 0 && (
+                        <div className={cx('files-chat')}>
+                            {pictures.map((picture, index) => {
+                                if (picture.type.startsWith('image/')) {
+                                    return (
+                                        <div className={cx('picture-chat')}>
+                                            <img
+                                                key={index}
+                                                src={picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                            />
+                                            <span onClick={() => handleRemovePicture(index)}>X</span>
+                                        </div>
+                                    );
+                                } else if (picture.type.startsWith('video/')) {
+                                    return (
+                                        <div className={cx('picture-chat')}>
+                                            <video
+                                                key={index}
+                                                src={picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                            />
+                                            <span onClick={() => handleRemovePicture(index)}> X</span>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

@@ -6,7 +6,7 @@ import { FaEllipsisH, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames/bind';
 import styles from './ChatList.module.scss';
 import * as UserService from '../../../../services/UserService';
-import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
+import { onSnapshot, query, collection, where, doc, updateDoc, collectionGroup, getDocs } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { updateCurrentRoom } from '../../../../action/ChatAction';
 import Search from '../../../../components/Search';
@@ -54,16 +54,42 @@ const ChatList = () => {
         };
     }, [userInfo.username]);
     const rooms = useFirestore('rooms', roomsCondition);
-    console.log(rooms);
+
     useEffect(() => {
         if (rooms.length > 0) {
             setListUser([]);
             rooms.forEach((room) => {
                 const friendName = room.members.filter((member) => member !== userInfo.username);
+
                 const userApi = async () => {
                     const result = await UserService.userProfile(friendName);
                     if (result.data) {
-                        setListUser((prev) => [...prev, { ...result.data, room: room }]);
+                        const collection_ref = collection(db, 'user');
+                        const q = query(collection_ref, where('username', '==', friendName[0]));
+                        const doc_refs = await getDocs(q);
+
+                        const res = [];
+
+                        doc_refs.forEach((country) => {
+                            res.push({
+                                id: country.id,
+                                ...country.data(),
+                            });
+                        });
+
+                        const friendFireBase = res[0];
+
+                        console.log('Friend Firebase', friendFireBase);
+
+                        setListUser((prev) => [
+                            ...prev,
+                            {
+                                ...result.data,
+                                isOnline: friendFireBase?.isOnline,
+                                offLineDate: friendFireBase?.date,
+                                room: room,
+                            },
+                        ]);
                     }
                 };
                 userApi();
@@ -121,6 +147,7 @@ const ChatList = () => {
                                 active={item.active ? 'active' : ''}
                                 isOnline={item.isOnline ? 'active' : ''}
                                 animationDelay={index + 1}
+                                time={item.offLineDate}
                             />
                         </div>
                     ))}
