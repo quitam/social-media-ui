@@ -31,30 +31,25 @@ const ChatContent = () => {
     };
 
     const userCondition = useMemo(() => {
-        if (friend.username) {
-            console.log(friend);
-            return {
-                fieldName: 'username',
-                operator: '==',
-                compareValue: friend.username,
-            };
-        } else {
-            return {
-                fieldName: 'username',
-                operator: '==',
-                compareValue: '-1',
-            };
+        let friendName = '-1';
+        if (currentRoom && currentRoom.members) {
+            friendName = currentRoom.members.filter((member) => member !== userInfo.username)[0];
         }
-    }, [friend]);
+
+        return {
+            fieldName: 'username',
+            operator: '==',
+            compareValue: friendName,
+        };
+    }, [currentRoom]);
     const userList = useFirestore('user', userCondition);
 
     useEffect(() => {
         if (currentRoom && currentRoom.members) {
-            console.log('current', currentRoom);
-
             const friendName = currentRoom.members.filter((member) => member !== userInfo.username);
             const userApi = async () => {
-                const result = await UserService.userProfile(friendName);
+                const result = await UserService.userProfile(friendName[0]);
+
                 if (result.data) {
                     const collection_ref = collection(db, 'user');
                     const q = query(collection_ref, where('username', '==', friendName[0]));
@@ -77,11 +72,17 @@ const ChatContent = () => {
                     });
                 }
             };
-            if (friend.username) {
-                userApi();
-            }
+
+            userApi();
         }
         // eslint-disable-next-line
+    }, [currentRoom]);
+
+    useEffect(() => {
+        console.log('userlist', userList);
+        if (userList && userList.length > 0) {
+            setFriend((prev) => ({ ...prev, isOnline: userList[0].isOnline, offlineDate: userList[0].date }));
+        }
     }, [userList]);
 
     const handlePreview = (e) => {
@@ -170,11 +171,12 @@ const ChatContent = () => {
         };
     }, [currentRoom.id]);
     const chats = useFirestore('messages', chatsCondition);
-    console.log('chats', chats);
+
     useEffect(() => {
         scrollToBottom();
         // eslint-disable-next-line
     }, [chats]);
+
     return (
         <div className={cx('chat-content')}>
             <div className={cx('header')}>

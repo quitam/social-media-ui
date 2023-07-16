@@ -6,7 +6,7 @@ import { FaEllipsisH, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames/bind';
 import styles from './ChatList.module.scss';
 import * as UserService from '../../../../services/UserService';
-import { onSnapshot, query, collection, where, doc, updateDoc, collectionGroup, getDocs } from 'firebase/firestore';
+import { onSnapshot, query, collection, where, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { updateCurrentRoom } from '../../../../action/ChatAction';
 import Search from '../../../../components/Search';
@@ -21,30 +21,6 @@ const ChatList = () => {
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const [listUser, setListUser] = useState([]);
-
-    // const allUser = [
-    //     {
-    //         id: 1,
-    //         image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/1f8da547-71a5-466e-962e-0479296490cfjpg',
-    //         name: 'Tấn Kiệt',
-    //         active: true,
-    //         isOnline: true,
-    //     },
-    //     {
-    //         id: 2,
-    //         image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/39f94986-d898-49dd-b9eb-5ff979857ab9png',
-    //         name: 'Văn Thành',
-    //         active: false,
-    //         isOnline: false,
-    //     },
-    //     {
-    //         id: 3,
-    //         image: 'https://storage.googleapis.com/leaf-5c2c4.appspot.com/b1aa96e7-5959-4dd3-8b91-195ab3d86e12png',
-    //         name: 'Tá Đức',
-    //         active: false,
-    //         isOnline: true,
-    //     },
-    // ];
 
     const roomsCondition = useMemo(() => {
         return {

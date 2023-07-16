@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
 import { Container, Row, Col } from 'react-bootstrap';
-import { onSnapshot, query, collection, where, doc, updateDoc } from 'firebase/firestore';
+import { onSnapshot, query, collection, where, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase';
 
 // Components
@@ -68,6 +68,7 @@ const Navbar = () => {
         //set offline in firestore
         updateDoc(doc(db, 'user', userInfo.username), {
             isOnline: false,
+            date: serverTimestamp(),
         });
     };
 

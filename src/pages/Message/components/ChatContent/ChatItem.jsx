@@ -6,6 +6,7 @@ import en from 'javascript-time-ago/locale/en';
 import { useState } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
+import AppAvatar from '@/components/Avatar';
 
 TimeAgo.addLocale(en);
 // Create formatter (English).
@@ -14,7 +15,7 @@ const cx = classNames.bind(styles);
 
 const ChatItem = ({ me, user, msg, time, type }) => {
     const [toggler, setToggler] = useState(false);
-    console.log('time', time);
+
     return (
         <div style={{ animationDelay: `0.8s` }} className={cx('chat-item', `${user.username === me ? 'me' : 'other'}`)}>
             <Lightbox open={toggler} close={() => setToggler(!toggler)} slides={[{ src: msg }]} />
@@ -38,7 +39,7 @@ const ChatItem = ({ me, user, msg, time, type }) => {
                     {/* <span>Seen 21:58</span> */}
                 </div>
             </div>
-            <Avatar isOnline="active" image={user.avatar} />
+            <Avatar image={user.avatar} />
         </div>
     );
 };

@@ -1,9 +1,32 @@
 .sidebar-item {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    margin: 4px 0;
-    padding: 10px;
+
+    .count {
+        margin-right: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--primary);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 10px;
+        span {
+            padding: 0;
+            line-height: 1;
+        }
+    }
+
+    .wrap-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+    }
 
     cursor: pointer;
     &:hover {

@@ -41,7 +41,7 @@ function App() {
                             element={
                                 token ? (
                                     <Page />
-                                ) : userInfo?.role.name === 'CUSTOMMER' ? (
+                                ) : userInfo?.role.name !== 'CUSTOMER' ? (
                                     <Navigate to="/login" />
                                 ) : (
                                     <Navigate to="/login/admin" />

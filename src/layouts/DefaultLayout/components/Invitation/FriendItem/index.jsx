@@ -10,7 +10,7 @@ import styles from './FriendItem.module.scss';
 import { Avatar } from '@mui/material';
 
 const cx = classNames.bind(styles);
-const NotifyItem = ({ user, changeCount }) => {
+const NotifyItem = ({ user, changeCount, size = 2 }) => {
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
 
     const dispatch = useDispatch();
@@ -71,10 +71,13 @@ const NotifyItem = ({ user, changeCount }) => {
                 <span>{notify}</span>
             ) : (
                 <div className={cx('actions')}>
-                    <button className={cx('btn-accept')} onClick={accept}>
+                    <button className={cx('btn-accept', size === 1 && 'small')} onClick={accept}>
                         Accept
                     </button>
-                    <button className={cx('btn-deny', isDarkMode ? 'theme-dark' : '')} onClick={deny}>
+                    <button
+                        className={cx('btn-deny', isDarkMode ? 'theme-dark' : '', size === 1 && 'small')}
+                        onClick={deny}
+                    >
                         Deny
                     </button>
                 </div>

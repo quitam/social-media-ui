@@ -15,7 +15,7 @@ const Avatar = ({ image, isOnline }) => {
                 <img src={image} alt="avatar" />
             </div>
 
-            <span className={cx('isOnline', `${isOnline}`)}></span>
+            {isOnline !== undefined && <span className={cx('isOnline', `${isOnline}`)}></span>}
         </div>
     );
 };
