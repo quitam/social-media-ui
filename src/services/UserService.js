@@ -1,6 +1,7 @@
 /* eslint-disable no-empty */
 import * as request from '../utils/request';
 import { endpoints } from '../utils/request';
+import axios from 'axios';
 
 export const loginCustomer = async (data) => {
     try {
@@ -121,5 +122,20 @@ export const uploadFileChat = async (data) => {
         });
 
         return res;
+    } catch (e) {}
+};
+
+export const checkImage = async (data) => {
+    try {
+        const res = await axios.post('https://detect.roboflow.com/violence-detection-s9acq/1', data, {
+            params: {
+                api_key: 'rdvF8Dy3OBmUPOCBs0rZ',
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        return res.data;
     } catch (e) {}
 };

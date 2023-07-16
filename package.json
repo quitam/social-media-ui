@@ -23,6 +23,7 @@
         "firebase": "^9.15.0",
         "javascript-time-ago": "^2.5.9",
         "normalize.css": "^8.0.1",
+        "nude": "^0.0.1",
         "react": "^18.2.0",
         "react-bootstrap": "^2.7.0",
         "react-dom": "^18.2.0",

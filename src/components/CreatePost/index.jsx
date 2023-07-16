@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Close, AddPhotoAlternate } from '@mui/icons-material';
 import classNames from 'classnames/bind';
 import AppAvatar from '../Avatar';
+import * as UserService from '@/services/UserService';
 
 import * as PostService from '@/services/PostService';
 import { updateListPost } from '@/action/PostAction';
@@ -10,6 +11,7 @@ import { toast, ToastContainer } from 'react-toastify';
 
 import styles from './CreatePost.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
+
 const cx = classNames.bind(styles);
 
 const CreatePost = ({ onClose }) => {
@@ -79,23 +81,66 @@ const CreatePost = ({ onClose }) => {
         }
     };
 
-    const handlePreview = (e) => {
-        const files = Array.from(e.target.files);
-        let selectedFiles;
+    const loadImageBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
 
-        if (files.length > 6) {
-            selectedFiles = files.slice(0, 6);
-            toast.warning('Only upload maximum 6 files', {
-                position: 'bottom-right',
-                autoClose: 1500,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: 'dark',
-            });
-        } else {
-            selectedFiles = files;
+    const handlePreview = async (e) => {
+        const files = Array.from(e.target.files);
+        const selectedFiles = [];
+
+        toast.dark('Uploading...', { position: 'bottom-right', autoClose: 4000 });
+
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].type.startsWith('image/')) {
+                const image = await loadImageBase64(files[i]);
+                const checkImage = await UserService.checkImage(image);
+                if (!(checkImage?.predictions.length > 0 && checkImage?.predictions[0].confidence > 0.2)) {
+                    selectedFiles.push(files[i]);
+                } else {
+                    toast.warning('Your image have violence action', {
+                        position: 'bottom-right',
+                        autoClose: 1500,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        theme: 'dark',
+                    });
+                }
+            } else {
+                selectedFiles.push(files[i]);
+            }
+            if (selectedFiles.length === 6) {
+                toast.warning('Only upload maximum 6 files', {
+                    position: 'bottom-right',
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    theme: 'dark',
+                });
+                break;
+            }
         }
+
+        // if (files.length > 6) {
+        //     selectedFiles = files.slice(0, 6);
+        //     toast.warning('Only upload maximum 6 files', {
+        //         position: 'bottom-right',
+        //         autoClose: 1500,
+        //         hideProgressBar: true,
+        //         closeOnClick: true,
+        //         pauseOnHover: true,
+        //         theme: 'dark',
+        //     });
+        // } else {
+        //     selectedFiles = files;
+        // }
 
         const updatedPictures = selectedFiles.map((file) => {
             file.preview = URL.createObjectURL(file);
@@ -103,6 +148,9 @@ const CreatePost = ({ onClose }) => {
         });
 
         setPictures((prev) => [...prev, ...updatedPictures]);
+        setTimeout(() => {
+            toast.dismiss();
+        }, [1500]);
     };
 
     const handleRemovePicture = (index) => {
@@ -209,6 +257,7 @@ const CreatePost = ({ onClose }) => {
                 <input
                     max={2}
                     type="file"
+                    accept="image/*, video/*"
                     multiple
                     ref={fileInputRef}
                     onChange={handlePreview}
