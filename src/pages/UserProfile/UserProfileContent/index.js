@@ -182,7 +182,50 @@ const UserProfileContent = ({ username }) => {
                             padding: '20px 0',
                         }}
                     >
-                        {listPost.length > 0 && userProfile.security === 'PUBLIC' ? (
+                        {userProfile.security === 'PRIVATE' ? (
+                            status === 'FRIEND' ? (
+                                listPost.length > 0 ? (
+                                    <div className={cx('gallery')}>
+                                        {listPost.map((result) => {
+                                            return (
+                                                result.files.length > 0 &&
+                                                (result.files[0].type === 1 ? (
+                                                    <img
+                                                        key={result.id}
+                                                        className={cx('gallery-item')}
+                                                        src={result.files[0].value}
+                                                        alt={result.value}
+                                                        onClick={() => openPost(result)}
+                                                    />
+                                                ) : (
+                                                    <video
+                                                        key={result.id}
+                                                        className={cx('gallery-item')}
+                                                        src={result.files[0].value}
+                                                        alt={result.value}
+                                                        onClick={() => openPost(result)}
+                                                    ></video>
+                                                ))
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className={cx('private')}>
+                                        <div className={cx('private-icon')}>
+                                            <NoPhotography style={{ fontSize: '4rem' }} />
+                                        </div>
+                                        <span>No post</span>
+                                    </div>
+                                )
+                            ) : (
+                                <div className={cx('private')}>
+                                    <div className={cx('private-icon')}>
+                                        <Https style={{ fontSize: '4rem' }} />
+                                    </div>
+                                    <span>This account is private</span>
+                                </div>
+                            )
+                        ) : listPost.length > 0 ? (
                             <div className={cx('gallery')}>
                                 {listPost.map((result) => {
                                     return (
@@ -207,13 +250,6 @@ const UserProfileContent = ({ username }) => {
                                     );
                                 })}
                             </div>
-                        ) : userProfile.security !== 'PUBLIC' && status !== 'FRIEND' ? (
-                            <div className={cx('private')}>
-                                <div className={cx('private-icon')}>
-                                    <Https style={{ fontSize: '4rem' }} />
-                                </div>
-                                <span>This account is private</span>
-                            </div>
                         ) : (
                             <div className={cx('private')}>
                                 <div className={cx('private-icon')}>
@@ -222,6 +258,47 @@ const UserProfileContent = ({ username }) => {
                                 <span>No post</span>
                             </div>
                         )}
+                        {/* {listPost.length > 0 ? 
+                         (userProfile.security === 'PUBLIC' || status == 'FRIEND' ? (
+                            <div className={cx('gallery')}>
+                                {listPost.map((result) => {
+                                    return (
+                                        result.files.length > 0 &&
+                                        (result.files[0].type === 1 ? (
+                                            <img
+                                                key={result.id}
+                                                className={cx('gallery-item')}
+                                                src={result.files[0].value}
+                                                alt={result.value}
+                                                onClick={() => openPost(result)}
+                                            />
+                                        ) : (
+                                            <video
+                                                key={result.id}
+                                                className={cx('gallery-item')}
+                                                src={result.files[0].value}
+                                                alt={result.value}
+                                                onClick={() => openPost(result)}
+                                            ></video>
+                                        ))
+                                    );
+                                })}
+                            </div>) : 
+                         userProfile.security !== 'PUBLIC' ? 
+                            <div className={cx('private')}>
+                                <div className={cx('private-icon')}>
+                                    <Https style={{ fontSize: '4rem' }} />
+                                </div>
+                                <span>This account is private</span>
+                            </div>
+                        : 
+                            <div className={cx('private')}>
+                                <div className={cx('private-icon')}>
+                                    <NoPhotography style={{ fontSize: '4rem' }} />
+                                </div>
+                                <span>No post</span>
+                            </div>
+} */}
                     </div>
                 </div>
             </div>

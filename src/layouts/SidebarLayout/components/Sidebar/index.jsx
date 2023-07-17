@@ -295,7 +295,13 @@ const Sidebar = () => {
                         />
                     </div>
                     {searchResult && searchResult.length > 0 && (
-                        <div className={cx('search-result', !showSearch && 'hidden')}>
+                        <div
+                            className={cx(
+                                'search-result',
+                                !showSearch && 'hidden',
+                                `${isDarkMode ? 'theme-dark' : 'theme-light'}`,
+                            )}
+                        >
                             {searchResult.map((item) => {
                                 return <ResultItem key={item.username} item={item} />;
                             })}
