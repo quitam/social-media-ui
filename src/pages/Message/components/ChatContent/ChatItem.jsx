@@ -34,6 +34,14 @@ const ChatItem = ({ me, user, msg, time, type }) => {
                         </video>
                     </div>
                 )}
+                {type === 3 && (
+                    <div className={cx('chat-msg')}>
+                        <audio controls alt="">
+                            <source src={msg} />
+                            Your browser does not support the video tag.
+                        </audio>
+                    </div>
+                )}
                 <div className={cx('chat-meta')}>
                     {time && <span>{timeAgo.format(new Date(time?.seconds * 1000))}</span>}
                     {/* <span>Seen 21:58</span> */}

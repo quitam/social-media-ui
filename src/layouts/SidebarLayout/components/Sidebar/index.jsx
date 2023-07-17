@@ -1,9 +1,11 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 
 import AppAvatar from '@components/Avatar';
+import * as UserService from '@/services/UserService';
 import FriendItem from '@/layouts/DefaultLayout/components/Invitation/FriendItem';
 import * as NotifyService from '@/services/NotifyService';
 import * as RelaService from '@/services/RelaService';
+import { toast, ToastContainer } from 'react-toastify';
 
 import {
     NotificationsNoneOutlined,
@@ -31,11 +33,16 @@ import CreatePost from '@/components/CreatePost';
 import logoLight from '@/assets/images/logo/logo-light.png';
 
 import { useDispatch, useSelector } from 'react-redux';
+
+// Action
+import { logoutUser, updateUserListPost } from '@/action/UserAction';
+import { updateCurrentRoom } from '@/action/ChatAction';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SidebarItem from '../SidebarItem';
 import { headerLayout } from '@/action/ThemeAction';
 import useFirestore from '@/hooks/useFirestore';
 import NotifyItem from '@/layouts/DefaultLayout/components/Notification/NotifyItem';
+import ResultItem from './ResultItem';
 
 const cx = classNames.bind(styles);
 
@@ -54,14 +61,21 @@ const Sidebar = () => {
     const [countMsg, setCountMsg] = useState(0);
     const [countNoti, setCountNoti] = useState(0);
     const [countInvi, setCountInvi] = useState(0);
+    const [searchValue, setSearchValue] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
 
     const [showNotifyResult, setShowNotifyResult] = useState(false);
     const [showInviResult, setShowInviResult] = useState(false);
+    const [showMoreModal, setShowMoreModal] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
     const [listNotify, setListNotify] = useState([]);
     const [listInvitation, setListInvitation] = useState([]);
 
     const notifyRef = useRef();
     const invitationRef = useRef();
+    const moreRef = useRef();
+    const searchRef = useRef();
+    const inputSearchRef = useRef();
 
     const handleCloseModal = () => {
         setModal(false);
@@ -167,12 +181,83 @@ const Sidebar = () => {
                     setShowInviResult(false);
                 }
             }
+
+            if (moreRef.current && moreRef.current !== null) {
+                if (moreRef.current.contains(e.target)) {
+                    setShowMoreModal((prevState) => !prevState);
+                } else {
+                    setShowMoreModal(false);
+                }
+            }
+
+            if (searchRef.current && searchRef.current !== null) {
+                if (searchRef.current.contains(e.target)) {
+                    if (showSearch) {
+                        console.log('show');
+                        searchRef.current.style.transition = 'all 0.3s ease-out';
+                        searchRef.current.style.width = '100%';
+                        if (inputSearchRef.current && inputSearchRef.current != null) {
+                            inputSearchRef.current.style.transition = 'all 0.3s ease-in-out';
+                            inputSearchRef.current.style.width = '0';
+                        }
+                    } else {
+                        console.log('hide');
+                        searchRef.current.style.transition = 'all 0.3s ease-out';
+                        searchRef.current.style.width = '0';
+                        if (inputSearchRef.current && inputSearchRef.current != null) {
+                            inputSearchRef.current.style.transition = 'all 0.3s ease-in-out';
+                            inputSearchRef.current.style.width = '100%';
+                        }
+                    }
+                    setShowSearch((prevState) => !prevState);
+                } else if (inputSearchRef.current && inputSearchRef.current != null) {
+                    if (!inputSearchRef.current.contains(e.target)) {
+                        console.log('show');
+                        searchRef.current.style.transition = 'all 0.3s ease-out';
+                        searchRef.current.style.width = '100%';
+                        inputSearchRef.current.style.transition = 'all 0.3s ease-in-out';
+                        inputSearchRef.current.style.width = '0';
+
+                        setShowSearch(false);
+                    }
+                }
+            }
         };
         document.addEventListener('click', handleClick, true);
     }, []);
 
+    // LOGOUT
+    const handleLogout = () => {
+        toast.dark('Waiting a minute!');
+        setTimeout(() => {
+            dispatch(updateCurrentRoom({}));
+            dispatch(logoutUser());
+            navigate('/login');
+        }, 1500);
+        //set offline in firestore
+        updateDoc(doc(db, 'user', userInfo.username), {
+            isOnline: false,
+            date: serverTimestamp(),
+        });
+    };
+
+    useEffect(() => {
+        if (!searchValue.trim()) {
+            setSearchResult([]);
+            return;
+        }
+        //Get data from search result
+        const fetchApi = async () => {
+            const result = await UserService.searchByName(searchValue);
+            setSearchResult(result.data);
+            //console.log(searchResult);
+        };
+        fetchApi();
+    }, [searchValue]);
+
     return (
         <div className={cx('sidebar', `${isDarkMode ? 'theme-dark' : 'theme-light'}`)}>
+            <ToastContainer />
             {modal && <CreatePost onClose={handleCloseModal} />}
             <div className={cx('logo')}>
                 <Link to="/">
@@ -191,13 +276,36 @@ const Sidebar = () => {
                     }}
                 />
 
-                <SidebarItem
-                    icon={<Search style={iconStyle} />}
-                    activeIcon={<Search style={iconStyle} />}
-                    isActive={activeTab === 'search'}
-                    title="Search"
-                    onClick={() => setActiveTab('search')}
-                />
+                <div className={cx('sidebar-search')}>
+                    <div className={cx('sidebar-search-item')} ref={searchRef}>
+                        <SidebarItem
+                            icon={<Search style={iconStyle} />}
+                            activeIcon={<Search style={iconStyle} />}
+                            isActive={activeTab === 'search'}
+                            title="Search"
+                            onClick={() => setActiveTab('search')}
+                        />
+                    </div>
+                    <div className={cx('input-search', 'sidebar-search-item')} ref={inputSearchRef}>
+                        <input
+                            placeholder="Search user..."
+                            value={searchValue}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (!value.startsWith(' ')) {
+                                    setSearchValue(value);
+                                }
+                            }}
+                        />
+                    </div>
+                    {searchResult && searchResult.length > 0 && (
+                        <div className={cx('search-result', !showSearch && 'hidden')}>
+                            {searchResult.map((item) => {
+                                return <ResultItem key={item.username} item={item} />;
+                            })}
+                        </div>
+                    )}
+                </div>
 
                 <div className={cx('sidebar-notify')} ref={notifyRef}>
                     <SidebarItem
@@ -271,6 +379,7 @@ const Sidebar = () => {
                         )}
                     </div>
                 </div>
+
                 <SidebarItem
                     count={countMsg}
                     icon={<ChatOutlined style={iconStyle} />}
@@ -303,16 +412,33 @@ const Sidebar = () => {
                     }}
                 />
             </div>
-            <SidebarItem
-                icon={<Menu style={iconStyle} />}
-                activeIcon={<Menu style={iconStyle} />}
-                isActive={activeTab === 'more'}
-                title="More"
-                onClick={() => {
-                    setActiveTab('more');
-                    dispatch(headerLayout());
-                }}
-            />
+            <div ref={moreRef} className={cx('more-options')}>
+                <SidebarItem
+                    icon={<Menu style={iconStyle} />}
+                    activeIcon={<Menu style={iconStyle} />}
+                    isActive={activeTab === 'more'}
+                    title="More"
+                    onClick={() => {
+                        setActiveTab('more');
+                    }}
+                />
+                <div
+                    className={cx(`${isDarkMode ? 'theme-light' : ''}`, !showMoreModal && 'hidden', 'dropdown-content')}
+                >
+                    <div
+                        className={cx('dropdown-item')}
+                        onClick={() => {
+                            dispatch(headerLayout());
+                        }}
+                    >
+                        <span>Change layout</span>
+                        <div title="Dark/Light mode" style={{ height: '30px' }}></div>
+                    </div>
+                    <div className={cx('dropdown-item')} onClick={handleLogout}>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
