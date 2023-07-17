@@ -1,22 +1,28 @@
 import { useState, createRef, useEffect, useMemo, useRef } from 'react';
 
-import { FaCog } from 'react-icons/fa';
+import { FaCog, FaMicrophone, FaSquare } from 'react-icons/fa';
 import { GrAttachment } from 'react-icons/gr';
+import { GiCancel } from 'react-icons/gi';
+
 import { query, collection, where, getDocs } from 'firebase/firestore';
 import { IoSend } from 'react-icons/io5';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { v4 } from 'uuid';
 import Avatar from '../ChatList/Avatar';
+import audioGif from '@/assets/images/audio/recording-audio.gif';
 import ChatItem from './ChatItem';
 import useFirestore from '../../../../hooks/useFirestore';
 import * as UserService from '../../../../services/UserService';
+import vmsg from 'vmsg';
 import classNames from 'classnames/bind';
 import styles from './ChatContent.module.scss';
 import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
-
+const recorder = new vmsg.Recorder({
+    wasmURL: 'https://unpkg.com/vmsg@0.3.0/vmsg.wasm',
+});
 const ChatContent = () => {
     const userInfo = useSelector((state) => state.user.user);
     const messagesEndRef = createRef(null);
@@ -24,6 +30,8 @@ const ChatContent = () => {
     const [inputMsg, setinputMsg] = useState('');
     const [friend, setFriend] = useState({});
     const [pictures, setPictures] = useState([]);
+    const [recordingAudio, setRecordingAudio] = useState(false);
+    const [audio, setAudio] = useState({});
     const chatRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -120,6 +128,25 @@ const ChatContent = () => {
         e.preventDefault();
 
         try {
+            if (audio.preview) {
+                const data = new FormData();
+                data.append('files', audio);
+
+                const listAudio = await uploadFileChat(data);
+
+                if (listAudio && listAudio.length > 0) {
+                    setDoc(doc(db, 'messages', v4()), {
+                        content: listAudio[0],
+                        user: userInfo.username,
+                        room: currentRoom.id,
+                        date: serverTimestamp(),
+                        type: 3,
+                        status: 'WAITING',
+                    });
+                    setAudio({});
+                }
+            }
+
             if (pictures && pictures.length > 0) {
                 const data = new FormData();
                 if (pictures.length > 0) {
@@ -160,6 +187,35 @@ const ChatContent = () => {
             }
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    //RECORDING AUDIO
+    const recordAudio = async () => {
+        if (audio.preview) {
+            setAudio({});
+            setRecordingAudio(false);
+        } else {
+            if (recordingAudio) {
+                const blob = await recorder.stopRecording();
+
+                if (blob) {
+                    const newAudio = blob;
+                    newAudio.preview = URL.createObjectURL(blob);
+                    console.log('newAudio', newAudio);
+                    setAudio(newAudio);
+                }
+                setRecordingAudio(false);
+            } else {
+                try {
+                    await recorder.initAudio();
+                    await recorder.initWorker();
+                    recorder.startRecording();
+                    setRecordingAudio(true);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }
     };
 
@@ -230,9 +286,27 @@ const ChatContent = () => {
             <div className={cx('content-footer')}>
                 <form className={cx('sendNewMessage')} onSubmit={sendMsg}>
                     <div className={cx('chat-input')}>
-                        <button className={cx('addFiles')} type="button" onClick={() => chatRef.current.click()}>
-                            <GrAttachment className={cx('add-file-icon')} />
+                        <button className={cx('addFiles')} type="button" onClick={recordAudio}>
+                            {audio.preview ? (
+                                <GiCancel className={cx('add-file-icon')} />
+                            ) : recordingAudio ? (
+                                <FaSquare className={cx('add-file-icon')} />
+                            ) : (
+                                <FaMicrophone className={cx('add-file-icon')} />
+                            )}
                         </button>
+                        {recordingAudio && <img src={audioGif} alt="" className={cx('audio-gif')} />}
+                        {!recordingAudio && !audio.preview && (
+                            <button className={cx('addFiles')} type="button" onClick={() => chatRef.current.click()}>
+                                <GrAttachment className={cx('add-file-icon')} />
+                            </button>
+                        )}
+
+                        {audio.preview && (
+                            <audio className={cx('audio-preview')} alt="" controls>
+                                <source src={audio.preview} />
+                            </audio>
+                        )}
                         <input
                             onChange={handlePreview}
                             ref={chatRef}
@@ -242,16 +316,20 @@ const ChatContent = () => {
                             multiple
                             hidden
                         />
-                        <input
-                            type="text"
-                            placeholder="Type a message here"
-                            onChange={(e) => setinputMsg(e.target.value)}
-                            value={inputMsg}
-                        />
+                        {!recordingAudio && !audio.preview && (
+                            <input
+                                type="text"
+                                placeholder="Type a message here"
+                                onChange={(e) => setinputMsg(e.target.value)}
+                                value={inputMsg}
+                            />
+                        )}
 
-                        <button className={cx('btnSendMsg')} id="sendMsgBtn" type="submit">
-                            <IoSend />
-                        </button>
+                        {!recordingAudio && (
+                            <button className={cx('btnSendMsg')} id="sendMsgBtn" type="submit">
+                                <IoSend />
+                            </button>
+                        )}
                     </div>
 
                     {pictures && pictures.length > 0 && (
