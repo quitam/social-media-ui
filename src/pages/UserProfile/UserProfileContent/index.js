@@ -35,7 +35,6 @@ const UserProfileContent = ({ username }) => {
     const [isPostOpen, setIsPostOpen] = useState(false);
     const [toggler, setToggler] = useState(false);
     const [modal, setModal] = useState(false);
-    const [isUnfriend, setIsUnfriend] = useState(false);
 
     const addFriend = async () => {
         const result = await RelaService.addFriend(username);
