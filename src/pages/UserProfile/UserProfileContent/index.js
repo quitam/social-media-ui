@@ -10,6 +10,7 @@ import * as RelaService from '@/services/RelaService';
 import * as PostService from '@/services/PostService';
 
 import { Https, NoPhotography } from '@mui/icons-material';
+import { Modal, Button } from 'react-bootstrap';
 import { FiSettings } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import Lightbox from 'yet-another-react-lightbox';
@@ -33,25 +34,29 @@ const UserProfileContent = ({ username }) => {
     const status = useSelector((state) => state.relation.status);
     const [isPostOpen, setIsPostOpen] = useState(false);
     const [toggler, setToggler] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [isUnfriend, setIsUnfriend] = useState(false);
 
+    const addFriend = async () => {
+        const result = await RelaService.addFriend(username);
+        if (result.success) {
+            dispatch(updateRelation(result.data.status));
+        }
+    };
+    const unFollow = async () => {
+        const result = await RelaService.deleteRelation(username);
+        if (!result.data) {
+            dispatch(updateRelation('ADD FRIEND'));
+        }
+    };
     //handle add friend
-    const hadleAddFriend = () => {
-        const addFriend = async () => {
-            const result = await RelaService.addFriend(username);
-            if (result.success) {
-                dispatch(updateRelation(result.data.status));
-            }
-        };
-        const unFollow = async () => {
-            const result = await RelaService.deleteRelation(username);
-            if (!result.data) {
-                dispatch(updateRelation('ADD FRIEND'));
-            }
-        };
+    const handleAddFriend = async () => {
         if (status === 'ADD FRIEND') {
-            addFriend();
+            await addFriend();
+        } else if (status === 'FRIEND') {
+            setModal(true);
         } else {
-            unFollow();
+            await unFollow();
         }
     };
 
@@ -96,6 +101,26 @@ const UserProfileContent = ({ username }) => {
 
     return (
         <div style={{ marginLeft: isHeaderLayout ? '0' : '25rem', marginTop: isHeaderLayout ? '6rem' : '0' }}>
+            <Modal show={modal} onHide={() => setModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Unfriend</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure to unfriend with {userProfile.name}?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setModal(false)}>
+                        No
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            unFollow();
+                            setModal(false);
+                        }}
+                    >
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {isPostOpen && (
                 <Suspense fallback={<div>Loading...</div>}>
                     <PostDetail onClose={closePost} />
@@ -124,7 +149,7 @@ const UserProfileContent = ({ username }) => {
                                 <h4 className={cx('profile-username')}>{userProfile.username}</h4>
                                 <button
                                     className={cx('edit-profile', `${isDarkMode ? 'theme-dark' : ''}`)}
-                                    onClick={hadleAddFriend}
+                                    onClick={handleAddFriend}
                                 >
                                     {status}
                                 </button>
@@ -141,7 +166,7 @@ const UserProfileContent = ({ username }) => {
                                     {userProfile.countFriend > 1 ? 'friends' : 'friend'}
                                 </h5>
                                 <h5 className={cx('profile-follow-count')}>
-                                    <span>{userProfile.countFriend}</span>{' '}
+                                    <span>{userProfile.countCommonFriend}</span>{' '}
                                     {userProfile.countCommonFriend > 1 ? 'mutual friends' : 'mutual friend'}
                                 </h5>
                             </div>

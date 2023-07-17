@@ -228,7 +228,7 @@ const CreatePost = ({ onClose, data }) => {
             if (files[i].type.startsWith('image/')) {
                 const image = await loadImageBase64(files[i]);
                 const checkImage = await UserService.checkImage(image);
-                if (!(checkImage?.predictions.length > 0 && checkImage?.predictions[0].confidence > 0.2)) {
+                if (!(checkImage?.predictions.length > 0 && checkImage?.predictions[0].confidence > 0.5)) {
                     selectedFiles.push(files[i]);
                 } else {
                     toast.warning('Your image have violence action', {

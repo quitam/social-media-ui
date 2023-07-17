@@ -21,6 +21,7 @@ import { updateListPost, updateDetailPost } from '../../action/PostAction';
 
 import styles from './Post.module.scss';
 import CreatePost from '@components/CreatePost';
+import { useNavigate } from 'react-router-dom';
 
 const PostDetail = lazy(() => import('@components/PostDetail'));
 
@@ -32,6 +33,7 @@ const timeAgo = new TimeAgo('en-US');
 
 const Post = ({ data }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const listPost = useSelector((state) => state.post.listPost);
     const detailPost = useSelector((state) => state.post.detailPost);
     const userInfo = useSelector((state) => state.user.user);
@@ -280,7 +282,17 @@ const Post = ({ data }) => {
                     <AppAvatar src={data.user.avatar} />
                 </div>
                 <div className={cx('post__username', 'username-hover')}>
-                    <span>{data.user.name}</span>
+                    <span
+                        onClick={() => {
+                            if (data.user.username === userInfo.username) {
+                                navigate('/profile');
+                            } else {
+                                navigate(`/${data.user.username}`);
+                            }
+                        }}
+                    >
+                        {data.user.name}
+                    </span>
                     <span className={cx('post-time')}>{timeAgo.format(new Date(data.createDate))}</span>
                 </div>
                 <FiMoreHorizontal size="25px" className={cx('icon-more')} onClick={() => setModal(!modal)} />
