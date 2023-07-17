@@ -14,15 +14,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
-const CreatePost = ({ onClose }) => {
+const CreatePost = ({ onClose, data }) => {
+    console.log(data);
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.post.listPost);
+    const [pictures, setPictures] = useState(data?.files.length > 0 ? data?.files : []);
+    const [newPictures, setNewPictures] = useState([]);
+    const [listDeletedFile, setListDeleteFile] = useState([]);
+    console.log(pictures);
+    const [caption, setCaption] = useState(data?.value || '');
 
-    const [pictures, setPictures] = useState([]);
-    const [caption, setCaption] = useState('');
-    const [selectedOption, setSelectedOption] = useState('PUBLIC');
-    const [isPostPicture, setIsPostPicture] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(data?.security || 'PUBLIC');
+    const [isPostPicture, setIsPostPicture] = useState(data?.files.length > 0 ? true : false);
     const fileInputRef = useRef(null);
 
     //xử lý khi thêm một bài Post
@@ -96,6 +100,22 @@ const CreatePost = ({ onClose }) => {
 
         toast.dark('Uploading...', { position: 'bottom-right', autoClose: 4000 });
 
+        if (pictures.length + newPictures.length > 5) {
+            toast.warning('Only upload maximum 6 files', {
+                position: 'bottom-right',
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: 'dark',
+            });
+
+            setTimeout(() => {
+                toast.dismiss();
+            }, [1500]);
+            return;
+        }
+
         for (var i = 0; i < files.length; i++) {
             if (files[i].type.startsWith('image/')) {
                 const image = await loadImageBase64(files[i]);
@@ -115,7 +135,8 @@ const CreatePost = ({ onClose }) => {
             } else {
                 selectedFiles.push(files[i]);
             }
-            if (selectedFiles.length === 6) {
+
+            if (selectedFiles.length + pictures.length + newPictures.length === 6) {
                 toast.warning('Only upload maximum 6 files', {
                     position: 'bottom-right',
                     autoClose: 1500,
@@ -147,16 +168,29 @@ const CreatePost = ({ onClose }) => {
             return file;
         });
 
-        setPictures((prev) => [...prev, ...updatedPictures]);
+        if (data) {
+            setNewPictures((prev) => [...prev, ...updatedPictures]);
+        } else {
+            setPictures((prev) => [...prev, ...updatedPictures]);
+        }
         setTimeout(() => {
             toast.dismiss();
-        }, [1500]);
+        }, [2500]);
     };
 
-    const handleRemovePicture = (index) => {
-        const updatedPictures = [...pictures];
-        updatedPictures.splice(index, 1);
-        setPictures(updatedPictures);
+    const handleRemovePicture = (index, type = 0, id) => {
+        if (type === 1) {
+            const updatedPictures = [...pictures];
+            updatedPictures.splice(index, 1);
+            setPictures(updatedPictures);
+            if (id !== '0') {
+                setListDeleteFile((prev) => [...prev, id]);
+            }
+        } else if (type === 2) {
+            const updatedPictures = [...newPictures];
+            updatedPictures.splice(index, 1);
+            setNewPictures(updatedPictures);
+        }
     };
 
     const onClickAddPicture = () => {
@@ -168,10 +202,12 @@ const CreatePost = ({ onClose }) => {
     };
 
     useEffect(() => {
-        setCaption('');
-        setPictures([]);
-        setIsPostPicture(false);
-        setSelectedOption('PUBLIC');
+        if (!data) {
+            setCaption('');
+            setPictures([]);
+            setIsPostPicture(false);
+            setSelectedOption('PUBLIC');
+        }
     }, []);
 
     return (
@@ -182,7 +218,7 @@ const CreatePost = ({ onClose }) => {
             </div>
             <div className={cx('wrapper')}>
                 <div className={cx('post-title')}>
-                    <span>Create a new post</span>
+                    <span>{data ? 'Edit your post' : 'Create a new post'}</span>
                 </div>
                 <div className={cx('top')}>
                     <div className={cx('post-header')}>
@@ -217,9 +253,34 @@ const CreatePost = ({ onClose }) => {
                 </div>
                 {isPostPicture && (
                     <div className={cx('bottom')}>
-                        {pictures.length > 0 ? (
+                        {pictures.length > 0 && (
                             <div className={cx('wrap-picture')}>
                                 {pictures.map((picture, index) => {
+                                    if (data ? picture.type === 1 : picture.type.startsWith('image/')) {
+                                        return (
+                                            <img
+                                                key={index}
+                                                src={data ? picture.value : picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                                onClick={() => handleRemovePicture(index, 1, picture.id)}
+                                            />
+                                        );
+                                    } else if (data ? picture.type === 2 : picture.type.startsWith('video/')) {
+                                        return (
+                                            <video
+                                                key={index}
+                                                src={data ? picture.value : picture.preview}
+                                                alt={`files ${index}`}
+                                                className={cx('picture-item')}
+                                                onClick={() => handleRemovePicture(index, 1, picture.id)}
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                })}
+
+                                {newPictures.map((picture, index) => {
                                     if (picture.type.startsWith('image/')) {
                                         return (
                                             <img
@@ -227,7 +288,7 @@ const CreatePost = ({ onClose }) => {
                                                 src={picture.preview}
                                                 alt={`files ${index}`}
                                                 className={cx('picture-item')}
-                                                onClick={() => handleRemovePicture(index)}
+                                                onClick={() => handleRemovePicture(index, 2, '0')}
                                             />
                                         );
                                     } else if (picture.type.startsWith('video/')) {
@@ -237,14 +298,16 @@ const CreatePost = ({ onClose }) => {
                                                 src={picture.preview}
                                                 alt={`files ${index}`}
                                                 className={cx('picture-item')}
-                                                onClick={() => handleRemovePicture(index)}
+                                                onClick={() => handleRemovePicture(index, 2, '0')}
                                             />
                                         );
                                     }
                                     return null;
                                 })}
                             </div>
-                        ) : (
+                        )}
+
+                        {pictures.length === 0 && newPictures.length === 0 && (
                             <div className={cx('wrap-title')}>
                                 <label htmlFor="post" role="button">
                                     <AddPhotoAlternate style={{ fontSize: '3.5rem' }} />
@@ -268,9 +331,15 @@ const CreatePost = ({ onClose }) => {
                 <div className={cx('btn-open-img')} onClick={onClickAddPicture}>
                     <AddPhotoAlternate style={{ fontSize: '3.5rem' }} />
                 </div>
-                <div className={cx('share-btn')} onClick={handlePost}>
-                    Share
-                </div>
+                {data ? (
+                    <div className={cx('share-btn')} onClick={handlePost}>
+                        Update
+                    </div>
+                ) : (
+                    <div className={cx('share-btn')} onClick={handlePost}>
+                        Share
+                    </div>
+                )}
             </div>
         </div>
     );

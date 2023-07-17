@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateListPost, updateDetailPost } from '../../action/PostAction';
 
 import styles from './Post.module.scss';
+import CreatePost from '@components/CreatePost';
 
 const PostDetail = lazy(() => import('@components/PostDetail'));
 
@@ -35,6 +36,7 @@ const Post = ({ data }) => {
 
     const [modal, setModal] = useState(false);
     const [isPostOpen, setIsPostOpen] = useState(false);
+    const [modalEdit, setModalEdit] = useState(false);
 
     //State ẩn/hiện Comment action
     const [toggleClass, setToggleClass] = useState(false);
@@ -228,6 +230,14 @@ const Post = ({ data }) => {
         }
     };
 
+    const editPost = () => {
+        setModalEdit(true);
+        setModal(false);
+    };
+    const handleCloseEdit = () => {
+        setModalEdit(false);
+    };
+
     return (
         <div className={cx(`${isDarkMode ? 'post-theme-dark' : ''}`, 'post__container')}>
             <ToastContainer />
@@ -239,6 +249,8 @@ const Post = ({ data }) => {
                 </Suspense>
             )}
 
+            {modalEdit && <CreatePost data={data} onClose={handleCloseEdit} />}
+
             {/* Modal action post */}
             <Modal size="sm" centered show={modal} onHide={() => setModal(!modal)}>
                 <ModalBody bsPrefix="modal-custom">
@@ -248,7 +260,11 @@ const Post = ({ data }) => {
                     <div className={cx('more-action')} onClick={hiddenPost}>
                         Hidden post
                     </div>
-                    {userInfo.username === data.user.username && <div className={cx('more-action')}>Edit post</div>}
+                    {userInfo.username === data.user.username && (
+                        <div className={cx('more-action')} onClick={editPost}>
+                            Edit post
+                        </div>
+                    )}
                     <div className={cx('more-action')} onClick={() => setModal(!modal)}>
                         Cancel
                     </div>
