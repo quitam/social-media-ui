@@ -13,7 +13,6 @@ const cx = classNames.bind(styles);
 const Friends = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userInfo = useSelector((state) => state.user.user);
     const listFriend = useSelector((state) => state.relation.listFriend);
 
     useEffect(() => {

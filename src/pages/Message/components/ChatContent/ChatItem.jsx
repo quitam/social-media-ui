@@ -6,7 +6,6 @@ import en from 'javascript-time-ago/locale/en';
 import { useState } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
-import AppAvatar from '@/components/Avatar';
 
 TimeAgo.addLocale(en);
 // Create formatter (English).

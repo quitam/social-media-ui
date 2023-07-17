@@ -31,6 +31,7 @@ export let endpoints = {
     getStatistic: 'statistic/get-data',
     uploadFileChat: 'user/upload-file',
     checkImage: 'https://detect.roboflow.com/violence-detection-s9acq/1',
+    updatePost: 'post/update',
 };
 const request = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

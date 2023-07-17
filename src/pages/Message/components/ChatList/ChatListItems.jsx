@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import Avatar from './Avatar';
 import classNames from 'classnames/bind';
 import styles from './ChatList.module.scss';
@@ -16,7 +18,7 @@ const cx = classNames.bind(styles);
 const ChatListItems = ({ data, active, isOnline, animationDelay, time }) => {
     const [online, setOnline] = useState(isOnline);
     const [timeOnline, setTimeOnline] = useState(time);
-    // eslint-disable-next-line
+
     const selectChat = (e) => {
         for (let index = 0; index < e.currentTarget.parentNode.children.length; index++) {
             e.currentTarget.parentNode.children[index].classList.remove('active');

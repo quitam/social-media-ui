@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { useRef, useState, lazy, Suspense } from 'react';
 import AppAvatar from '../Avatar';
 import TimeAgo from 'javascript-time-ago';
@@ -39,6 +41,7 @@ const Post = ({ data }) => {
     const [modalEdit, setModalEdit] = useState(false);
 
     //State ẩn/hiện Comment action
+
     const [toggleClass, setToggleClass] = useState(false);
 
     const [comment, setComment] = useState('');
@@ -138,12 +141,10 @@ const Post = ({ data }) => {
     const hiddenComment = (id) => {
         const hiddenCmtApi = async () => {
             const result = await PostService.hiddenComment(id);
-            //console.log(result);
             return result;
         };
         hiddenCmtApi().then((data) => {
             if (data.success) {
-                console.log(data);
                 dispatch(
                     updateListPost(
                         listPost.map((item) => {
@@ -287,26 +288,31 @@ const Post = ({ data }) => {
             <div>
                 {data.files.length > 0 && (
                     <div className={cx('list-image')}>
-                        {data.files.length > 1 && (
+                        {data.files.filter((item) => item.status === 'ENABLE').length > 1 && (
                             <div className={cx('image-action')}>
                                 <div className={cx('previous-btn')} onClick={handlePreviousImage}>
                                     <NavigateBefore style={{ fontSize: '2rem' }} />
                                 </div>
+
                                 <div className={cx('panigation')}>
-                                    {data.files.map((file, index) => (
-                                        <span
-                                            key={index}
-                                            className={cx(currentImageIndex === index ? 'img-active' : '')}
-                                            onClick={() => setCurrentImageIndex(index)}
-                                        ></span>
-                                    ))}
+                                    {data.files
+                                        .filter((item) => item.status === 'ENABLE')
+                                        .map((file, index) => (
+                                            <span
+                                                key={index}
+                                                className={cx(currentImageIndex === index ? 'img-active' : '')}
+                                                onClick={() => setCurrentImageIndex(index)}
+                                            ></span>
+                                        ))}
                                 </div>
+
                                 <div className={cx('next-btn')} onClick={handleNextImage}>
                                     <NavigateNext style={{ fontSize: '2rem' }} />
                                 </div>
                             </div>
                         )}
-                        {data.files[currentImageIndex].type === 1 ? (
+                        {data.files[currentImageIndex].status === 'ENABLE' &&
+                        data.files[currentImageIndex].type === 1 ? (
                             <img
                                 src={data.files[currentImageIndex].value}
                                 alt="Post"

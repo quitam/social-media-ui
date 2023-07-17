@@ -35,7 +35,6 @@ const Search = ({ darkMode, chat = false }) => {
         const fetchApi = async () => {
             const result = await UserService.searchByName(searchValue);
             setSearchResult(result.data);
-            //console.log(searchResult);
         };
         fetchApi();
     }, [searchValue]);
@@ -114,7 +113,6 @@ const Search = ({ darkMode, chat = false }) => {
                     setDoc(doc(db, 'rooms', v4()), {
                         members: [result.username, userInfo.username],
                     });
-                    console.log('test');
                 } catch (error) {
                     console.log(error);
                 }

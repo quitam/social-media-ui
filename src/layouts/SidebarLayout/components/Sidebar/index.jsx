@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useMemo, useEffect, useRef } from 'react';
 
 import AppAvatar from '@components/Avatar';
@@ -35,7 +36,7 @@ import logoLight from '@/assets/images/logo/logo-light.png';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Action
-import { logoutUser, updateUserListPost } from '@/action/UserAction';
+import { logoutUser } from '@/action/UserAction';
 import { updateCurrentRoom } from '@/action/ChatAction';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SidebarItem from '../SidebarItem';
@@ -142,7 +143,6 @@ const Sidebar = () => {
             return unsubcribe;
         };
         rooms.forEach((room) => chatRoom(room.id));
-        // eslint-disable-next-line
     }, [rooms]);
 
     useEffect(() => {
@@ -193,7 +193,6 @@ const Sidebar = () => {
             if (searchRef.current && searchRef.current !== null) {
                 if (searchRef.current.contains(e.target)) {
                     if (showSearch) {
-                        console.log('show');
                         searchRef.current.style.transition = 'all 0.3s ease-out';
                         searchRef.current.style.width = '100%';
                         if (inputSearchRef.current && inputSearchRef.current != null) {
@@ -201,7 +200,6 @@ const Sidebar = () => {
                             inputSearchRef.current.style.width = '0';
                         }
                     } else {
-                        console.log('hide');
                         searchRef.current.style.transition = 'all 0.3s ease-out';
                         searchRef.current.style.width = '0';
                         if (inputSearchRef.current && inputSearchRef.current != null) {
@@ -212,7 +210,6 @@ const Sidebar = () => {
                     setShowSearch((prevState) => !prevState);
                 } else if (inputSearchRef.current && inputSearchRef.current != null) {
                     if (!inputSearchRef.current.contains(e.target)) {
-                        console.log('show');
                         searchRef.current.style.transition = 'all 0.3s ease-out';
                         searchRef.current.style.width = '100%';
                         inputSearchRef.current.style.transition = 'all 0.3s ease-in-out';
@@ -250,7 +247,6 @@ const Sidebar = () => {
         const fetchApi = async () => {
             const result = await UserService.searchByName(searchValue);
             setSearchResult(result.data);
-            //console.log(searchResult);
         };
         fetchApi();
     }, [searchValue]);

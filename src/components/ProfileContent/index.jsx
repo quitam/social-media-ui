@@ -115,7 +115,6 @@ const ProfileContent = () => {
     };
 
     const checkResult = (result) => {
-        console.log(result);
         if (result.data) {
             setTimeout(() => {
                 Swal.fire({
@@ -153,7 +152,6 @@ const ProfileContent = () => {
         checkResult(result);
     };
     const checkChange = (change) => {
-        console.log(change.data);
         if (change.data) {
             setTimeout(() => {
                 Swal.fire({
@@ -171,7 +169,6 @@ const ProfileContent = () => {
         const change = await UserService.changeAvatar({
             avatar: avatar,
         });
-        //console.log(change);
         checkChange(change);
     };
     const handleSubmit = (e) => {

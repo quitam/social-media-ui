@@ -12,6 +12,31 @@ export const createPost = async (data) => {
         return res;
     } catch (e) {}
 };
+
+export const updatePost = async (id, data) => {
+    try {
+        const res = await request.putRQ(endpoints['updatePost'] + '/' + id, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+
+export const addFilePost = async (id, data) => {
+    try {
+        const res = await request.postRQ(endpoints['createPost'] + '/' + id + '/upload', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+        });
+        return res;
+    } catch (e) {}
+};
+
 export const getListPost = async () => {
     try {
         const res = await request.getRQ(endpoints['getListPost'], {

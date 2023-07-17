@@ -1,8 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 
 import ChatListItems from './ChatListItems';
-// eslint-disable-next-line
-import { FaEllipsisH, FaSearch } from 'react-icons/fa';
+
 import classNames from 'classnames/bind';
 import styles from './ChatList.module.scss';
 import * as UserService from '../../../../services/UserService';
@@ -54,8 +53,6 @@ const ChatList = () => {
                         });
 
                         const friendFireBase = res[0];
-
-                        console.log('Friend Firebase', friendFireBase);
 
                         setListUser((prev) => [
                             ...prev,

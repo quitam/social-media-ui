@@ -185,7 +185,6 @@ const PostDetail = ({ onClose }) => {
                                     createNotify(content, detailPost.user.username);
                                 } else {
                                     const content1 = `${userInfo.avatar}###${userInfo.name} replied ${repName}'s comment on your post.`;
-                                    console.log('content1', content1);
                                     const content2 = `${userInfo.avatar}###${userInfo.name} replied your comment on ${detailPost.user.name}'s post.`;
                                     createNotify(content1, detailPost.user.username);
                                     createNotify(content2, repUser);
@@ -294,19 +293,21 @@ const PostDetail = ({ onClose }) => {
                     <div className={cx('wrapper')}>
                         {detailPost.files.length > 0 && (
                             <div className={cx('left')}>
-                                {detailPost.files.length > 1 && (
+                                {detailPost.files.filter((item) => item.status === 'ENABLE').length > 1 && (
                                     <div className={cx('image-action')}>
                                         <div className={cx('previous-btn')} onClick={handlePreviousImage}>
                                             <NavigateBefore style={{ fontSize: '2rem' }} />
                                         </div>
                                         <div className={cx('panigation')}>
-                                            {detailPost.files.map((file, index) => (
-                                                <span
-                                                    key={index}
-                                                    className={cx(currentImageIndex === index ? 'img-active' : '')}
-                                                    onClick={() => setCurrentImageIndex(index)}
-                                                ></span>
-                                            ))}
+                                            {detailPost.files
+                                                .filter((item) => item.status === 'ENABLE')
+                                                .map((file, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className={cx(currentImageIndex === index ? 'img-active' : '')}
+                                                        onClick={() => setCurrentImageIndex(index)}
+                                                    ></span>
+                                                ))}
                                         </div>
                                         <div className={cx('next-btn')} onClick={handleNextImage}>
                                             <NavigateNext style={{ fontSize: '2rem' }} />
@@ -314,7 +315,8 @@ const PostDetail = ({ onClose }) => {
                                     </div>
                                 )}
                                 <div className={cx('img-post')}>
-                                    {detailPost.files[currentImageIndex].type === 1 ? (
+                                    {detailPost.files[currentImageIndex].status === 'ENABLE' &&
+                                    detailPost.files[currentImageIndex].type === 1 ? (
                                         <img src={detailPost.files[currentImageIndex].value} alt="Post" />
                                     ) : (
                                         <video controls className={cx('video')}>

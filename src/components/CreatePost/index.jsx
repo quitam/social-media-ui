@@ -15,14 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 const cx = classNames.bind(styles);
 
 const CreatePost = ({ onClose, data }) => {
-    console.log(data);
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.user.user);
     const listPost = useSelector((state) => state.post.listPost);
     const [pictures, setPictures] = useState(data?.files.length > 0 ? data?.files : []);
     const [newPictures, setNewPictures] = useState([]);
     const [listDeletedFile, setListDeleteFile] = useState([]);
-    console.log(pictures);
     const [caption, setCaption] = useState(data?.value || '');
 
     const [selectedOption, setSelectedOption] = useState(data?.security || 'PUBLIC');
@@ -85,6 +83,55 @@ const CreatePost = ({ onClose, data }) => {
         }
     };
 
+    const handleUpdatePost = (e) => {
+        e.preventDefault();
+
+        if (caption) {
+            const obj = {
+                value: caption,
+                security: selectedOption,
+                deletedFile: listDeletedFile,
+            };
+
+            updatePost(obj);
+        }
+    };
+
+    const updatePost = async (content) => {
+        try {
+            toast.dark('Updating...', { position: 'bottom-right', autoClose: 15000 });
+            const result = await PostService.updatePost(data.id, content);
+
+            if (result.success) {
+                dispatch(
+                    updateListPost([
+                        ...listPost.map((item) => {
+                            if (item.id === result.data.id) {
+                                return result.data;
+                            }
+
+                            return item;
+                        }),
+                    ]),
+                );
+                //setModal(!modal);
+                setCaption('');
+                setPictures([]);
+                toast.dismiss();
+                toast.success('Update success', {
+                    position: 'bottom-right',
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    theme: 'dark',
+                });
+                onClose();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
     const loadImageBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -208,6 +255,7 @@ const CreatePost = ({ onClose, data }) => {
             setIsPostPicture(false);
             setSelectedOption('PUBLIC');
         }
+        // eslint-disable-next-line
     }, []);
 
     return (
@@ -256,6 +304,10 @@ const CreatePost = ({ onClose, data }) => {
                         {pictures.length > 0 && (
                             <div className={cx('wrap-picture')}>
                                 {pictures.map((picture, index) => {
+                                    if (data && picture.status === 'DISABLE') {
+                                        return null;
+                                    }
+
                                     if (data ? picture.type === 1 : picture.type.startsWith('image/')) {
                                         return (
                                             <img
@@ -332,7 +384,7 @@ const CreatePost = ({ onClose, data }) => {
                     <AddPhotoAlternate style={{ fontSize: '3.5rem' }} />
                 </div>
                 {data ? (
-                    <div className={cx('share-btn')} onClick={handlePost}>
+                    <div className={cx('share-btn')} onClick={handleUpdatePost}>
                         Update
                     </div>
                 ) : (

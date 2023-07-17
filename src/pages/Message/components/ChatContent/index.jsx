@@ -1,5 +1,5 @@
+/* eslint-disable */
 import { useState, createRef, useEffect, useMemo, useRef } from 'react';
-
 import { FaCog, FaMicrophone, FaSquare } from 'react-icons/fa';
 import { GrAttachment } from 'react-icons/gr';
 import { GiCancel } from 'react-icons/gi';
@@ -83,11 +83,9 @@ const ChatContent = () => {
 
             userApi();
         }
-        // eslint-disable-next-line
     }, [currentRoom]);
 
     useEffect(() => {
-        console.log('userlist', userList);
         if (userList && userList.length > 0) {
             setFriend((prev) => ({ ...prev, isOnline: userList[0].isOnline, offlineDate: userList[0].date }));
         }
@@ -202,7 +200,6 @@ const ChatContent = () => {
                 if (blob) {
                     const newAudio = blob;
                     newAudio.preview = URL.createObjectURL(blob);
-                    console.log('newAudio', newAudio);
                     setAudio(newAudio);
                 }
                 setRecordingAudio(false);
@@ -230,7 +227,6 @@ const ChatContent = () => {
 
     useEffect(() => {
         scrollToBottom();
-        // eslint-disable-next-line
     }, [chats]);
 
     return (

@@ -166,6 +166,7 @@ const HomeAdmin = () => {
             default:
                 break;
         }
+        // eslint-disable-next-line
     }, [page]);
 
     useEffect(() => {
@@ -174,6 +175,7 @@ const HomeAdmin = () => {
             navigate('/login/admin');
         }
         getStatistic();
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -194,6 +196,7 @@ const HomeAdmin = () => {
             default:
                 break;
         }
+        // eslint-disable-next-line
     }, [tableKey]);
 
     return (

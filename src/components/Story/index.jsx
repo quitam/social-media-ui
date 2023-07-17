@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState, useRef } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
@@ -48,7 +49,6 @@ const Story = ({ indexSlide = 0 }) => {
     const timeCountdown = 15;
     const [progress, setProgress] = useState(0);
 
-    // eslint-disable-next-line
     const swiper = useSwiper();
     const swiperRef = useRef(null);
 
@@ -89,7 +89,6 @@ const Story = ({ indexSlide = 0 }) => {
             clearInterval(interval);
             document.removeEventListener('keydown', handleKeyDown);
         };
-        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
