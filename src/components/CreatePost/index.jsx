@@ -85,35 +85,21 @@ const CreatePost = ({ onClose, data }) => {
 
     const handleUpdatePost = (e) => {
         e.preventDefault();
-
-        if (caption) {
-            const obj = {
-                value: caption,
-                security: selectedOption,
-                deletedFile: listDeletedFile,
-            };
-
-            updatePost(obj);
-        }
-    };
-
-    const updatePost = async (content) => {
         try {
-            toast.dark('Updating...', { position: 'bottom-right', autoClose: 15000 });
-            const result = await PostService.updatePost(data.id, content);
+            if (caption) {
+                toast.dark('Updating...', { position: 'bottom-right', autoClose: 15000 });
+                const obj = {
+                    value: caption,
+                    security: selectedOption,
+                    deletedFile: listDeletedFile,
+                };
 
-            if (result.success) {
-                dispatch(
-                    updateListPost([
-                        ...listPost.map((item) => {
-                            if (item.id === result.data.id) {
-                                return result.data;
-                            }
+                updatePost(obj);
 
-                            return item;
-                        }),
-                    ]),
-                );
+                if (newPictures.length > 0) {
+                    addFilePost();
+                }
+
                 //setModal(!modal);
                 setCaption('');
                 setPictures([]);
@@ -127,6 +113,81 @@ const CreatePost = ({ onClose, data }) => {
                     theme: 'dark',
                 });
                 onClose();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const addFilePost = async () => {
+        try {
+            if (newPictures.length > 0) {
+                const formData = new FormData();
+                const type = [];
+                newPictures.forEach((item) => {
+                    if (item.type.startsWith('image/')) {
+                        type.push(1);
+                    } else if (item.type.startsWith('video/')) {
+                        type.push(2);
+                    }
+                });
+                console.log('type', type);
+
+                const blob = new Blob([JSON.stringify(type)], {
+                    type: 'application/json',
+                });
+                console.log('blob', blob);
+                formData.append('type', blob);
+
+                for (let i = 0; i < newPictures.length; i++) {
+                    formData.append('files', newPictures[i]);
+                }
+
+                const result = await PostService.addFilePost(data.id, formData);
+
+                if (result.success) {
+                    dispatch(
+                        updateListPost([
+                            ...listPost.map((item) => {
+                                if (item.id === result.data.id) {
+                                    return {
+                                        ...item,
+                                        files: result.data.files.filter((item) => item.status === 'ENABLE'),
+                                    };
+                                }
+
+                                return item;
+                            }),
+                        ]),
+                    );
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const updatePost = async (content) => {
+        try {
+            const result = await PostService.updatePost(data.id, content);
+            console.log(result.data);
+            if (result.success) {
+                dispatch(
+                    updateListPost([
+                        ...listPost.map((item) => {
+                            if (item.id === result.data.id) {
+                                return {
+                                    ...item,
+                                    value: result.data.value,
+                                    security: result.data.security,
+                                    files: result.data.files.filter((item) => item.status === 'ENABLE'),
+                                };
+                            }
+
+                            return item;
+                        }),
+                    ]),
+                );
             }
         } catch (error) {
             console.error(error);

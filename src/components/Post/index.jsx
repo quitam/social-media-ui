@@ -141,10 +141,12 @@ const Post = ({ data }) => {
     const hiddenComment = (id) => {
         const hiddenCmtApi = async () => {
             const result = await PostService.hiddenComment(id);
+            //console.log(result);
             return result;
         };
         hiddenCmtApi().then((data) => {
             if (data.success) {
+                console.log(data);
                 dispatch(
                     updateListPost(
                         listPost.map((item) => {

@@ -25,7 +25,7 @@ const MainContent = () => {
     const isDarkMode = useSelector((state) => state.theme.isDarkModeEnabled);
     const isHeaderLayout = useSelector((state) => state.layout.isHeaderLayout);
     const listPost = useSelector((state) => state.post.listPost);
-    console.log(listPost)
+    console.log(listPost);
 
     const fetchApi = async () => {
         const result = await PostService.getNewFeed(page);
@@ -64,7 +64,16 @@ const MainContent = () => {
                         loader={<h1>Loading...</h1>}
                     >
                         <StatusBar />
-                        {listPost && listPost.map((result) => <Post key={result.id} data={result} />)}
+                        {listPost &&
+                            listPost.map((result) => (
+                                <Post
+                                    key={result.id}
+                                    data={{
+                                        ...result,
+                                        files: result.files.filter((item) => item.status === 'ENABLE'),
+                                    }}
+                                />
+                            ))}
                     </InfiniteScroll>
                 </div>
 
